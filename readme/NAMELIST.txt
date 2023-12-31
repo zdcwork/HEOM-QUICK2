@@ -1,0 +1,38 @@
+bicg/outsteady.f90:14:namelist / thermo / thermopower
+corrfunc/corrfunc.f90:25:namelist / resumedos / icont_cf, lresume_cf, nresume_cf
+main/calchs.f90:10:namelist / para1 / eup, edown, uu, tupdn, fixdot
+main/calchs.f90:11:namelist / para2 / edot, fixdot
+main/calchs.f90:12:namelist / para3 / engy01, engy02, u12, t12, phi12, fixdot
+main/calchs.f90:13:namelist / para4 / e1up, e1down, e2up, e2down, fixdot, u12, t12, uu1, uu2
+main/calchs.f90:14:namelist / sys3level/ engy01, engy02, engy03, fixdot, t12, t23, t13
+main/checkrho.f90:21:namelist / debug / lchksame
+main/evaluatepara.f90:24:namelist / field    / fieldtype
+main/evaluatepara.f90:25:namelist / ddots    / doubledot
+main/evaluatepara.f90:26:namelist / dfield2  / dfieldtype, aD, wD, dedot 
+main/evaluatepara.f90:27:namelist / dfield1  / dfieldtype, tflip, wflip
+main/evaluatepara.f90:28:namelist / dfield3  / dfieldtype, dedot1, dedot2, wdot1, wdot2, forcesteady
+main/evaluatepara.f90:29:namelist / dfield4  / dfieldtype, dedot1, dedot2, wdot1, wdot2, forcesteady, tson, tsoff, pha
+main/evaluatepara.f90:30:namelist / leadpara / lread_bcenter
+main/evaluatepara.f90:31:namelist / coupling / readcp, readmat
+main/evaluatepara.f90:32:namelist / flux0    / megaflux, aoffL, aoffR, phioffL, phioffR, lafreq, lphifreq,        &
+main/evaluatepara.f90:35:namelist / wgrids   / nwfermi, nwocc, nwvir, ifmval, irange,                             &
+main/evaluatepara.f90:37:namelist / specfunc / ispectral, egaul, egaur, esincl, esincr, chkcd, skipcorr,          &
+main/evaluatepara.f90:39:namelist / pcontour / lpcontour, nxpmin, nxpmax, nypmin, nypmax, tour, dpgrid
+main/main.f90:71:namelist / method  / methodss
+main/main.f90:72:namelist / units   / funits, runits  ! funits : unit option for physical quantities : 
+main/main.f90:79:namelist / resume   / icont, lresume, nresume
+main/main.f90:80:namelist / converge / maxit0, crit
+main/main.f90:81:namelist / guess0   / grandom        ! true, use random numbers for the initial guess of rho (default is true)
+main/main.f90:82:!namelist / lead     / onelead
+main/main.f90:83:namelist / inifld   / lfld
+main/main.f90:84:namelist / debug    / lchkado, itierchk, inumchk, lchkmm, idiffchk, lchksame
+main/main.f90:85:namelist / tdjob    / tdmethod
+main/main.f90:86:namelist / bathcorr / offcor
+main/main.f90:87:namelist / jobinfo  / mfdjob, pfdjob, psdjob, lscale
+main/main.f90:88:namelist / filter   / lfilter, nfilter
+main/main.f90:89:namelist / dos      / ldos, iorbs_dos, ispin_dos, dt_dos, tmax_dos, ljw_dos
+main/makespectral.f90:13:namelist / coupling / readcp, readmat
+main/modinisystem.f90:13:namelist / inifield2 / vdot
+main/modinisystem.f90:14:namelist / inifield3 / v01, v02
+main/modinisystem.f90:15:namelist / inifield1 / vupdn
+td/prechebyshev.f90:15:namelist / chebyshev / jcheby, cheby_dpre

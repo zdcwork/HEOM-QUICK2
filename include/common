@@ -1,0 +1,241 @@
+!--------------------------------------------------------------------------------------------------------------------!
+!  IMPORTANT                                                                                                         !
+!                                                                                                                    !
+!              "itier" goes from "1" to "ntier", where "itier" is used as an array index.                            !
+!              Therefore, "itier = 1" corresponds to "N = 0" (zeroth tier) in the formalism.                         !
+!                                                                                                                    !
+!              i.e.,                                                                                                 !
+!                                                                                                                    !
+!              "ntier = 5" means the hierarchy is truncated at "rho^N = 0" with "N = 5",                             !
+!              (rho^4 is to be solved).                                                                              !
+!--------------------------------------------------------------------------------------------------------------------!
+!
+integer :: ntier                                              ! the highest tier at which the heirarchy is truncated 
+integer :: nvar                                               ! number of components of the multi-component index 
+                                                              ! nvar  = nalf * nsgn * ncor (# of different drawers)
+integer :: nvar0                                              ! 
+integer :: nvar1, nvar2                                       !
+integer :: nalf                                               ! number of leads (baths), usually two (1 for left, 2 for right)
+integer :: nsgn                                               ! number of signs ,        usually two (plus and minus)
+integer :: nmats                                              ! number of Matsubara terms considered (totally)
+integer :: ncor                                               ! number of exponential functions used to expand correlation function
+integer :: norbs                                              ! number of relevant energy levels (orbitals) in the open system
+integer :: nspin                                              ! =2 if spin up and spin down are to be treated separately
+integer :: lspin                                              ! =2 if spin up and spin down are to be treated separately for leads
+integer :: nrho                                               ! the dimension of density matrix in occupation # representation
+integer :: nopr                                               ! # of operators involved
+integer :: nsopr                                              ! # of system operators (creation and annihilation operators)
+integer :: ndrude                                             ! # of Drude components (norbs for offcor, 1 for otherwise)
+integer :: nfreq                                              ! # of frequency grids used 
+integer :: nlor                                               ! # of Lorentzian functions used to fit residue reservoir spectral function
+!
+common / info1 / ntier, nvar, nvar0, nvar1, nvar2, nalf, nsgn,  &
+                 nmats, ncor, norbs, nspin, nrho, lspin,        &
+                 nopr, nsopr, ndrude, nfreq, nlor
+!
+real*8 :: tmax, dt, memory, memork4, memobicg, memodiis, memotfqmr, memocplqmr, memocf, memohb, memojacobi
+common / info2 / tmax, dt, memory, memork4, memobicg, memodiis, memotfqmr, memocplqmr, memocf, memohb, memojacobi
+!
+integer*8 :: nunk                                             ! total number of unknowns   (long integer)
+integer*8 :: ntable                                           ! length of indextable       (long integer)
+integer*8 :: lall                                             ! (half) length of indexcoef (long integer)
+integer*8 :: lall_filter                                      ! length of filterindex      (long integer) 
+integer*8 :: ldiff
+integer*8 :: noprunk
+integer*8 :: noprtable                                        ! length of oprtable         (long integer)
+integer*8 :: lopr
+common / info3 / nunk, ntable, lall, lall_filter, ldiff, noprunk, noprtable, lopr
+!
+integer :: nams, namsmax
+common / info4 / nams, namsmax
+!
+real*8, dimension(maxalf, maxspin) :: engyshift
+real*8, dimension(maxalf)          :: bandwidth
+real*8, dimension(maxalf, maxorb)  :: linewidth
+real*8, dimension(maxalf, maxspin) :: bcenter
+real*8, dimension(maxalf)          :: dinvbeta, tkel          ! unit = EV, tkel : temperature in Kelvin
+common / pararead / bandwidth, linewidth, bcenter, dinvbeta, engyshift, tkel
+!
+integer :: igroundsteady, itdskip                             ! igroundsteady = 0        : solve linear problem for ground state (default)
+common / flagflow / igroundsteady, itdskip                    !               = 1        : solve linear problem for steady state
+                                                              !               otherwise  : do not solve linear problem
+                                                              ! itdskip       = 0        : skip td propagation 
+                                                              !               otherwise  : perform td propagation normally (default)
+!
+real*8         :: epara1, epara2, epara3, epara4, epara5, epara6, epara7, tkondo
+common / eparas / epara1, epara2, epara3, epara4, epara5, epara6, epara7, tkondo
+!
+integer :: maxit0                                             ! maximal cycles allowed
+logical :: grandom                                            ! use random numbers for guess of initial rho 
+logical :: loutput	                                      ! output necessary to python
+logical :: lhseig                                             ! lhseig=T : use eigenstate of system Hamiltonian as initial reduced density matrix
+                                                              !            requires lanahs=T
+logical :: lhsdeg                                             ! lhsdeg=T : consider degeneracy of system Hamiltonian
+logical :: lbzman                                             ! lbzman=T : use Boltzmann distribution 
+integer :: nhseig                                             ! index of eigenstate (1 for ground state and nrho for highest eigenstate)
+integer :: iguess                                             ! control flag for initial guess
+real*8  :: crit                                               ! criteria 
+real*8  :: toldeg                                             ! tolerance for degeneracy 
+logical :: ltrend                                             ! ltrend=T : put tr(rho)=1 at the end of vector rho              
+                                                              !       =F : put tr(rho)=1 at the beginning of rho
+logical :: lreadi                                             ! read initial rho from file, override lbzman and lhseig                 
+common / cnvg1 / maxit0
+common / cnvg2 / crit
+common / cnvg3 / ltrend
+common / rand0 / grandom, lhseig, lhsdeg, lbzman, iguess, nhseig, lreadi
+common / rand1 / toldeg
+!
+integer :: funits, runits
+common / unitflag / funits, runits
+!
+!logical :: leadspin      
+!common / lead0 / leadspin
+!
+real*8         :: engy01, engy02, engy03, u12, t12, phi12, v01, v02, edot, eup, edown, uu, ac,    &
+                  e1up, e1down, e2up, e2down, e3up, e3down, e4up, e4down, capa, ec, tupdn, vupdn, &
+                  uu1, uu2, uu3, uu4, u23, u13, u34, t23, t24, t13, t14, j12, j13, j14, j23, j24, &
+                  gz1, gz2, gx1, gx2, gy1, gy2
+common / engyqd/  engy01, engy02, engy03, u12, t12, phi12, v01, v02, edot, eup, edown, uu ,ac,    &  
+                  e1up, e1down, e2up, e2down, e3up, e3down, e4up, e4down, capa, ec, tupdn, vupdn, &
+                  uu1, uu2, uu3, uu4, u23, u13, u34, t23, t24, t13, t14, j12, j13, j14, j23, j24, &
+                  gz1, gz2, gx1, gx2, gy1, gy2
+!
+logical :: doubledot
+common / ddots0 / doubledot
+!
+logical :: lfilter
+integer :: nfilter, nfilter_count, nfilter_long
+common / filter0 / lfilter, nfilter, nfilter_count, nfilter_long
+!
+logical :: lfld
+common / qdfield / lfld
+!
+integer   :: itierchk, idiffchk, nchkcount, nchklong
+integer*8 :: inumchk 
+logical   :: lchkado, lchkmm, lchksame, lchkbig, lchksparse, lchkdos, lchkbigado
+real*8    :: dchkbig
+common / debug1 / lchkado, lchkmm, lchksame, lchkbig, lchksparse, lchkdos, lchkbigado, itierchk, idiffchk, nchkcount, nchklong
+common / debug2 / inumchk
+common / debug3 / dchkbig
+!
+logical   :: fixdot                                           ! system Hamiltonian is fixed (as in equilibrium)
+common / eparat / fixdot                                      ! system Hamiltonian change is fixed during time evolution
+!
+logical   :: thermopower
+common / thermo / thermopower
+!
+logical   :: offcor                                           ! offcor=.true.  : off-diagonal couplings involved (default false)
+logical   :: lspcor                                           ! lspcor=.true.  : spin-polarized coupling         (default false)
+common / bathcorr0 / offcor, lspcor                           ! bath correlation function
+!
+logical   :: readcp                                           ! readcp=.true.  : system-bath coupling matrix read from input file
+logical   :: readmat                                          ! readmat=.true. : matrix read in nrow*ncol form
+                                                              !         .false.: matrix read in a single line
+logical   :: lrcmplx                                          ! lrcmplx=.true. : read complex system-bath couplings
+common / coupling / readcp, readmat, lrcmplx
+!
+logical   :: lresume                                          ! true, the td info is backuped every nresume cycles
+integer   :: icont, nresume                                   ! icont=1, resume a previous td job, otherwise start a new jbo
+common / tdresume / lresume, icont, nresume
+!
+logical   :: megaflux, lafreq, lphifreq                       ! magaflux=.true. only when      
+real*8    :: aoffL, aoffR, phioffL, phioffR                   ! offcor=.true. & norbs=2 & nspin=1
+                                                              ! lafreq=.true. when cross-correlation is freq-dependent
+integer   :: natype, nphitype                                 ! if (lafreq), natype specifies type of a(w), take values from 1
+real*8    :: anu, aomega, atheta                              ! parameters related to a(w)
+real*8    :: phinu, phiomega
+common / bathcorr1 / megaflux, lafreq, lphifreq
+common / bathcorr2 / aoffL, aoffR, phioffL, phioffR            
+common / bathcorr3 / natype, nphitype
+common / bathcorr4 / anu, aomega, atheta
+common / bathcorr5 / phinu, phiomega
+!
+! Only one of the following schemes can be chosen at a time
+!
+logical   :: mfdjob                                           ! mfdjob=.true. : multi-frequency-dispersed (MFD) version
+logical   :: pfdjob                                           ! pfdjob=.true. : polynomial function decomposition (PFD) scheme
+logical   :: psdjob                                           ! psdjob=.true. : Pade spectral decomposition (PSD) scheme
+logical   :: psdlor
+logical   :: psdfff                                           ! psdfff=.true. : PSD plus Fano-function-fitting (FFF) scheme
+logical   :: psfjob                                           ! psfjob=.true. : Prony spectral fitting (PSF) scheme 
+!  
+logical   :: lscale                                           ! lscale=.true. : scale all coefficients to make ADOs 
+                                                              !                 dimensionless
+logical   :: lsymlor                                          ! lsymlor=.true.: symmetrize Lorentzian functions used to fit 
+                                                              !                 residual reservoir spectral functions
+logical   :: lsdraw                                           ! lsdraw=.true. : allow using identical drawers to build ADOs
+logical   :: lsparse                                          ! lsparse=.true.: use sparse matrix multiplication technique
+logical   :: ltrun_der                                        ! ltrun_der= T  : use derivative of ADO for truncation of HEOM  
+logical   :: lfermi_exact
+logical   :: lsimple
+logical   :: lwalf
+logical   :: lscreen                                          ! lscreen=T     : pre-screen all decoupled dissipative modes
+logical   :: lanahs                                           ! lanahs=T      : analyze system Hamiltonian matrix
+logical   :: lspdhs                                           ! lspdhs=T      : consider the sparsity of dhs matrix
+integer   :: itype_fff                                        ! specify the FFF scheme to use
+integer   :: itype_psf                                        ! specify the PSF scheme to use
+common / jobtype / mfdjob, pfdjob, psdjob, psdfff, psdlor, psfjob,    &
+                   lscale, lfermi_exact, lsdraw, lsparse, ltrun_der,  &
+                   lsimple, lwalf, itype_fff, itype_psf
+common / jobiop0 / lscreen, lanahs, lspdhs
+!
+integer   :: nwl, nwfermi, nwocc, nwvir, ifmval, irange
+real*8    :: wmin, wmax, wfermid, wfermiu, dfmval, wrange, ebreak
+real*8    :: yshift(maxalf)
+common / wgrids0 / nwl, nwfermi, nwocc, nwvir, ifmval, irange
+common / wgrids1 / wmin, wmax, wfermid, wfermiu, dfmval, wrange, ebreak
+common / wgrids2 / yshift
+!
+logical   :: lpcontour                                        ! lpcontour=.true. : contour plot for J(z)*f(z)*e^{izt} 
+integer   :: nxpmin, nxpmax, nypmin, nypmax
+real*8    :: tour, dpgrid
+common / contour0 / lpcontour
+common / contour1 / nxpmin, nxpmax, nypmin, nypmax
+common / contour2 / tour, dpgrid
+!
+logical   :: lcf
+common / corrfunc0 / lcf
+!
+logical   :: lad                                              ! lad=.true. : construct adiabatic HEOM using slow modes for high tiers
+logical   :: lcheck_ad                                        ! lcheck_ad=.true. : stop the program after <prelude_ad.f90> 
+logical   :: lad_fast                                         ! lad_fast   : save ADOs with all fast modes in upper tiers
+logical   :: lset_fast                                        ! lset_fast=.true. : set ncor_fast manually, instead of using dgama_slow
+logical   :: lscba_ad                                         ! lscba_ad=.true.  : use self-consistent Born approximation (SCBA) 
+logical   :: lcop_ad                                          ! lcop_ad=.true.   : use COP (time-nonlocal) form, U(t,tau) acts on [c*rho(tau)]
+                                                              !        =.false.  : use POP (time-local) form, U(t,tau) acts on c and then on rho(t) 
+logical   :: ltd2st                                           ! ltd2st=.true.    : use chemical potential shift at t=infty                                                                                            !                    for td evolution in <prepare_ad.f90>
+integer   :: ntier_ad                                         ! specify highest tier for the adiabatic HEOM
+integer   :: ntier0                                           ! ntier0 = max(ntier, ntier_ad)
+integer   :: ncor_slow, ncor_fast
+integer   :: idegen_fast                                      ! idegen_fast = 0 :   omit all the contributions of degenerate fast modes
+                                                              !             = 1 : symmetrize the contributions of degenerate fast modes
+                                                              !             = 2 : adopt adiabatic approximation for all degenerate fast modes
+                                                              !       otherwise : report error
+integer   :: ndegen_fast                                      ! threshold value for number of degenerate fast modes
+real*8    :: dgama_slow                                       ! threshold dissipation rate for the low-energy (slow) modes (dimension of energy)
+real*8    :: dratio_fast                                      ! a threshold ratio for judging degenerate fast modes
+common / adiabatic0 / lad, lcheck_ad, lad_fast, lset_fast, lscba_ad, lcop_ad, ltd2st
+common / adiabatic1 / ntier_ad, ncor_slow, ncor_fast, ntier0, idegen_fast, ndegen_fast
+common / adiabatic2 / dgama_slow, dratio_fast
+!
+logical   :: lssp                                             ! lssp=.true.   : steady-state perturbation method
+integer   :: nstep_ssp                                        ! nstep_ssp = 1 : calculate (L0+dL)*rho0
+                                                              !           = 2 : calculate drho
+                                                              !     otherwise : report error
+common / perturb0 / lssp, nstep_ssp
+!
+logical   :: lproj                                            ! lproj=.true.  : construct and apply projector to system 
+logical   :: lprgen                                           ! lprgen=.true. : projector generated
+logical   :: ldopro                                           ! ldopro=.true. : apply projector in <calchs.f90>
+logical   :: lprams                                           ! lprams=.true. : apply projector to annihilation operators
+logical   :: lprocc                                           ! lprocc=.true  : use occupation number as criterion of projection
+integer   :: nproji, nprojf                                   ! 1 <= nproji <= nprojf <= nrho is expected
+integer   :: nprocc                                           ! keep states with |N-N0| <= nprocc (N0 is occupation of lowest state)
+common / project0 / lproj, lprgen, ldopro, lprams, lprocc, nproji, nprojf, nprocc
+!
+logical   :: lomit                                            ! lomit=.true.  : omit ADOs which are presumed small
+real*8    :: dfact_omit                                       
+real*8    :: dcbmax                                       
+common / omitado0 / lomit
+common / omitado1 / dfact_omit, dcbmax
+!

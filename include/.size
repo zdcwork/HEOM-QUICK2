@@ -1,0 +1,1221 @@
+!!!!!!!!!!!!!!!
+integer, parameter :: maxalf   = 6
+integer, parameter :: maxsgn   = 2
+integer, parameter :: maxmats  = 1200
+integer, parameter :: maxfreq  = 600
+integer, parameter :: maxtier  = 16                    ! maxtier should be larger than max(ntier, ntier_ad)      
+integer, parameter :: maxspin  = 2 
+integer, parameter :: maxorb   = 4
+integer, parameter :: maxcor   = maxorb*maxorb + maxmats + maxfreq
+integer, parameter :: maxprocs = 32
+real*8,  parameter :: version  = -0.906
+!
+integer, parameter :: nlr      = 2                     ! left and right
+integer, parameter :: nnt      = 2                     ! normal and transpose
+integer, parameter :: nfbase   = 1000                  ! base index number for file name during td evolution
+!
+! constants
+! 
+integer, parameter :: ndimbig  = 4096                  ! a z-matrix of dimension (4096x4096) cost 250MB memory
+!
+complex*16, parameter :: cunity = (1.d0, 0.d0), czero = (0.d0, 0.d0), eye = (0.d0, 1.d0)
+!
+!real*8, parameter :: hbar = 0.65822d0                  ! eV * fs
+real*8, parameter :: hbar = 0.658211928d0              ! eV * fs (changed to this value from ver=-0.887) 
+real*8, parameter :: pi = 3.141592653589793238d0
+real*8, parameter :: jconst = 1.602177d5               !    -> nA
+real*8, parameter :: tconst = 1.1603d4                 ! eV -> Kelvin
+real*8, parameter :: dijconst = 38.7405d0              ! unit conversion constant for electronic and heat current
+                                                       ! e-current -> to nA, heat-current -> to pW
+real*8, parameter :: dpico = 1.d-12, dnano = 1.d-9,   &
+                     micron = 1.d-6, dmicro = 1.d-3,  &
+                     dfemto = 1.d-15, datto = 1.d-18
+real*8, parameter :: dsmall = 1.d-32                   ! a tight criterion to judge whether a number is zero 
+real*8, parameter :: dlarge = 1.d20                    ! a large number
+real*8, parameter :: memmax = 2048.d0                  ! shreshold memory for rho (MB), obsolete!? (need to check)
+real*8, parameter :: qe0 = 0.1602177d0
+!
+real*8 :: dsgn(maxsgn)
+data dsgn   / 1.d0, -1.d0 / 
+!
+integer, parameter :: ngl8 = 8                         ! number of Gauss-Legendre quadratures
+real*8 :: dzgl(ngl8), dwgl(ngl8)                       ! abscissas and weights of Gauss-Legendre quad.
+data dzgl   /                &
+             -0.96028986d0,  &
+             -0.79666648d0,  &
+             -0.52553241d0,  &
+             -0.18343464d0,  &
+              0.18343464d0,  &
+              0.52553241d0,  &
+              0.79666648d0,  &
+              0.96028986d0 /
+data dwgl   /                &
+              0.10122854d0,  &
+              0.22238103d0,  &
+              0.31370665d0,  &
+              0.36268378d0,  &
+              0.36268378d0,  &
+              0.31370665d0,  &
+              0.22238103d0,  &
+              0.10122854d0 /
+!
+! itype_fff = 1
+!
+integer, parameter :: nfff1 = 5                        ! number of generalized Fano functions in FFF scheme 1
+real*8,  parameter :: rfff1 = 1.d3                     ! the ratio of reference temperature T0 over real temperature T 
+integer            :: mpfff1(nfff1)                    ! maximal power of monomial in the decomposed C(t) in FFF scheme 1
+real*8             :: afff1(nfff1), bfff1(nfff1)       ! parameters {a} and {b} in FFF scheme 1
+data mpfff1 / 0, 0, 1, 1, 2 /                          ! in ascending order
+data afff1  / 3.2467d2, 6.80936d1, 8.7113d0, 7.84033d-1, 1.96713d0 /               ! mind the order
+data bfff1  / -0.649708d0, -0.521708d0, -0.630721d0, -0.826501d0, -0.813539d0 /    ! mind the order
+!
+! itype_fff = 2
+!
+integer, parameter :: nfff2 = 3                        ! number of generalized Fano functions in FFF scheme 2
+real*8,  parameter :: rfff2 = 1.d2                     ! the ratio of reference temperature T0 over real temperature T
+integer            :: mpfff2(nfff2)                    ! maximal power of monomial in the decomposed C(t) in FFF scheme 2
+real*8             :: afff2(nfff2), bfff2(nfff2)       ! parameters {a} and {b} in FFF scheme 2
+data mpfff2 / 0, 1, 2 /                                ! in ascending order
+data afff2  / 7.75799d0, 2.12761d1, 6.14312d-1 /       ! mind the order
+data bfff2  / -0.773664d0, -0.821955d0, -0.771697d0 /  ! mind the order
+!
+! itype_fff = 3
+!
+integer, parameter :: nfff3 = 5                        ! number of generalized Fano functions in FFF scheme 3
+real*8,  parameter :: rfff3 = 1.d3                     ! the ratio of reference temperature T0 over real temperature T
+integer            :: mpfff3(nfff3)                    ! maximal power of monomial in the decomposed C(t) in FFF scheme 3
+real*8             :: afff3(nfff3), bfff3(nfff3)       ! parameters {a} and {b} in FFF scheme 3
+data mpfff3 / 0, 1, 1, 1, 2 /                          ! in ascending order
+data afff3  /2.69600d2, 2.81436d1, 2.61076d0, 7.54740d-1, 6.37650d0  /               ! mind the order
+data bfff3  /-7.79276d-1, -6.43308d-1, -8.15771d-1, -7.66179d-1, -8.00728d-1  /      ! mind the order
+!
+! Prony fittig parameters
+!
+! itype_psf = 1  (Drude model, band center at zero)
+!                (fit at T=0.001, W=5)
+!
+integer, parameter :: npsf1 = 13
+real*8,  parameter :: rpsf1 = 5.d3
+real*8,  parameter :: tpsf1 = 1.d-3                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf1(npsf1)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf1(npsf1)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf1(npsf1)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf1(npsf1)                 ! exponents,    in units of hbar
+!
+data coefr_psf1 /  2.88521722d0,                         &
+                   0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 0.d0,   &
+                   0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 0.d0  /   
+data coefi_psf1 /  0.d0,                                 &
+                   0.27847688d0,  0.51925732d0,          &
+                   1.82497251d0, -1.76381958d0,          &
+                  -0.47827150d0, -0.20390517d0,          &
+                  -0.09393104d0, -0.04419125d0,          &
+                  -0.02113220d0, -0.01025267d0,          &
+                  -0.00474389d0, -0.00245954d0   /
+data gamar_psf1 / -7.59633757d0,                         &
+                  -98.69974400d0, -28.60409852d0,        &
+                  -11.51908724d0,  -5.08266212d0,        &
+                   -2.33430481d0,  -1.08976293d0,        &
+                   -0.51142184d0,  -0.23962256d0,        &
+                   -0.11063748d0,  -0.04843940d0,        &
+                   -0.01863520d0,  -0.00486813d0  /
+data gamai_psf1 /  0.d0,                                 &
+                   0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 0.d0,   &
+                   0.d0, 0.d0, 0.d0, 0.d0, 0.d0, 0.d0  /   
+!
+integer, parameter :: npsf2 = 8                                                                                  
+real*8,  parameter :: rpsf2 = 5.d2                                                                               
+real*8,  parameter :: tpsf2 = 1.d-2                     ! reference temperature, in unit of eV/meV               
+real*8             :: coefr_psf2(npsf2)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf2(npsf2)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf2(npsf2)                 ! exponents,    in units of hbar                         
+real*8             :: gamai_psf2(npsf2)                 ! exponents,    in units of hbar                         
+!                                                                                                                
+data coefr_psf2 /  2.88521722d0,                         &                                                       
+                   0.d0, 0.d0, 0.d0, 0.d0,               &                                                                   
+                   0.d0, 0.d0, 0.d0  /                                                                           
+data coefi_psf2 /  0.d0,                                 &                                                       
+                   0.45722043d0,  1.81852823d0,          &                                                       
+                  -1.69796577d0, -0.38368247d0,          &                                                       
+                  -0.12662517d0, -0.04350028d0,          &                                                       
+                  -0.02378595d0   /                                                                              
+data gamar_psf2 / -7.59633757d0,                         &                                                       
+                  -70.46292459d0, -14.13285711d0,        &                                                       
+                   -4.26673674d0,  -1.42868738d0,        &                                                       
+                   -0.49285404d0,  -0.17365936d0,        &                                                       
+                   -0.04817485d0  /                                                                              
+data gamai_psf2 /  0.d0,                                 &                                                       
+                   0.d0, 0.d0, 0.d0, 0.d0,               &                                                       
+                   0.d0, 0.d0, 0.d0  /                                                                           
+!                                                                                                                
+integer, parameter :: npsf3 = 8                                                                                  
+real*8,  parameter :: rpsf3 = 2.5d2                                                                              
+real*8,  parameter :: tpsf3 = 2.d-2                     ! reference temperature, in unit of eV/meV               
+real*8             :: coefr_psf3(npsf3)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf3(npsf3)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf3(npsf3)                 ! exponents,    in units of hbar                         
+real*8             :: gamai_psf3(npsf3)                 ! exponents,    in units of hbar                         
+!                                                                                                                
+data coefr_psf3 /  2.88521722d0,                         &                                                       
+                   0.d0, 0.d0, 0.d0, 0.d0,               &                                                                   
+                   0.d0, 0.d0, 0.d0  /                                                                           
+data coefi_psf3 /  0.d0,                                 &                                                       
+                   0.49912384d0,  1.81952306d0,          &                                                       
+                  -1.70572446d0, -0.39681516d0,          &                                                       
+                  -0.13084962d0, -0.04027967d0,          &                                                       
+                  -0.04505894d0   /                                                                              
+data gamar_psf3 / -7.59633757d0,                         &                                                       
+                  -62.88117044d0, -13.70514924d0,        &                                                       
+                   -4.37978450d0,  -1.54143220d0,        &                                                       
+                   -0.57189879d0,  -0.26059543d0,        &                                                       
+                   -0.09477331d0  /                                                                              
+data gamai_psf3 /  0.d0,                                 &                                                       
+                   0.d0, 0.d0, 0.d0, 0.d0,               &                                                       
+                   0.d0, 0.d0, 0.d0  /                                                                           
+!                                                                                                              
+integer, parameter :: npsf4 = 19                                                                                  
+real*8,  parameter :: rpsf4 = 0.78125d4                                                                              
+real*8,  parameter :: tpsf4 = 6.4d-4                     ! reference temperature, in unit of eV/meV               
+real*8             :: coefr_psf4(npsf4)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf4(npsf4)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf4(npsf4)                 ! exponents,    in units of hbar                         
+real*8             :: gamai_psf4(npsf4)                 ! exponents,    in units of hbar                         
+!                                                                                                                
+data coefr_psf4 /  2.88521722d0,                         &                                                       
+                   0.d0, 0.d0, 0.d0, 0.d0,               &
+                   0.d0, 0.d0, 0.d0, 0.d0,               &
+                   0.d0, 0.d0, 0.d0, 0.d0,               &
+                   0.d0, 0.d0, 0.d0, 0.d0,               &
+                   0.d0, 0.d0  /                                                                                             
+data coefi_psf4 /  0.d0,                                 &                                                       
+                   0.16735306d0,  0.17490569d0,          &                                                       
+                   0.29624009d0,  0.57061149d0,          &                                                       
+                   1.83140958d0, -1.80525375d0,          &                                                       
+                  -0.54879926d0, -0.28037289d0,          &
+		  -0.16102915d0, -0.09622180d0,          &
+                  -0.05843111d0, -0.03582351d0,          &
+  		  -0.02219390d0, -0.01391766d0,          &
+   		  -0.00874943d0, -0.00530660d0,          &
+   		  -0.00284447d0, -0.00157640d0  /                                                                              
+data gamar_psf4 / -7.59633757d0,                         &                                                       
+                  -143.45370018d0, -56.59595513d0,       &                                                       
+                   -29.94805398d0, -16.91421530d0,       &                                                       
+                    -9.86751427d0,  -5.87016210d0,       &                                                       
+                    -3.53441722d0,  -2.14310884d0,       &
+		    -1.30432503d0,  -0.79496081d0,       &
+                    -0.48418472d0,  -0.29373378d0,	 &
+		    -0.17623587d0,  -0.10298093d0,	 &
+		    -0.05690281d0,  -0.02826615d0,	 &
+		    -0.01169816d0,  -0.00312290d0 /                                                                              
+data gamai_psf4 /  0.d0,                                 &                                                       
+                   0.d0, 0.d0, 0.d0, 0.d0,               &                                                       
+                   0.d0, 0.d0, 0.d0, 0.d0,               &
+		   0.d0, 0.d0, 0.d0, 0.d0,               &
+		   0.d0, 0.d0, 0.d0, 0.d0,               &
+		   0.d0, 0.d0  /
+!
+integer, parameter :: npsf5 = 9
+real*8,  parameter :: rpsf5 = 1.d3
+real*8,  parameter :: tpsf5 = 5.d-3                    ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf5(npsf5)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf5(npsf5)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf5(npsf5)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf5(npsf5)                 ! exponents,    in units of hbar
+!
+data coefr_psf5 /  2.88521722d0,                         &
+                   0.d0, 0.d0, 0.d0, 0.d0,               &
+                   0.d0, 0.d0, 0.d0, 0.d0 /
+data coefi_psf5 /  0.d0,                                 &
+		   0.49906524d0,  1.81932558d0,		 &
+		  -1.70628045d0, -0.39837766d0,		 &
+		  -0.13640471d0, -0.04842918d0,		 &
+		  -0.01742146d0, -0.01155822d0 /
+data gamar_psf5 / -7.59633757d0,                         &
+		 -62.88724288d0, -13.70645705d0,	 &
+		  -4.37843639d0,  -1.53566185d0,	 &
+		  -0.55339300d0,  -0.20281838d0,	 &
+		  -0.07854372d0,  -0.02384690d0 /
+data gamai_psf5 /  0.d0,                                 &
+                   0.d0, 0.d0, 0.d0, 0.d0,               &
+                   0.d0, 0.d0, 0.d0, 0.d0 /       
+!
+integer, parameter :: npsf6 = 12
+real*8,  parameter :: rpsf6 = 2.d3
+real*8,  parameter :: tpsf6 = 2.5d-3                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf6(npsf6)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf6(npsf6)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf6(npsf6)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf6(npsf6)                 ! exponents,    in units of hbar
+!
+data coefr_psf6 /  2.88521722d0,                         &
+                   0.d0, 0.d0, 0.d0, 0.d0,               &
+                   0.d0, 0.d0, 0.d0, 0.d0,               &
+                   0.d0, 0.d0, 0.d0  /
+data coefi_psf6 /  0.d0,                                 &
+		   0.25569258d0,  0.50639871d0,		 &
+		   1.82193261d0, -1.75839242d0,		 &
+		  -0.46960600d0, -0.19538291d0,		 &
+		  -0.08754147d0, -0.03988707d0,		 &
+		  -0.01843945d0, -0.00884345d0,		 &
+		  -0.00593001d0 /
+data gamar_psf6 / -7.59633757d0,                         &
+		-107.26399842d0, -30.35612803d0,	 &
+		 -11.72986092d0,  -4.99832314d0,	 &
+		  -2.22498909d0,  -1.00786589d0,	 &
+		  -0.45915726d0,  -0.20918065d0,	 &
+		  -0.09442367d0,  -0.04080139d0,	 &
+		  -0.01205674d0 /
+data gamai_psf6 /  0.d0,                                 &
+                   0.d0, 0.d0, 0.d0, 0.d0,               &
+                   0.d0, 0.d0, 0.d0, 0.d0,               &
+                   0.d0, 0.d0, 0.d0  /     
+!
+integer, parameter :: npsf7 = 12
+real*8,  parameter :: rpsf7 = 2.5d3
+real*8,  parameter :: tpsf7 = 2.d-3                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf7(npsf7)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf7(npsf7)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf7(npsf7)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf7(npsf7)                 ! exponents,    in units of hbar
+!
+data coefr_psf7 /  2.88521722d0,                         &
+                   0.d0, 0.d0, 0.d0, 0.d0,               &
+                   0.d0, 0.d0, 0.d0, 0.d0,               &
+                   0.d0, 0.d0, 0.d0  /
+data coefi_psf7 /  0.d0,                                 &
+		   0.24454351d0,  0.50103657d0,		 &
+		   1.82111822d0, -1.75583380d0,		 &
+		  -0.46551440d0, -0.19160499d0,		 &
+		  -0.08479087d0, -0.03820204d0,		 &
+		  -0.01756663d0, -0.00827747d0,		 &
+		  -0.00490698d0 /
+data gamar_psf7 / -7.59633757d0,                         &
+		 -112.42434556d0, -31.26560738d0,	 &
+		  -11.83012736d0,  -4.95995776d0,	 &
+		   -2.17666802d0,  -0.97242697d0,	 &
+		   -0.43679108d0,  -0.19585438d0,	 &
+		   -0.08627014d0,  -0.03535016d0,	 &
+		   -0.00979937d0 /
+data gamai_psf7 /  0.d0,                                 &
+                   0.d0, 0.d0, 0.d0, 0.d0,               &
+                   0.d0, 0.d0, 0.d0, 0.d0,               &
+                   0.d0, 0.d0, 0.d0  /
+!  
+integer, parameter :: npsf8 = 8
+real*8,  parameter :: rpsf8 = 2.d2
+real*8,  parameter :: tpsf8 = 2.5d-2                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf8(npsf8)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf8(npsf8)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf8(npsf8)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf8(npsf8)                 ! exponents,    in units of hbar
+!
+data coefr_psf8 /  2.88521722d0,                         &
+                   0.d0, 0.d0, 0.d0, 0.d0,               &
+                   0.d0, 0.d0, 0.d0  /
+data coefi_psf8 /  0.d0,                                 &
+		   0.50004821d0,  1.81944569d0,		 &
+		  -1.70644843d0, -0.39850185d0,		 &
+		  -0.13561181d0, -0.02413266d0,		 &
+		  -0.05487685d0 /
+data gamar_psf8 / -7.59633757d0,                         &
+		 -62.70342754d0, -13.69643432d0,	 &
+		  -4.38127083d0,  -1.53904285d0,	 &
+		  -0.55735898d0,  -0.25549917d0,	 &
+		  -0.11784504d0 /
+data gamai_psf8 /  0.d0,                                 &
+                   0.d0, 0.d0, 0.d0, 0.d0,               &
+                   0.d0, 0.d0, 0.d0  /                                                             
+!
+integer, parameter :: npsf9 = 8
+real*8,  parameter :: rpsf9 = 2.08333333d2
+real*8,  parameter :: tpsf9 = 2.4d-2                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf9(npsf9)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf9(npsf9)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf9(npsf9)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf9(npsf9)                 ! exponents,    in units of hbar
+!
+data coefr_psf9 /  2.88521722d0,                         &
+                   0.d0, 0.d0, 0.d0, 0.d0,               &
+                   0.d0, 0.d0, 0.d0  /
+data coefi_psf9 /  0.d0,                                 &
+		   0.49908264d0, 1.81938436d0,		 &
+		  -1.70611554d0,-0.39791659d0,		 &
+		  -0.13404030d0,-0.02741980d0,		 &
+		  -0.05305567d0 /
+data gamar_psf9 / -7.59633757d0,                         &
+		 -62.88543687d0, -13.70606812d0,	 &
+		  -4.37883703d0,  -1.53737104d0,	 &
+		  -0.55935050d0,  -0.26079022d0,	 &
+		  -0.11328055d0 /
+data gamai_psf9 /  0.d0,                                 &
+                   0.d0, 0.d0, 0.d0, 0.d0,               &
+                   0.d0, 0.d0, 0.d0  /
+!
+integer, parameter :: npsf10 = 8
+real*8,  parameter :: rpsf10 = 2.27272728d2
+real*8,  parameter :: tpsf10 = 2.2d-2                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf10(npsf10)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf10(npsf10)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf10(npsf10)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf10(npsf10)                 ! exponents,    in units of hbar
+!
+data coefr_psf10 /  2.88521722d0,                         &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0  /
+data coefi_psf10 /  0.d0,                                 &
+		    0.49910549d0, 1.81946170d0,		  &
+		   -1.70589743d0,-0.39728272d0,		  &
+		   -0.13168881d0,-0.03459830d0,		  &
+		   -0.04918084d0 /
+data gamar_psf10 / -7.59633757d0,                         &
+		 -62.88306433d0, -13.70555704d0, 	  &
+		  -4.37936470d0,  -1.53965589d0,	  &
+		  -0.56704161d0,  -0.26555715d0,	  &
+		  -0.10407528d0 /
+data gamai_psf10 /  0.d0,                                 &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0  /
+!
+integer, parameter :: npsf11 = 8
+real*8,  parameter :: rpsf11 = 2.77777778d2
+real*8,  parameter :: tpsf11 = 1.8d-2                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf11(npsf11)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf11(npsf11)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf11(npsf11)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf11(npsf11)                 ! exponents,    in units of hbar
+!
+data coefr_psf11 /  2.88521722d0,                         &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0  /
+data coefi_psf11 /  0.d0,                                 &
+		    0.49912905d0, 1.81954060d0,		  &
+		   -1.70567678d0,-0.39671772d0,		  &
+		   -0.13141771d0,-0.04411268d0,		  &
+		   -0.040825706 /
+data gamar_psf11 / -7.59633757d0,                         &
+		  -62.8806296d0, -13.7050329d0,		  &
+		   -4.3799030d0,  -1.5418933d0,		  &
+		   -0.5722019d0,  -0.2494008d0,		  &
+		   -0.0854274d0 /
+data gamai_psf11 /  0.d0,                                 &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0  /
+
+!
+integer, parameter :: npsf12 = 8
+real*8,  parameter :: rpsf12 = 3.125d2
+real*8,  parameter :: tpsf12 = 1.6d-2                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf12(npsf12)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf12(npsf12)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf12(npsf12)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf12(npsf12)                 ! exponents,    in units of hbar
+!
+data coefr_psf12 /  2.88521722d0,                         &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0  /
+data coefi_psf12 /  0.d0,                                 &
+		    0.4991168d0, 1.8195038d0,		  &
+		   -1.7057909d0,-0.3970413d0,		  &
+		   -0.1328534d0,-0.0464630d0,		  &
+		   -0.0365530d0 /
+data gamar_psf12 / -7.59633757d0,                         &
+		  -62.8818264d0, -13.7052908d0,		  &
+		   -4.3796365d0,  -1.5407301d0,		  &
+		   -0.5680454d0,  -0.2345805d0,		  &
+		   -0.0760699d0 /
+data gamai_psf12 /  0.d0,                                 &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0  /
+!
+integer, parameter :: npsf13 = 8
+real*8,  parameter :: rpsf13 = 3.5714286d2
+real*8,  parameter :: tpsf13 = 1.4d-2                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf13(npsf13)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf13(npsf13)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf13(npsf13)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf13(npsf13)                 ! exponents,    in units of hbar
+!
+data coefr_psf13 /  2.88521722d0,                         &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0  /
+data coefi_psf13 /  0.d0,                                 &
+		    0.49909265d0,  1.81942413d0,	  &
+		   -1.70601782d0, -0.39765613d0,	  &
+		   -0.13460991d0, -0.04798915d0,	  &
+		   -0.03232471d0 /
+data gamar_psf13 / -7.59633757d0,                         &
+		  -62.88430112d0, -13.70582366d0,	  &
+		   -4.37908786d0,  -1.53840448d0,	  &
+		   -0.56115473d0,  -0.21840930d0,	  &
+		   -0.06675182d0 /
+data gamai_psf13 /  0.d0,                                 &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0  /
+
+!
+integer, parameter :: npsf14 = 8
+real*8,  parameter :: rpsf14 = 4.16666667d2
+real*8,  parameter :: tpsf14 = 1.2d-2                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf14(npsf14)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf14(npsf14)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf14(npsf14)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf14(npsf14)                 ! exponents,    in units of hbar
+!
+data coefr_psf14 /  2.88521722d0,                         &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0  /
+data coefi_psf14 /  0.d0,                                 &
+		    0.49486462d0,  1.81956805d0,	  &
+		   -1.70562012d0, -0.39675093d0,	  &
+		   -0.13511377d0, -0.04865888d0,	  &
+		   -0.02833281d0 /
+data gamar_psf14 / -7.59633757d0,                         &
+		  -63.57207287d0, -13.74572501d0,	  &
+		   -4.36789355d0,  -1.52579643d0,	  &
+		   -0.54902756d0,  -0.20224954d0,	  &
+		   -0.05767030d0 /
+data gamai_psf14 /  0.d0,                                 &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0  /
+
+!
+integer, parameter :: npsf15 = 8
+real*8,  parameter :: rpsf15 = 0.55555556d3
+real*8,  parameter :: tpsf15 = 9.0d-3                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf15(npsf15)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf15(npsf15)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf15(npsf15)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf15(npsf15)                 ! exponents,    in units of hbar
+!
+data coefr_psf15 /  2.88521722d0,                         &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0  /
+data coefi_psf15 /  0.d0,                                 &
+		    0.43645672d0,  1.81699350d0,	  &
+		   -1.69253708d0, -0.37652261d0,	  &
+		   -0.12181101d0, -0.04081254d0,	  &
+		   -0.02151026d0 /
+data gamar_psf15 / -7.59633757d0,                         &
+		  -75.09939100d0, -14.36650422d0,	  &
+		   -4.20951116d0,  -1.37586233d0,	  &
+		   -0.46336935d0,  -0.15917906d0,	  &
+		   -0.04343036d0 /
+data gamai_psf15 /  0.d0,                                 &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0  /
+!
+integer, parameter :: npsf16 = 9
+real*8,  parameter :: rpsf16 = 0.625d3
+real*8,  parameter :: tpsf16 = 8.0d-3                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf16(npsf16)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf16(npsf16)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf16(npsf16)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf16(npsf16)                 ! exponents,    in units of hbar
+!
+data coefr_psf16 /  2.88521722d0,                         &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+data coefi_psf16 /  0.d0,                                 &
+		    0.49906627d0,  1.81933301d0,	  &
+		   -1.70626807d0, -0.39833047d0,	  &
+		   -0.13626855d0, -0.04737033d0,	  &
+		   -0.01239497d0, -0.01784780d0 /
+data gamar_psf16 / -7.59633757d0,                         &
+		  -62.88707255d0, -13.70642037d0,	  &
+		   -4.37847417d0,  -1.53582270d0,	  &
+		   -0.55389016d0,  -0.20499776d0,	  &
+		   -0.09593986d0,  -0.03782208d0 /
+data gamai_psf16 /  0.d0,                                 &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+!
+integer, parameter :: npsf17 = 9
+real*8,  parameter :: rpsf17 = 0.71428571d3
+real*8,  parameter :: tpsf17 = 7.0d-3                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf17(npsf17)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf17(npsf17)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf17(npsf17)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf17(npsf17)                 ! exponents,    in units of hbar
+!
+data coefr_psf17 /  2.88521722d0,                         &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+data coefi_psf17 /  0.d0,                                 &
+		    0.49906889d0,  1.81934369d0,	  &
+		   -1.70624211d0, -0.39825455d0,	  &
+		   -0.13606880d0, -0.04706579d0,	  &
+		   -0.01508361d0, -0.01577864d0 /
+data gamar_psf17 / -7.59633757d0,                         &
+		  -62.88677107d0, -13.70635545d0,	  &
+		   -4.37854097d0,  -1.53610469d0,	  &
+		   -0.55470768d0,  -0.20706217d0,	  &
+		   -0.09297510d0,  -0.03316544d0 /
+data gamai_psf17 /  0.d0,                                 &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+!
+integer, parameter :: npsf18 = 12
+real*8,  parameter :: rpsf18 = 0.83333333d3
+real*8,  parameter :: tpsf18 = 6.0d-3                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf18(npsf18)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf18(npsf18)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf18(npsf18)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf18(npsf18)                 ! exponents,    in units of hbar
+!
+data coefr_psf18 /  2.88521722d0,                         &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+		    0.d0, 0.d0, 0.d0, 0.d0, 		  &
+                    0.d0, 0.d0, 0.d0  /
+data coefi_psf18 /  0.d0,                                 &
+		    0.279697618d0,    0.519720462d0,	  &
+		    1.825076099d0,   -1.764011239d0,	  &
+		   -0.478559486d0,   -0.204074386d0,	  &
+		   -0.093766306d0,   -0.043304612d0,	  &
+		   -0.016902436d0,   -0.010062148d0,	  &
+		   -0.013813681d0 /
+data gamar_psf18 / -7.59633757d0,                         &
+		   -98.158799791d0,   -28.523562710d0,	  &
+		   -11.509614988d0,   -5.086564178d0,	  &
+		   -2.339735478d0,    -1.094641960d0,	  &
+		   -0.516292902d0,    -0.246444787d0,	  &
+		   -0.126118349d0,    -0.081093189d0,	  &
+		   -0.028618993d0 /
+data gamai_psf18 /  0.d0,                                 &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+		    0.d0, 0.d0, 0.d0, 0.d0,		  &
+                    0.d0, 0.d0, 0.d0  /
+!
+integer, parameter :: npsf19 = 9
+real*8,  parameter :: rpsf19 = 1.11111111d3
+real*8,  parameter :: tpsf19 = 4.5d-3                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf19(npsf19)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf19(npsf19)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf19(npsf19)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf19(npsf19)                 ! exponents,    in units of hbar
+!
+data coefr_psf19 /  2.88521722d0,                         &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+data coefi_psf19 /  0.d0,                                 &
+		    0.49906270d0,   1.81931895d0,	  &
+		   -1.70630308d0,  -0.39843296d0,	  &
+		   -0.13656169d0,  -0.04882840d0,	  &
+		   -0.01776585d0,  -0.01057055d0 /
+data gamar_psf19 / -7.59633757d0,                         &
+		  -62.88747517d0, -13.70650707d0,	  &
+		   -4.37838493d0,  -1.53544462d0,	  &
+		   -0.55276346d0,  -0.20110296d0,	  &
+		   -0.07483706d0,  -0.02158220d0 /
+data gamai_psf19 /  0.d0,                                 &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+!
+integer, parameter :: npsf20 = 9
+real*8,  parameter :: rpsf20 = 1.25d3
+real*8,  parameter :: tpsf20 = 4.0d-3                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf20(npsf20)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf20(npsf20)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf20(npsf20)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf20(npsf20)                 ! exponents,    in units of hbar
+!
+data coefr_psf20 /  2.88521722d0,                         &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+data coefi_psf20 /  0.d0,                                 &
+		    0.49137392d0,   1.81965741d0,	  &
+		   -1.70518400d0,  -0.39577317d0,	  &
+		   -0.13498171d0,  -0.04796393d0,	  &
+		   -0.01752974d0,  -0.00961393d0 /
+data gamar_psf20 / -7.59633757d0,                         &
+		  -64.15065389d0, -13.77918580d0,	  &
+		   -4.35870195d0,  -1.51607729d0,	  &
+		   -0.54124581d0,  -0.19471393d0,	  &
+		   -0.07038407d0,  -0.01937139d0 /
+data gamai_psf20 /  0.d0,                                 &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+!
+integer, parameter :: npsf21 = 9
+real*8,  parameter :: rpsf21 = 1.42857143d3
+real*8,  parameter :: tpsf21 = 3.5d-3                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf21(npsf21)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf21(npsf21)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf21(npsf21)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf21(npsf21)                 ! exponents,    in units of hbar
+!
+data coefr_psf21 /  2.88521722d0,                         &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+data coefi_psf21 /  0.d0,                                 &
+		    0.47416372d0,   1.81949182d0,	  &
+		   -1.70196594d0,  -0.38975617d0,	  &
+		   -0.13110913d0,  -0.04569682d0,	  &
+		   -0.01648283d0,  -0.00854057d0 /
+data gamar_psf21 / -7.59633757d0,                         &
+		  -67.16875997d0, -13.95169945d0,	  &
+		   -4.31299672d0,  -1.47190375d0,	  &
+		   -0.51573426d0,  -0.18187116d0,	  &
+		   -0.06396538d0,  -0.01706443d0 /
+data gamai_psf21 /  0.d0,                                 &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+!
+integer, parameter :: npsf22 = 12
+real*8,  parameter :: rpsf22 = 1.66666667d3
+real*8,  parameter :: tpsf22 = 3.0d-3                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf22(npsf22)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf22(npsf22)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf22(npsf22)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf22(npsf22)                 ! exponents,    in units of hbar
+!
+data coefr_psf22 /  2.88521722d0,                         &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+		    0.d0, 0.d0, 0.d0, 0.d0,		  &
+                    0.d0, 0.d0, 0.d0  /
+data coefi_psf22 /  0.d0,                                 &
+		    0.263573055d0,    0.510749966d0,	  &
+		    1.822753765d0,   -1.760225331d0,	  &
+		   -0.472610132d0,   -0.198211808d0,	  &
+		   -0.089602874d0,   -0.041119435d0,	  &
+		   -0.018992356d0,   -0.009316550d0,	  &
+		   -0.006997329d0 /
+data gamar_psf22 / -7.59633757d0,                         &
+		   -104.030092211d0,  -29.727941421d0,	  &
+		   -11.656737063d0,   -5.027046062d0,	  &
+		   -2.261791848d0,   -1.035282097d0,	  &
+		   -0.476809852d0,   -0.220108742d0,	  &
+		   -0.101753268d0,   -0.046369954d0,	  &
+		   -0.014368788d0 /
+data gamai_psf22 /  0.d0,                                 &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0  /
+!
+integer, parameter :: npsf23 = 12
+real*8,  parameter :: rpsf23 = 2.0d3
+real*8,  parameter :: tpsf23 = 2.5d-3                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf23(npsf23)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf23(npsf23)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf23(npsf23)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf23(npsf23)                 ! exponents,    in units of hbar
+!
+data coefr_psf23 /  2.88521722d0,                         &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,		  &
+		    0.d0, 0.d0, 0.d0  /
+data coefi_psf23 /  0.d0,                                 &
+		    0.25552865d0,   0.50651492d0,	  &
+		    1.82195831d0,  -1.75837549d0,	  &
+		   -0.46960445d0,  -0.19537982d0,	  &
+		   -0.08754149d0,  -0.03988659d0,	  &
+		   -0.01843947d0,  -0.00884341d0,	  &
+		   -0.00593001d0 /
+data gamar_psf23 / -7.59633757d0,                         &
+		 -107.43964610d0,  -30.36205916d0,	  &
+		  -11.73004795d0,   -4.99829518d0,	  &
+		   -2.22497225d0,   -1.00785926d0,	  &
+		   -0.45915492d0,   -0.20917992d0,	  &
+		   -0.09442347d0,   -0.04080136d0,	  &
+		   -0.01205674d0 /
+data gamai_psf23 /  0.d0,                                 &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,		  &
+		    0.d0, 0.d0, 0.d0  /
+!
+integer, parameter :: npsf24 = 13
+real*8,  parameter :: rpsf24 = 2.77777778d3
+real*8,  parameter :: tpsf24 = 1.8d-3                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf24(npsf24)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf24(npsf24)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf24(npsf24)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf24(npsf24)                 ! exponents,    in units of hbar
+!
+data coefr_psf24 /  2.88521722d0,                         &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+data coefi_psf24 /  0.d0,                                 &
+		    0.27847682d0,    0.51925749d0,	  &
+		    1.82497282d0,   -1.76381874d0,	  &
+		   -0.47826998d0,   -0.20390172d0,	  &
+		   -0.09392426d0,   -0.04417745d0,	  &
+		   -0.02110136d0,   -0.01007248d0,	  &
+		   -0.00371692d0,   -0.00372433d0 /
+data gamar_psf24 / -7.59633757d0,                         &
+		  -98.69981224d0, -28.60409858d0,	  &
+		  -11.51908599d0,  -5.08266388d0,	  &
+		   -2.33431198d0,  -1.08978029d0,	  &
+		   -0.51145972d0,  -0.23970165d0,	  &
+		   -0.11080042d0,  -0.04892450d0,	  &
+		   -0.02155654d0,  -0.00821481d0 /
+data gamai_psf24 /  0.d0,                                 &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+!
+integer, parameter :: npsf25 = 13
+real*8,  parameter :: rpsf25 = 3.125d3
+real*8,  parameter :: tpsf25 = 1.6d-3                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf25(npsf25)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf25(npsf25)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf25(npsf25)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf25(npsf25)                 ! exponents,    in units of hbar
+!
+data coefr_psf25 /  2.88521722d0,                         &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+data coefi_psf25 /  0.d0,                                 &
+		    0.27847683d0,   0.51925754d0,	  &
+		    1.82497293d0,  -1.76381849d0,	  &
+		   -0.47826946d0,  -0.20390061d0,	  &
+		   -0.09392191d0,  -0.04417222d0,	  &
+		   -0.02108970d0,  -0.01007537d0,	  &
+		   -0.00408759d0,  -0.00337208d0 /
+data gamar_psf25 / -7.59633757d0,                         &
+		  -98.69980775d0,  -28.60409656d0,	  &
+		  -11.51908537d0,   -5.08266454d0,	  &
+		   -2.33431444d0,   -1.08978609d0,	  &
+		   -0.51147240d0,   -0.23972921d0,	  &
+		   -0.11086153d0,   -0.04903222d0,	  &
+		   -0.02099355d0,   -0.00731837d0 /
+data gamai_psf25 /  0.d0,                                 &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+!
+integer, parameter :: npsf26 = 13
+real*8,  parameter :: rpsf26 = 3.57142857d3
+real*8,  parameter :: tpsf26 = 1.4d-3                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf26(npsf26)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf26(npsf26)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf26(npsf26)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf26(npsf26)                 ! exponents,    in units of hbar
+!
+data coefr_psf26 /  2.88521722d0,                         &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+data coefi_psf26 /  0.d0,                                 &
+		    0.27847683d0,   0.51925752d0,	  &
+		    1.82497290d0,  -1.76381857d0,	  &
+		   -0.47826960d0,  -0.20390094d0,	  &
+		   -0.09392253d0,  -0.04417346d0,	  &
+		   -0.02109361d0,  -0.01012175d0,	  &
+		   -0.00437235d0,  -0.00303457d0 /
+data gamar_psf26 / -7.59633757d0,                         &
+		  -98.69980892d0,  -28.60409714d0,	  &
+		  -11.51908555d0,   -5.08266435d0,	  &
+		   -2.33431373d0,   -1.08978442d0,	  &
+		   -0.51146881d0,   -0.23972188d0,	  &
+		   -0.11084566d0,   -0.04894789d0,	  &
+		   -0.02022842d0,   -0.00644733d0 /
+data gamai_psf26 /  0.d0,                                 &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+!
+integer, parameter :: npsf27 = 13
+real*8,  parameter :: rpsf27 = 4.16666667d3
+real*8,  parameter :: tpsf27 = 1.2d-3                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf27(npsf27)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf27(npsf27)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf27(npsf27)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf27(npsf27)                 ! exponents,    in units of hbar
+!
+data coefr_psf27 /  2.88521722d0,                         &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+data coefi_psf27 /  0.d0,                                 &
+		    0.27847681d0,    0.51925744d0,	  &
+		    1.82497275d0,   -1.76381896d0,	  &
+		   -0.47827033d0,   -0.20390258d0,	  &
+		   -0.09392584d0,   -0.04418041d0,	  &
+		   -0.02110945d0,   -0.01018627d0,	  &
+		   -0.00458624d0,   -0.00272704d0 /
+data gamar_psf27 / -7.59633757d0,                         &
+		  -98.69981608d0,  -28.60410014d0,	  &
+		  -11.51908646d0,   -5.08266338d0,	  &
+		   -2.33431012d0,   -1.08977595d0,	  &
+		   -0.51145044d0,   -0.23968312d0,	  &
+		   -0.11076354d0,   -0.04872919d0,	  &
+		   -0.01941174d0,   -0.00562298d0 /
+data gamai_psf27 /  0.d0,                                 &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+!
+integer, parameter :: npsf28 = 13
+real*8,  parameter :: rpsf28 = 0.55555556d4
+real*8,  parameter :: tpsf28 = 9.0d-4                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf28(npsf28)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf28(npsf28)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf28(npsf28)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf28(npsf28)                 ! exponents,    in units of hbar
+!
+data coefr_psf28 /  2.88521722d0,                         &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+data coefi_psf28 /  0.d0,                                 &
+		    0.27847675d0,    0.51925724d0,	  &
+		    1.82497238d0,   -1.76381991d0,	  &
+		   -0.47827213d0,   -0.20390662d0,	  &
+		   -0.09393399d0,   -0.04419742d0,	  &
+		   -0.02114461d0,   -0.01028357d0,	  &
+		   -0.00480539d0,   -0.00234286d0 /
+data gamar_psf28 / -7.59633757d0,                         &
+		  -98.69983292d0, -28.60410746d0,	  &
+		  -11.51908870d0,  -5.08266100d0,	  &
+		   -2.33430124d0,  -1.08975506d0,	  &
+		   -0.51140515d0,  -0.23958769d0,	  &
+		   -0.11056596d0,  -0.04828556d0,	  &
+		   -0.01828033d0,  -0.00452426d0 /
+data gamai_psf28 /  0.d0,                                 &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+!
+integer, parameter :: npsf29 = 13
+real*8,  parameter :: rpsf29 = 0.625d4
+real*8,  parameter :: tpsf29 = 8.0d-4                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf29(npsf29)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf29(npsf29)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf29(npsf29)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf29(npsf29)                 ! exponents,    in units of hbar
+!
+data coefr_psf29 /  2.88521722d0,                         &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+data coefi_psf29 /  0.d0,                                 &
+		    0.75466943d0,    1.85397665d0,&
+		   -1.75433212d0,   -0.47488856d0,&
+		   -0.20274357d0,   -0.09351768d0,&
+		   -0.04391300d0,   -0.02070837d0,&
+		   -0.00976778d0,   -0.00459532d0,&
+		   -0.00232339d0,   -0.00185629d0 /
+data gamar_psf29 / -7.59633757d0,                         &
+		  -35.71340498d0,  -11.66004390d0,	  &
+		   -5.06315781d0,   -2.32458849d0,	  &
+		   -1.08771522d0,   -0.51227572d0,	  &
+		   -0.24176861d0,   -0.11418906d0,	  &
+		   -0.05397903d0,   -0.02560314d0,	  &
+		   -0.01207919d0,   -0.00382450d0 /
+data gamai_psf29 /  0.d0,                                 &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+!
+integer, parameter :: npsf30 = 13
+real*8,  parameter :: rpsf30 = 0.71428571d4
+real*8,  parameter :: tpsf30 = 7.0d-4                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf30(npsf30)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf30(npsf30)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf30(npsf30)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf30(npsf30)                 ! exponents,    in units of hbar
+!
+data coefr_psf30 /  2.88521722d0,                         &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+data coefi_psf30 /  0.d0,                                 &
+		    0.75466934d0,    1.85397616d0,	  &
+		   -1.75433263d0,   -0.47489051d0,	  &
+		   -0.20274653d0,   -0.09352512d0,	  &
+		   -0.04392739d0,   -0.02073941d0,	  &
+		   -0.00982735d0,   -0.00468719d0,	  &
+		   -0.00232151d0,   -0.00164786d0 /
+data gamar_psf30 / -7.59633757d0,                         &
+		  -35.71340973d0, -11.66004548d0,	  &
+		   -5.06315593d0,  -2.32458117d0,	  &
+		   -1.08769771d0,  -0.51223749d0,	  &
+		   -0.24168713d0,  -0.11401726d0,	  &
+		   -0.05362493d0,  -0.02492876d0,	  &
+		   -0.01112980d0,  -0.00336568d0 /
+data gamai_psf30 /  0.d0,                                 &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+!
+integer, parameter :: npsf31 = 16
+real*8,  parameter :: rpsf31 = 0.83333333d4
+real*8,  parameter :: tpsf31 = 6.0d-4                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf31(npsf31)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf31(npsf31)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf31(npsf31)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf31(npsf31)                 ! exponents,    in units of hbar
+!
+data coefr_psf31 /  2.88521722d0,                         &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,		  &
+		    0.d0, 0.d0, 0.d0  /
+data coefi_psf31 /  0.d0,                                 &
+		    0.42889173d0,    0.57135846d0,	  &
+		    1.83679368d0,   -1.78618588d0,	  &
+		   -0.51919105d0,   -0.24706239d0,	  &
+		   -0.12983368d0,   -0.07021414d0,	  &
+		   -0.03833685d0,   -0.02102687d0,	  &
+		   -0.01160512d0,   -0.00647400d0,	  &
+		   -0.00364052d0,   -0.00204217d0,	  &
+		   -0.00143120d0 /
+data gamar_psf31 / -7.59633757d0,                         &
+		  -58.31964897d0, -21.45800761d0,	  &
+		  -10.55428452d0,  -5.51758671d0,	  &
+		   -2.95974779d0,  -1.60678283d0,	  &
+		   -0.87695080d0,  -0.47962692d0,	  &
+		   -0.26240684d0,  -0.14334459d0,	  &
+		   -0.07784520d0,  -0.04152775d0,	  &
+		   -0.02116982d0,  -0.00975659d0,	  &
+		   -0.00290328d0 /
+data gamai_psf31 /  0.d0,                                 &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,		  &
+		    0.d0, 0.d0, 0.d0  /
+!
+integer, parameter :: npsf32 = 15
+real*8,  parameter :: rpsf32 = 1.0d4
+real*8,  parameter :: tpsf32 = 5.0d-4                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf32(npsf32)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf32(npsf32)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf32(npsf32)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf32(npsf32)                 ! exponents,    in units of hbar
+!
+data coefr_psf32 /  2.88521722d0,                         &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,		  &
+		    0.d0, 0.d0  /
+data coefi_psf32 /  0.d0,                                 &
+		    0.34137945d0,    0.55849706d0,	  &
+		    1.83501932d0,   -1.77572471d0,	  &
+		   -0.50115990d0,   -0.22757079d0,	  &
+		   -0.11294912d0,   -0.05739425d0,	  &
+		   -0.02938556d0,   -0.01513223d0,	  &
+		   -0.00789788d0,   -0.00420342d0,	  &
+		   -0.00220551d0,   -0.00127246d0 /
+data gamar_psf32 / -7.59633757d0,                         &
+		  -79.20946018d0,  -24.65322222d0,	  &
+		  -10.98064237d0,   -5.31900997d0,	  &
+		   -2.66346295d0,   -1.35289605d0,	  &
+		   -0.69116253d0,   -0.35377698d0,	  &
+		   -0.18103839d0,   -0.09230560d0,	  &
+		   -0.04637232d0,   -0.02217248d0,	  &
+		   -0.00931933d0,   -0.00250077d0 /
+data gamai_psf32 /  0.d0,                                 &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,		  &
+		    0.d0, 0.d0  /
+!
+integer, parameter :: npsf33 = 19
+real*8,  parameter :: rpsf33 = 2.5d4
+real*8,  parameter :: tpsf33 = 2.0d-4                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf33(npsf33)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf33(npsf33)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf33(npsf33)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf33(npsf33)                 ! exponents,    in units of hbar
+!
+data coefr_psf33 /  2.88521722d0,                         &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0 /
+data coefi_psf33 /  0.d0,                                 &
+		    1.05358646d0,    1.89767936d0,	  &
+		   -1.77573604d0,   -0.53115046d0,	  &
+		   -0.26819542d0,   -0.15214378d0,	  &
+		   -0.08965466d0,   -0.05356516d0,	  &
+		   -0.03217146d0,   -0.01936437d0,	  &
+		   -0.01167121d0,   -0.00704768d0,	  &
+		   -0.00427380d0,   -0.00261449d0,	  &
+		   -0.00161476d0,   -0.00098981d0,	  &
+		   -0.00060329d0,   -0.00046940d0 /
+data gamar_psf33 / -7.59633757d0,                         &
+		  -23.65026729d0,  -10.22927702d0,	  &
+		   -5.74478265d0,   -3.36937505d0,	  &
+		   -2.00662441d0,   -1.20277498d0,	  &
+		   -0.72299652d0,   -0.43513198d0,	  &
+		   -0.26200398d0,   -0.15776172d0,	  &
+		   -0.09494677d0,   -0.05705172d0,	  &
+		   -0.03412953d0,   -0.02017854d0,	  &
+		   -0.01160254d0,   -0.00631181d0,	  &
+		   -0.00309721d0,   -0.00096087d0 /
+data gamai_psf33 /  0.d0,                                 &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0 /
+!
+integer, parameter :: npsf34 = 21
+real*8,  parameter :: rpsf34 = 5.0d4
+real*8,  parameter :: tpsf34 = 1.0d-4                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf34(npsf34)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf34(npsf34)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf34(npsf34)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf34(npsf34)                 ! exponents,    in units of hbar
+!
+data coefr_psf34 /  2.88521722d0,                         &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+data coefi_psf34 /  0.d0,                                 &
+		    1.08866501d0,    1.90988651d0,	  &
+		   -1.77267630d0,   -0.53456630d0,	  &
+		   -0.27510686d0,   -0.16015099d0,	  &
+		   -0.09723771d0,   -0.05999447d0,	  &
+		   -0.03725362d0,   -0.02319370d0,	  &
+		   -0.01445790d0,   -0.00902044d0,	  &
+		   -0.00563569d0,   -0.00353171d0,	  &
+		   -0.00222795d0,   -0.00142080d0,	  &
+		   -0.00091263d0,   -0.00057671d0,	  &
+		   -0.00034688d0,   -0.00024085d0 /
+data gamar_psf34 / -7.59633757d0,                         &
+		  -22.85141096d0,  -10.09216740d0,	  &
+		   -5.83061375d0,   -3.53037072d0,	  &
+		   -2.17348027d0,   -1.34757460d0,	  &
+		   -0.83815675d0,   -0.52205929d0,	  &
+		   -0.32537616d0,   -0.20283687d0,	  &
+		   -0.12643968d0,   -0.07878387d0,	  &
+		   -0.04903097d0,   -0.03041928d0,	  &
+		   -0.01872442d0,   -0.01131134d0,	  &
+		   -0.00656357d0,   -0.00352774d0,	  &
+		   -0.00165156d0,   -0.00048631d0 /
+data gamai_psf34 /  0.d0,                                 &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+!
+integer, parameter :: npsf35 = 9
+real*8,  parameter :: rpsf35 = 1.66666667d2
+real*8,  parameter :: tpsf35 = 3.0d-2                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf35(npsf35)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf35(npsf35)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf35(npsf35)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf35(npsf35)                 ! exponents,    in units of hbar
+!
+data coefr_psf35 /  2.88521722d0,                         &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+data coefi_psf35 /  0.d0,                                 &
+		    0.23786965d0,    0.49861041d0,	  &
+		    1.82119197d0,   -1.75350027d0,	  &
+		   -0.46137571d0,   -0.18624623d0,	  &
+		   -0.08705380d0,   -0.06949487d0 /
+data gamar_psf35 / -7.59633757d0,                         &
+		   -116.05743913d0,  -31.80897999d0,	  &
+		   -11.88519945d0,   -4.94084988d0,	  &
+		   -2.15861635d0,    -0.97276821d0,	  &
+		   -0.45083183d0,    -0.14331042d0 /
+data gamai_psf35 /  0.d0,                                 &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+!
+integer, parameter :: npsf36 = 9
+real*8,  parameter :: rpsf36 = 1.25d2
+real*8,  parameter :: tpsf36 = 4.0d-2                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf36(npsf36)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf36(npsf36)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf36(npsf36)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf36(npsf36)                 ! exponents,    in units of hbar
+!
+data coefr_psf36 /  2.88521722d0,                         &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+data coefi_psf36 /  0.d0,                                 &
+		    0.278645220d0,    0.519757445d0,	  &
+		    1.826154774d0,   -1.761289623d0,	  &
+		   -0.473078012d0,   -0.195499503d0,	  &
+		   -0.102310824d0,   -0.092379604d0 /
+data gamar_psf36 / -7.59633757d0,                         &
+		   -98.654203923d0,   -28.583427824d0,	  &
+		   -11.512742360d0,    -5.089418287d0,	  &
+		    -2.359299102d0,    -1.145216627d0,	  &
+		    -0.581429867d0,    -0.190903114d0 /
+data gamai_psf36 /  0.d0,                                 &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+!
+integer, parameter :: npsf37 = 9
+real*8,  parameter :: rpsf37 = 0.83333333d2
+real*8,  parameter :: tpsf37 = 6.0d-2                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf37(npsf37)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf37(npsf37)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf37(npsf37)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf37(npsf37)                 ! exponents,    in units of hbar
+!
+data coefr_psf37 /  2.88521722d0,                         &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+data coefi_psf37 /  0.d0,                                 &
+		    0.278639470d0,    0.519741493d0,	  &
+		    1.826118015d0,   -1.761329497d0,	  &
+		   -0.472473062d0,   -0.167969047d0,	  &
+		   -0.084386370d0,   -0.138341131d0 /
+data gamar_psf37 / -7.59633757d0,                         &
+		   -98.655724543d0,   -28.584112593d0,	  &
+		   -11.512946465d0,   -5.089232175d0,	  &
+		   -2.359430143d0,    -1.175643903d0,	  &
+		   -0.791760947d0,    -0.286208424d0 /
+data gamai_psf37 /  0.d0,                                 &
+                    0.d0, 0.d0, 0.d0, 0.d0,               &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+!
+integer, parameter :: npsf38 = 8
+real*8,  parameter :: rpsf38 = 0.625d2
+real*8,  parameter :: tpsf38 = 8.0d-2                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf38(npsf38)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf38(npsf38)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf38(npsf38)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf38(npsf38)                 ! exponents,    in units of hbar
+!
+data coefr_psf38 /  2.88521722d0,                         &
+                    0.d0, 0.d0, 0.d0,	                  &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+data coefi_psf38 /  0.d0,                                 &
+		    0.283705957d0,    0.523213943d0,	  &
+		    1.828545768d0,    			  &
+		   -1.758623429d0,   -0.470181731d0,	  &
+		   -0.221320946d0,   -0.185412416d0 /
+data gamar_psf38 / -7.59633757d0,                         &
+		   -96.835698316d0,   -28.208479497d0,	  &
+		   -11.460439264d0,    			  &
+		    -5.117142832d0,    -2.416575191d0,	  &
+		    -1.181034364d0,    -0.381984459d0 /
+data gamai_psf38 /  0.d0,                                 &
+                    0.d0, 0.d0, 0.d0,                     &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+!
+integer, parameter :: npsf39 = 8
+real*8,  parameter :: rpsf39 = 5.0d1
+real*8,  parameter :: tpsf39 = 1.0d-1                     ! reference temperature, in unit of eV/meV
+real*8             :: coefr_psf39(npsf39)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: coefi_psf39(npsf39)                 ! coefficients, in units of hbar**2 (factor 0.5 included)
+real*8             :: gamar_psf39(npsf39)                 ! exponents,    in units of hbar
+real*8             :: gamai_psf39(npsf39)                 ! exponents,    in units of hbar
+!
+data coefr_psf39 /  2.88521722d0,                         &
+                    0.d0, 0.d0, 0.d0,                     &
+                    0.d0, 0.d0, 0.d0, 0.d0  /
+data coefi_psf39 /  0.d0,                                 &
+		    0.279874691d0,    0.523436326d0,	  &
+		    1.834964789d0,   -1.741212410d0,	  &
+		   -0.433956225d0,   -0.231683195d0,	  &
+		   -0.231424113d0 /
+data gamar_psf39 / -7.59633757d0,                         &
+		   -98.322212829d0,   -28.432982726d0,	  &
+		   -11.466335408d0,    -5.140004194d0,	  &
+		    -2.553806737d0,    -1.415511595d0,	  &
+		    -0.477121515d0 /
+data gamai_psf39 /  0.d0,                                 &
+                    0.d0, 0.d0, 0.d0,                     &
+                    0.d0, 0.d0, 0.d0, 0.d0  /

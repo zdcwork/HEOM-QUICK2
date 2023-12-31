@@ -1,0 +1,189 @@
+program makeinput
+implicit none
+!
+integer :: ni, nj, nk, istat, funits
+integer :: init, ntier, ncor, norbs, nspin
+integer :: methodss, itrun, iresi, nmatsu, maxit0
+integer :: fieldtype
+integer :: icont, nresume
+logical :: lresume, onelead, leadspin
+logical :: grandom, pop2nd
+integer, parameter :: nalf=2
+real*8  :: crit
+real*8  :: aL, aR, wL, wR
+real*8  :: bandwidth(nalf), linewidth(nalf), dinvbeta(nalf), engyshift(nalf)
+real*8  :: tmax, dt
+real*8  :: temp1, temp2, factor1, factor2
+real*8,  parameter :: tconst=1.1603d4 ! eV -> Kelvin
+real*8  :: eup, edown, uu, ac, edot
+!
+! iv curve
+!
+real*8  :: vmin, vmax, dv, vv
+integer :: nv, iv
+!
+onelead = .false. !two lead .true. !one lead
+leadspin= .false.
+pop2nd  = .false. 
+!
+init      = 3 
+ntier     = 3 
+ncor      = 25 ! 450 !90 
+norbs     = 1
+nspin     = 2
+!
+tmax      = 1.2d2
+dt        = 2.d-2
+!
+! temperature -> beta^(-1)
+! 
+!temp1     = 0.5d0
+!temp2     = 0.5d0
+!dinvbeta(1) = temp1 / tconst * 1.d3
+!dinvbeta(2) = temp2 / tconst * 1.d3
+dinvbeta(1) =  0.1d0
+dinvbeta(2) =  0.1d0
+
+!
+! WBL : bandwidth >> linewidth
+!
+linewidth(1) = 0.05d0
+linewidth(2) = 0.05d0
+!
+bandwidth(1:2) = 1.d1
+!
+nv       = 101 !31
+vmax     = 0.5d1 ! 0.1d0 !4.0d0  !+1.0d-3
+vmin     = 0.0d0 !-0.1d0 ! -4.0d0 !+1.0d-3
+dv       = (vmax - vmin) / dble(nv - 1)
+!
+open(5, file='vin.tmp')
+rewind(5)
+read(5,*)iv
+close(5)
+!
+vv = vmin + dble(iv - 1) * dv
+!
+engyshift(1) =-vv*5.d-1-dv*5.d-1
+engyshift(2) = vv*5.d-1+dv*5.d-1
+!
+! write to file
+!
+open(7, file='input.in', status='unknown')
+rewind(7)
+write(7,222)init
+write(7,222)ntier
+write(7,222)ncor
+write(7,222)norbs
+write(7,222)nspin
+write(7,333)(bandwidth(ni), ni=1,nalf)
+write(7,333)(linewidth(ni), ni=1,nalf)
+write(7,333)( dinvbeta(ni), ni=1,nalf)
+write(7,333)(engyshift(ni), ni=1,nalf) !4-spin-two leadxx)i
+write(7,333)tmax
+write(7,333)dt
+!
+222 format(I6)
+333 format(6(e14.6e2, 2x))
+!
+if (onelead) then
+  write(7,*)
+  write(7,455)onelead
+end if
+if (leadspin) then
+  write (7,*)
+  write(7,457) leadspin
+end if
+if (pop2nd) then
+  write (7,*)
+  write(7,458) pop2nd
+end if
+
+
+!
+edot  =0.0 ! vv-dv
+eup   =-1.5  !0.5 !-0.5d0*0.1
+edown =-1.5     !1.5 !+0.5d0*0.1
+uu    = 5.0d1
+ac    = 0.0d0   !=omega
+
+if (norbs .eq. 1 .and. nspin .eq. 2) then
+  write(7,*)
+!  write(7,444)eup, edown, uu
+  write(7,452)eup, edown, uu
+  write(7,453)ac
+  write(7,445)edot 
+end if
+!
+edot  = 0.d0
+if (norbs .eq. 1 .and. nspin .eq. 1) then
+  write(7,*)
+  write(7,445)edot
+end if
+!
+methodss = 0
+itrun    = 1 
+iresi    = 1
+nmatsu   = 150
+funits   = 1
+grandom  = .true.
+!
+if (grandom) then
+  write(7,*)
+  write(7,456)grandom
+end if
+!
+if (init .ne. 1) then
+  maxit0 = 1500
+  crit   = 1.d-7 !1.d-16 !1.d-7
+  write(7,*)
+  write(7,454)maxit0, crit
+end if
+!
+! field
+!
+fieldtype = 0
+aL = 1.d-20
+aR = 2.d0
+wL = 0.3d1
+wR = 0.1d0
+!
+write(7,*)
+write(7,446)methodss, itrun
+write(7,*)
+write(7,447)iresi, nmatsu
+write(7,*)
+write(7,448)funits
+!
+write(7,*)
+if (fieldtype .eq. 0) then
+  write(7,449)fieldtype, aL, aR
+else if (fieldtype .eq. 1) then
+  write(7,450)fieldtype, wL, wR
+end if
+!
+icont   = 0
+lresume = .true.
+nresume = 20
+write(7,*)
+write(7,451)lresume, nresume, icont
+!
+close(7)
+!
+444 format(' $para1  eup=', f12.6, 2x, 'edown=', f12.6, 2x, 'uu=', f12.6, 2x, '$end')
+445 format(' $para2  edot=', f12.6, 2x, '$end')
+446 format(' $method  methodss=', I2, 2x, ' itrun=', I2, 2x, ' $end')
+447 format(' $residue  iresi=', I2, 2x, ' nmatsu=', I5, 2x, ' $end')
+448 format(' $units  funits=', I2, 2x, ' $end')
+449 format(' $field  fieldtype=', I2, 2x, 'aL= ', e14.6e3, 2x, 'aR= ', e14.6e3, 2x, '$end')
+450 format(' $field  fieldtype=', I2, 2x, 'wL= ', e14.6e3, 2x, 'wR= ', e14.6e3, 2x, '$end')
+451 format(' $resume  lresume=', L7, 2x, 'nresume= ', I4, 2x, 'icont= ', I2, 2x, '$end')
+452 format(' $para1  eup=', f12.6, 2x, 'edown=', f12.6, 2x, 'uu=', f12.6, 2x)
+453 format('          ac=', f12.6, 2x, '$end')
+454 format(' $converge  maxit0=', I6, 2x, ' crit= ', e16.8e3, 2x, '$end')
+455 format(' $lead  onelead=', L7, 2x, '$end')
+457 format(' $leads  leadspin=', L7, 2x, '$end')
+458 format(' $pop0    pop2nd =', L7, 2x, '$end')
+456 format(' $guess0  grandom=', L7, 2x, '$end')
+!
+end program makeinput
