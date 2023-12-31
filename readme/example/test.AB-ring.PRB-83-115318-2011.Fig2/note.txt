@@ -1,0 +1,5 @@
+1. the code should be modified, so that the initial reduced density matrix is
+   rho(1,1,1) = 1.0  and all other elements are zero. All auxiliary density matrices
+   at initial time t0 = 0 are also zero. 
+
+2. this example corresponds to the phi=pi/4 curve in Fig. 2 of PRB 83, 115318 (2011)

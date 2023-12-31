@@ -1,0 +1,15 @@
+
+On the steady state calculation
+
+1. The BICG method usually starts with an initially randomized rho
+   (grandom = true)
+
+2. The TFQMR method can use rho = zero as initial guess 
+   (grandom = false)
+
+3. At very low temperature, ntier = 2 is very hard to converge 
+   (there may exist multiple steady state solutions, and many of
+   them are unphysical). One way to resolve this issue is to
+   solve ntier = 3 case first, and then use steady-state rho of
+   ntier = 3 as initial rho (the itier <= 2 part) and calculate
+   ntier = 2 case. 

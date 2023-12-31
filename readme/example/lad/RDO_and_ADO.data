@@ -1,0 +1,478 @@
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+ num:                     1
+       irow           icol            Re[rho]                 Im[rho]  
+         1             1          0.096439838661          0.000000000000
+         2             2          0.403560161306          0.000000000000
+         3             3          0.403560161309          0.000000000000
+         4             4          0.096439838661          0.000000000000
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                      1
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      1      1     1     0     1
+ num:                     2
+       irow           icol            Re[rho]                 Im[rho]  
+         2             1          0.029628972599          0.038142928795
+         4             3          0.029481307163         -0.038214237970
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                      2
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      1      1     2     0     1
+ num:                     3
+       irow           icol            Re[rho]                 Im[rho]  
+         2             1         -0.105750780507         -0.025900593547
+         4             3         -0.105501513697          0.026446320370
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                      3
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      1      1     3     0     1
+ num:                     4
+       irow           icol            Re[rho]                 Im[rho]  
+         2             1          0.011889718550          0.000878437016
+         4             3          0.011887092387         -0.000896267322
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                      4
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      1      1     4     0     1
+ num:                     5
+       irow           icol            Re[rho]                 Im[rho]  
+         2             1         -0.000568345647         -0.000127854145
+         4             3         -0.000574491068          0.000183504420
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                      5
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      1      1     5     0     1
+ num:                     6
+       irow           icol            Re[rho]                 Im[rho]  
+         2             1          0.000000199282          0.000000057534
+         4             3          0.000000200399         -0.000000072163
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                      6
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      1      1     6     0     2
+ num:                     7
+       irow           icol            Re[rho]                 Im[rho]  
+         2             1         -0.000250240098          0.000049402205
+         4             3         -0.000260685585          0.000010770472
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                      7
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      1      1     7     0     1
+ num:                     8
+       irow           icol            Re[rho]                 Im[rho]  
+         2             1          0.000182042509          0.000089810540
+         4             3          0.000180694909         -0.000092972188
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                      8
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      1      1     8     0     2
+ num:                     9
+       irow           icol            Re[rho]                 Im[rho]  
+         2             1         -0.005124789182         -0.002039567584
+         4             3         -0.005126979335          0.002333367063
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                      9
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      1      1     9     0     1
+ num:                    10
+       irow           icol            Re[rho]                 Im[rho]  
+         2             1          0.004787329202          0.001919569733
+         4             3          0.004758519272         -0.001959944093
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     10
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      1      1    10     0     2
+ num:                    11
+       irow           icol            Re[rho]                 Im[rho]  
+         2             1         -0.017829417724         -0.012498495686
+         4             3         -0.017584940719          0.012772058426
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     11
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      1      1    11     0     1
+ num:                    12
+       irow           icol            Re[rho]                 Im[rho]  
+         2             1         -0.000000015632         -0.000000006623
+         4             3         -0.000000015584          0.000000007174
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     12
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      1      1    12     0     2
+ num:                    13
+       irow           icol            Re[rho]                 Im[rho]  
+         2             1         -0.000547712066         -0.000013608156
+         4             3         -0.000558322866          0.000083675370
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     13
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      1      1    13     0     3
+ num:                    14
+       irow           icol            Re[rho]                 Im[rho]  
+         2             1         -0.000538787604          0.000140425324
+         4             3         -0.000559096595         -0.000025705087
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     14
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      1      2     1     0     1
+ num:                    15
+       irow           icol            Re[rho]                 Im[rho]  
+         2             1          0.029481307163          0.038214237969
+         4             3          0.029628972599         -0.038142928795
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     15
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      1      2     2     0     1
+ num:                    16
+       irow           icol            Re[rho]                 Im[rho]  
+         2             1         -0.105501513697         -0.026446320370
+         4             3         -0.105750780508          0.025900593547
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     16
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      1      2     3     0     1
+ num:                    17
+       irow           icol            Re[rho]                 Im[rho]  
+         2             1          0.011887092387          0.000896267322
+         4             3          0.011889718550         -0.000878437016
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     17
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      1      2     4     0     1
+ num:                    18
+       irow           icol            Re[rho]                 Im[rho]  
+         2             1         -0.000574491068         -0.000183504420
+         4             3         -0.000568345647          0.000127854145
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     18
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      1      2     5     0     1
+ num:                    19
+       irow           icol            Re[rho]                 Im[rho]  
+         2             1          0.000000200399          0.000000072163
+         4             3          0.000000199282         -0.000000057534
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     19
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      1      2     6     0     2
+ num:                    20
+       irow           icol            Re[rho]                 Im[rho]  
+         2             1         -0.000260685585         -0.000010770472
+         4             3         -0.000250240098         -0.000049402205
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     20
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      1      2     7     0     1
+ num:                    21
+       irow           icol            Re[rho]                 Im[rho]  
+         2             1          0.000180694909          0.000092972188
+         4             3          0.000182042509         -0.000089810540
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     21
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      1      2     8     0     2
+ num:                    22
+       irow           icol            Re[rho]                 Im[rho]  
+         2             1         -0.005126979335         -0.002333367063
+         4             3         -0.005124789182          0.002039567584
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     22
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      1      2     9     0     1
+ num:                    23
+       irow           icol            Re[rho]                 Im[rho]  
+         2             1          0.004758519272          0.001959944093
+         4             3          0.004787329202         -0.001919569733
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     23
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      1      2    10     0     2
+ num:                    24
+       irow           icol            Re[rho]                 Im[rho]  
+         2             1         -0.017584940719         -0.012772058427
+         4             3         -0.017829417724          0.012498495685
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     24
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      1      2    11     0     1
+ num:                    25
+       irow           icol            Re[rho]                 Im[rho]  
+         2             1         -0.000000015584         -0.000000007174
+         4             3         -0.000000015632          0.000000006623
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     25
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      1      2    12     0     2
+ num:                    26
+       irow           icol            Re[rho]                 Im[rho]  
+         2             1         -0.000558322866         -0.000083675370
+         4             3         -0.000547712066          0.000013608156
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     26
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      1      2    13     0     3
+ num:                    27
+       irow           icol            Re[rho]                 Im[rho]  
+         2             1         -0.000559096595          0.000025705087
+         4             3         -0.000538787604         -0.000140425324
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     27
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      2      1     1     0     1
+ num:                    28
+       irow           icol            Re[rho]                 Im[rho]  
+         3             1          0.029628972599          0.038142928795
+         4             2         -0.029481307163          0.038214237969
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     28
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      2      1     2     0     1
+ num:                    29
+       irow           icol            Re[rho]                 Im[rho]  
+         3             1         -0.105750780508         -0.025900593547
+         4             2          0.105501513697         -0.026446320370
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     29
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      2      1     3     0     1
+ num:                    30
+       irow           icol            Re[rho]                 Im[rho]  
+         3             1          0.011889718550          0.000878437016
+         4             2         -0.011887092387          0.000896267322
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     30
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      2      1     4     0     1
+ num:                    31
+       irow           icol            Re[rho]                 Im[rho]  
+         3             1         -0.000568345647         -0.000127854145
+         4             2          0.000574491068         -0.000183504420
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     31
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      2      1     5     0     1
+ num:                    32
+       irow           icol            Re[rho]                 Im[rho]  
+         3             1          0.000000199282          0.000000057534
+         4             2         -0.000000200399          0.000000072163
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     32
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      2      1     6     0     2
+ num:                    33
+       irow           icol            Re[rho]                 Im[rho]  
+         3             1         -0.000250240098          0.000049402205
+         4             2          0.000260685585         -0.000010770472
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     33
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      2      1     7     0     1
+ num:                    34
+       irow           icol            Re[rho]                 Im[rho]  
+         3             1          0.000182042509          0.000089810540
+         4             2         -0.000180694909          0.000092972188
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     34
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      2      1     8     0     2
+ num:                    35
+       irow           icol            Re[rho]                 Im[rho]  
+         3             1         -0.005124789182         -0.002039567584
+         4             2          0.005126979335         -0.002333367063
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     35
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      2      1     9     0     1
+ num:                    36
+       irow           icol            Re[rho]                 Im[rho]  
+         3             1          0.004787329202          0.001919569733
+         4             2         -0.004758519272          0.001959944093
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     36
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      2      1    10     0     2
+ num:                    37
+       irow           icol            Re[rho]                 Im[rho]  
+         3             1         -0.017829417724         -0.012498495685
+         4             2          0.017584940719         -0.012772058427
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     37
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      2      1    11     0     1
+ num:                    38
+       irow           icol            Re[rho]                 Im[rho]  
+         3             1         -0.000000015632         -0.000000006623
+         4             2          0.000000015584         -0.000000007174
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     38
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      2      1    12     0     2
+ num:                    39
+       irow           icol            Re[rho]                 Im[rho]  
+         3             1         -0.000547712066         -0.000013608156
+         4             2          0.000558322866         -0.000083675370
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     39
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      2      1    13     0     3
+ num:                    40
+       irow           icol            Re[rho]                 Im[rho]  
+         3             1         -0.000538787604          0.000140425324
+         4             2          0.000559096595          0.000025705087
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     40
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      2      2     1     0     1
+ num:                    41
+       irow           icol            Re[rho]                 Im[rho]  
+         3             1          0.029481307163          0.038214237970
+         4             2         -0.029628972599          0.038142928795
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     41
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      2      2     2     0     1
+ num:                    42
+       irow           icol            Re[rho]                 Im[rho]  
+         3             1         -0.105501513697         -0.026446320370
+         4             2          0.105750780507         -0.025900593547
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     42
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      2      2     3     0     1
+ num:                    43
+       irow           icol            Re[rho]                 Im[rho]  
+         3             1          0.011887092387          0.000896267322
+         4             2         -0.011889718550          0.000878437016
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     43
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      2      2     4     0     1
+ num:                    44
+       irow           icol            Re[rho]                 Im[rho]  
+         3             1         -0.000574491068         -0.000183504420
+         4             2          0.000568345647         -0.000127854145
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     44
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      2      2     5     0     1
+ num:                    45
+       irow           icol            Re[rho]                 Im[rho]  
+         3             1          0.000000200399          0.000000072163
+         4             2         -0.000000199282          0.000000057534
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     45
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      2      2     6     0     2
+ num:                    46
+       irow           icol            Re[rho]                 Im[rho]  
+         3             1         -0.000260685585         -0.000010770472
+         4             2          0.000250240098          0.000049402205
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     46
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      2      2     7     0     1
+ num:                    47
+       irow           icol            Re[rho]                 Im[rho]  
+         3             1          0.000180694909          0.000092972188
+         4             2         -0.000182042509          0.000089810540
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     47
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      2      2     8     0     2
+ num:                    48
+       irow           icol            Re[rho]                 Im[rho]  
+         3             1         -0.005126979335         -0.002333367063
+         4             2          0.005124789182         -0.002039567584
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     48
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      2      2     9     0     1
+ num:                    49
+       irow           icol            Re[rho]                 Im[rho]  
+         3             1          0.004758519272          0.001959944093
+         4             2         -0.004787329202          0.001919569733
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     49
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      2      2    10     0     2
+ num:                    50
+       irow           icol            Re[rho]                 Im[rho]  
+         3             1         -0.017584940719         -0.012772058426
+         4             2          0.017829417724         -0.012498495686
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     50
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      2      2    11     0     1
+ num:                    51
+       irow           icol            Re[rho]                 Im[rho]  
+         3             1         -0.000000015584         -0.000000007174
+         4             2          0.000000015632         -0.000000006623
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     51
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      2      2    12     0     2
+ num:                    52
+       irow           icol            Re[rho]                 Im[rho]  
+         3             1         -0.000558322866         -0.000083675370
+         4             2          0.000547712066         -0.000013608156
+ 
+ ntier-ADO balls     j1,    j2,    j3,    ....,    jn   
+                     52
+ isgn  iorbs  ispin  ialf  icor  itype  mp
+   1     1      2      2    13     0     3
+ num:                    53
+       irow           icol            Re[rho]                 Im[rho]  
+         3             1         -0.000559096595          0.000025705087
+         4             2          0.000538787604          0.000140425324
+ 

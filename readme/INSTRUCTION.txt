@@ -1,0 +1,247 @@
+--------------------------
+A.  Compiler and Makefile
+--------------------------
+ 
+[1] The presently used compiler is INTEL FORTRAN 9.0 with MKL library version 8.0.1 
+    To compile the code, user should add the path of compiler and library to the 
+    environment first. For example, if tcsh is used, one should execute the 
+    following two commands before compilation.
+
+    source /opt/intel/fc/9.0/bin/ifortvars.csh
+    source /opt/intel/mkl/8.0.1/tools/environment/mklvars32.csh
+
+    To use the latest version of Intel Fortran Compiler, add the following lines to 
+    tcsh setup file under home directory <~/.cshrc>
+    
+    source /opt/intel/bin/compilervars.csh intel64
+    set MKLROOT      = "/opt/intel/mkl"
+    set MKLPATH      = "/opt/intel/mkl/bin/intel64"
+    set MKLINCLUDE   = "/opt/intel/mkl/include/intel64"
+    
+    The current code supports OpenMP parallelization
+
+
+[2] In the Makefile, the executable file generated (by default) is 
+
+    NAME=$(HOME)/WORK/HEOM/bin/heom_fermion.x
+    
+    The directory "$(HOME)/WORK/HEOM/bin" should be created before compilation.
+
+    To use serial version, use the following commands
+    >\cp -f Makefile.serial Makefile
+    >make clean
+    >make
+    
+    To use openmp version, use the following commands
+    >\cp -f Makefile.openmp Makefile
+    >make clean
+    >make
+
+  
+[3] For the source code, the involving subdirectories are as follows:
+
+    
+(a) bicg                 :  solve steady states with BiConjugate Gradient method
+    
+(b) tfqmr_double         :  solve steady states with Trace-Free Quasi-Minimal-Residue method
+    
+(c) fermion              :  sorting the operators with anti-commutation relation
+    
+(d) include              :  define global variables, parameters, and array sizes
+    
+(e) main                 :  main folder
+    
+(f) module               :  define arrays for different purposes
+    
+(g) objects              :  contain the compiled "*.o" files
+
+(h) objmod               :  contain the complied ".mod" files
+    
+(i) readme               :  contain the log files and examples
+    
+(j) td                   :  solve the HEOM in time domain
+
+(k) corrfunc             :  calculate system correlation/spectral function 
+    
+(l) utility              :  some utility subroutines
+
+(m) cplqmr_double        :  solve steady states with CouPLed Quasi-Minimal-Residue method
+                            (not fully successful yet)
+
+(n) openmp               :  contain subroutines needed by OpenMP parallelization
+
+
+--------------------------
+B.  Input and Output
+--------------------------
+
+    
+Some example input/output files can be found in the folder "readme/example/",
+    where comments are given after the exclamation mark "!"
+
+
+[1] To run the program, one needs to prepare an input file, the file can use
+    arbitrary name (it is named as <input.in> in this note, other any name is also fine). Its
+    format is briefly introduced in the PPT file <Numerical Procedures and Code>.
+
+    In general, "input.in" is composed of two parts, the first part is a list
+    of parameters following a rigorous format/sequence. See the "read" lines 
+    in "main/evaluatepara.f90".
+
+    The second part of "input.in" consists of a collection of namelists, each
+    containing several variables. The use of a namelist depends on the job type, 
+    as well as the chosen algorithm; see Sec. D below.
+
+    There is a stand-alone utility FORTRAN code named "makeinput.f90". By 
+    adjusting the values of parameters therein, the "input.in" file can be 
+    generated automatically and routinely.
+
+    This HEOM code deals with an arbitrary form of system Hamiltonian. To treat 
+    a new Hamiltonian, just modify "main/calchs.f90" and "main/calcdhs.f90" for 
+    Hs and dHs(t), respectively (by manipulation of creation and annihilation  
+    operator matrices).
+     
+
+[2] There are many namelists by which parameters enter "input.in" conveniently,
+    For instance, the following line
+
+    $para3   engy01=0.1,  engy02=2.5,  t12=1.0,  u12=0.0, fixdot=.true.  $end
+
+    represents a complete namelist entitled "para3", containing variables 
+    such as "engy01", "engy02", "t12", "u12", and "fixdot". To know about each 
+    namelist, one can take a look at its belonged subroutine through 
+    "readme/NAMELIST.txt", and then grep the whole source code directory, and 
+    read the related comments in FORTRAN file.   
+    
+    For instance, to know about "para3" namelist, one can use the command
+
+    grep "para3" $(SRC)/*/*.f90 
+
+    Then one knows "para3" is read in "main/calchs.f90".
+    
+
+[3] There are many files outputed by the program, the complete file list can 
+    be found at the head of "main/main.f90".         
+
+    The main output information will be flushed to file channel #6, without
+    a presumed file name. Therefore, to send a calculation job, one can type 
+    in the working directory
+
+    $(BIN)/heom_fermion.x < input.in > out &
+
+   In this case, the main output file is "out". In a real-time evolution 
+    calculation, the transient current is recorded in "curr.data", and 
+    system population information is recorded in "popu.data".
+
+
+
+--------------------------
+C.  Send Jobs
+--------------------------
+
+   
+
+ To carry out a calculation from scratch, the work flow is basically as
+    follows:
+
+[1] Prepare the compiler, specify the path of compiler and math library.
+
+[2] Create the directories to place the source code (SRC), the executable 
+    program (BIN), and the input/output/auxiliary files (WORK). 
+
+    By default:
+    SRC  = $(HOME)/WORK/HEOM/src
+    BIN  = $(HOME)/WORK/HEOM/bin
+    WORK = $(HOME)/WORK/HEOM/work
+
+[3] Enter WORK, prepare the input file "input.in", and link the executable 
+    from BIN to WORK:
+    
+    cd $(WORK)
+    ln -s $(BIN)/heom_fermion.x .
+
+[4] Delete the "stoptd" file (if existing) from WORK, and run the program
+  
+    rm -f stoptd
+    ./heom_fermion.x < input.in > out &
+
+[5] To terminate a time evolution calculation (instead of killing the 
+    process by brute force). One can use the command to create an empty 
+    file "stoptd" 
+    
+    touch stoptd                     
+ 
+    Then wait for a short while, the program will detect the file and
+    terminate the calculation.
+
+[6] To resume a broken or terminated time evolution calculation:
+
+    Make sure the file "TAPE.resume" exists in WORK, in "input.in" change 
+    the variable "icont" of the namelist "resume" to 1, and send the job.
+
+
+
+
+--------------------------
+D.  Namelists of Variables (incomplete list)
+--------------------------
+
+     
+The majority of definitions and options for variables 
+can be found in
+     "include/common" and "module/matmod.f90". Some namelists are briefly
+     introduced as follows.
+     
+[1]  "bathcorr" in "main.f90"
+
+     If a nondiagonal reservoir spectral density function is adopted, one 
+     should set "offcor=.true."
+
+     The nondiagonal spectral function enters via namelist "coupling" or
+     "flux0"; see "main/evaluatepara.f90"
+
+[2]  "converge" in "main.f90"
+  
+     For steady states, the maximal number of iterations allowed, and
+     the convergence criterion for (auxiliary) density operators
+
+[3]  "field" in "evaluatepara.f90"
+
+     Type of external time-dependent voltages and their associated 
+     parameters; see "main/getenergyshift.f90"
+
+[4]  "jobinfo" in "main.f90"
+
+     Whether or not the hybrid scheme (Matsubara expansion together with
+     frequency dispersion) is used to account for the reservoir correlation
+     function (if so, one should set "mdfjob=.true", and the frequency
+     grids are determined by the namelist "wgrids"; see [10] below)
+
+[6]  "method" in "main.f90"
+
+     Type of steady state solution method used (BICG or TFQMR)
+
+[7]  "para[1-4]" in "calchs.f90"
+     
+     Parameters of different systems (level energies, inter-level coupling,  
+     Coulomb repulsion strength, etc.)
+
+[8]  "specfunc" in "evaluatepara.f90"
+  
+     Type of reservoir spectral density function adopted, available options 
+     are: Lorentzian, Gaussian, and Sinc square function.
+
+[9]  "tdjob" in "main.f90"
+   
+     Type of time evolution method used (Runge-Kutta or Chebyshev) 
+
+[10] "wgrids" in "evaluatepara.f90"
+    
+     If frequency dispersion is used, this namelist specifies the frequency 
+     range considered, as well as the partition of this range into a number 
+     of subsections, and then apply Gauss-Legendre rule to each of them.
+   
+
+-------------------------------
+Updated 09Nov2011 by Xiao Zheng
+
