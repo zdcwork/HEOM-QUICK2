@@ -1,33 +1,31 @@
-Authors
+# Authors
 
- Leading authors:
+ ## Leading authors:
      Xiao Zheng, Rui-Xue Xv, YiJing Yan.
   
- Authors (in the alphabetical order): 
+ ## Authors (in the alphabetical order): 
      Daochi Zhang, Dong Hou, Houdao Zhang, Jiaan Cao, 
      Jingshuang Jin, Lei Cui, Lu Han, Lyuzhou Ye, Zihao Chen.
 
   
   
  
-Citing This Project:
+# Citing This Project:
 
   If you find this project useful, then please cite:
-     Ye L., Wang X., Hou D., Xu R.-X., Zheng X., Yan Y. 
-     HEOM-QUICK: a program for accurate, 
-     efficient, and universal characterization 
-     of strongly correlated quantum impurity systems. 
-     WIREs Computational Molecular Science. 2016;6(6):608-38.
+  
+>     Ye L., Wang X., Hou D., Xu R.-X., Zheng X., Yan Y. HEOM-QUICK: a program for accurate, efficient, and universal characterization of strongly correlated quantum impurity systems. WIREs Computational Molecular Science. 2016;6(6):608-38.
+     
   and
-     Daochi Zhang, Lyuzhou Ye, Jiaan Cao, Yao Wang, Rui-Xue Xu, 
-     Xiao Zheng, YiJing Yan. HEOM-QUICK2: a general-purpose simulator 
-     for fermionic many-body open quantum systems -- An Update. arXiv2401.01715.
+  
+>     Daochi Zhang, Lyuzhou Ye, Jiaan Cao, Yao Wang, Rui-Xue Xu, Xiao Zheng, YiJing Yan. HEOM-QUICK2: a general-purpose simulator for fermionic many-body open quantum systems -- An Update. arXiv2401.01715.
+     
   which may also be downloaded from: https://arxiv.org/abs/2401.01715.
 
   
 
   
-ABOUT HEOM-QUICK2:
+# ABOUT HEOM-QUICK2:
 
     Accurate characterization of correlated electronic states, 
     as well as their evolution under external fields or in dissipative environment, 
@@ -114,21 +112,21 @@ ABOUT HEOM-QUICK2:
 	
 	
 	
-Requirement
+# Requirement
 
   For the compilation of HEOM-QUICK2 one needs:
-      1. Compilers for Fortran (at least F2008 compliant). 
-         Recommend intel-oneapi-base-kit+intel-oneapi-hpc-kit;
-      2. Numerical libraries: BLAS, and LAPACK. 
-         Recommend intel-oneapi-mkl;
-      3. Support for OpenMP libraries (at least OpenMP4.0) 
-         that provide parallel programming framework for Fortran. 
-         Recommend intel-Fortran-compiler-classic.
+>      1. Compilers for Fortran (at least F2008 compliant). 
+>         Recommend intel-oneapi-base-kit+intel-oneapi-hpc-kit;
+>      2. Numerical libraries: BLAS, and LAPACK. 
+>         Recommend intel-oneapi-mkl;
+>      3. Support for OpenMP libraries (at least OpenMP4.0) 
+>         that provide parallel programming framework for Fortran. 
+>         Recommend intel-Fortran-compiler-classic.
 
 	   
 	   
 
-Installation
+# Installation
 
     Step 1: Download
             Download the source code of HEOM-QUICK2, 
@@ -143,7 +141,7 @@ Installation
                     the executable "HEOM-QUICK2.x" is generated; 
                 b) "F77" defines the command to invoke your Fortran compiler 
                     (e.g. gfortran, ifort, …) and "FFLAGS" specifies the compile flags. 
-                    For example, the tag "-qopenmp" tells the parallelizer to
+                   For example, the tag "-qopenmp" tells the parallelizer to
                     generate a multi-threaded executable based on OpenMP directives in the Linux platform; 
                 c) "LIBDIR" and "LIBS" provides the links to BLAS, 
                     LAPACK libraries that are a part of intel Math Kernel Library (MKL).
@@ -159,7 +157,7 @@ Installation
 			
 
 	
-Input&Output files
+# Input&Output files
 
     As a minimal setup, HEOM-QUICK2 only requires a single main input file, 
     i.e. a user-named input file which includes the information of system Hamiltonian, 
@@ -182,8 +180,8 @@ Input&Output files
     Here is a comprehensive list of some important output files:
 
          Filename                 Format                                 Purpose
-    user-named input file	  ASCII                               main input file
-    user-named output file	  ASCII                         general output information
+    user-named input file         ASCII                               main input file
+    user-named output file        ASCII                         general output information
     indextable.tmp                Binary                  scratch file for indextable of RDO&ADOs
     curr.data                     ASCII                         time vs. electric current
     indextable.sav                Binary                             backup indextable
@@ -242,44 +240,47 @@ Input&Output files
 	
 	
 	
-How to run HEOM-QUICK2
+# How to run HEOM-QUICK2
 
   For beginners we recommend to run the following useful examples 
   to learn the basic operations on HEOM-QUICK2: 
   
-  Ex1. solve steady state of single-impurity Anderson model (SIAM) subjected to bias voltage
+ ## Ex1. 
+      solve steady state of single-impurity Anderson model (SIAM) subjected to bias voltage
        We first show an example which employs the TFQMR iterative approach 
        to solve the steady state of SIAM connected to two reservoirs 
        subjected to constant bias voltages. 
        In this example, we unravel the bath correlation functions 
        by the Prony fitting spectrum decomposition scheme 
-       and truncate the hierarchy by the adiabatic scheme. 
+       and truncate the hierarchy by the adiabatic scheme.
+
   The input file is 
-          1     2 
-          2     4 
-          3     0 
-          4     1
-          5     2 
-          6     2 
-          7     5.0d0 5.0d0 
-          8     0.4d0 0.4d0 
-          9     0.001d0 0.001d0 
-          10    0.001d0 0.001d0 -0.001d0 -0.001d0
-          11    1.d3 
-          12    1.d-2
-          13    $para1 eup=-1.0d0 edown=-1.0d0 uu=2.0d0 $end 
-          14    $field fieldtype=0 $end
-          15    1.d-20 1.d-20 1.d-20 1.d-20
-          16    $jobinfo lsparse=T psfjob=T itype_psf=1 $end
-          17    $converge maxit0=20000 crit=1.d-7 $end
-          18    $method methodss=2 $end
-          19    $adiabatic lad=T $end
-          It is noted that the standard input file does not require the line numbers in the left side.
+>          1     2 
+>          2     4 
+>          3     0 
+>          4     1
+>          5     2 
+>          6     2 
+>          7     5.0d0 5.0d0 
+>          8     0.4d0 0.4d0 
+>          9     0.001d0 0.001d0 
+>          10    0.001d0 0.001d0 -0.001d0 -0.001d0
+>          11    1.d3 
+>          12    1.d-2
+>          13    $para1 eup=-1.0d0 edown=-1.0d0 uu=2.0d0 $end 
+>          14    $field fieldtype=0 $end
+>          15    1.d-20 1.d-20 1.d-20 1.d-20
+>          16    $jobinfo lsparse=T psfjob=T itype_psf=1 $end
+>          17    $converge maxit0=20000 crit=1.d-7 $end
+>          18    $method methodss=2 $end
+>          19    $adiabatic lad=T $end
+>          It is noted that the standard input file does not require the line numbers in the left side.
   		
   Users can run HEOM-QUICK2 with the command 
-  "./path/to/HEOM-QUICK2.x.x.x/bin/HEOM-QUICK2.x <input_file_name> out_file_name".
+>  "./path/to/HEOM-QUICK2.x.x.x/bin/HEOM-QUICK2.x <input_file_name> out_file_name".
   
-  Ex2. calculate linear response properties of a system in steady state
+##  Ex2. 
+       calculate linear response properties of a system in steady state
        Since we have obtained the steady state in above example, 
        we will next calculate linear response properties of the SIAM, 
        including system correlation function, Green’s function, 
@@ -287,63 +288,67 @@ How to run HEOM-QUICK2
        impurity spectral function in frequency domain. 
        The bath correlation functions by the Prony fitting spectrum 
        decomposition scheme and truncate the hierarchy by the adiabatic scheme. 
+       
   The input file is 
-          1     3 
-          2     4 
-          3     0 
-          4     1
-          5     2 
-          6     2 
-          7     5.0d0 5.0d0 
-          8     0.4d0 0.4d0 
-          9     0.001d0 0.001d0
-          10    0.001d0 0.001d0 -0.001d0 -0.001d0
-          11    1.d3 
-          12    1.d-2
-          13    $para1 eup=-1.0d0 edown=-1.0d0 uu=2.0d0 $end 
-          14    $field fieldtype=0 $end
-          15    1.d-20 1.d-20 1.d-20 1.d-20
-          16    $jobinfo lsparse=T psfjob=T itype_psf=1 $end
-          17    $converge maxit0=20000 crit=1.d-7 $end
-          18    $method methodss=2 $end
-          19    $adiabatic lad=T $end
-          20    $dos ldos=T iorbs_dos=1 ispin_dos=1 lfreq_dos=T 
-          21         freq_dos= xxxx maxit_dos=20000 crit_dos=1.d-7 $end
+>          1     3 
+>          2     4 
+>          3     0 
+>          4     1
+>          5     2 
+>          6     2 
+>          7     5.0d0 5.0d0 
+>          8     0.4d0 0.4d0 
+>          9     0.001d0 0.001d0
+>          10    0.001d0 0.001d0 -0.001d0 -0.001d0
+>          11    1.d3 
+>          12    1.d-2
+>          13    $para1 eup=-1.0d0 edown=-1.0d0 uu=2.0d0 $end 
+>          14    $field fieldtype=0 $end
+>          15    1.d-20 1.d-20 1.d-20 1.d-20
+>          16    $jobinfo lsparse=T psfjob=T itype_psf=1 $end
+>          17    $converge maxit0=20000 crit=1.d-7 $end
+>          18    $method methodss=2 $end
+>          19    $adiabatic lad=T $end
+>          20    $dos ldos=T iorbs_dos=1 ispin_dos=1 lfreq_dos=T 
+>          21         freq_dos= xxxx maxit_dos=20000 crit_dos=1.d-7 $end
           It is noted that the standard input file does not require the line numbers in the left side.
   		
   Users can run HEOM-QUICK2 with the command 
-  "./path/to/HEOM-QUICK2.x.x.x/bin/HEOM-QUICK2.x <input_file_name> out_file_name".
+>  "./path/to/HEOM-QUICK2.x.x.x/bin/HEOM-QUICK2.x <input_file_name> out_file_name".
   
-  Ex3. time propagation for SIAM subjected to ac voltage
+ ## Ex3. 
+       time propagation for SIAM subjected to ac voltage
        Now we impose a sinusoidal ac voltage on the SIAM in a steady state 
        calculated in Ex1 and simulate the resulting dissipation dynamics of SIAM. 
        The bath correlation functions by the Prony fitting spectrum 
        decomposition scheme and truncate the hierarchy by the adiabatic scheme. 
+ 
   The input file is 
-          1     1 
-          2     4 
-          3     0 
-          4     1
-          5     2 
-          6     2 
-          7     5.0d0 5.0d0 
-          8     0.4d0 0.4d0 
-          9     0.001d0 0.001d0
-          10    0.001d0 0.001d0 -0.001d0 -0.001d0
-          11    2.5d2 
-          12    5.d-3
-          13    $para1 eup=-1.0d0 edown=-1.0d0 uu=2.0d0 $end 
-          14    $field fieldtype= 1 lreadomega = T $end
-          15    0.06d0 0.06d0 0.06d0 0.06d0
-          16    $jobinfo lsparse=T psfjob=T itype_psf=1 $end
-          19    $adiabatic lad=T $end
-          20    $resume icont=0 lresume=T nresume=2000 $end 
+  >        1     1 
+  >        2     4 
+  >        3     0 
+  >        4     1
+  >        5     2 
+  >        6     2 
+  >        7     5.0d0 5.0d0 
+  >        8     0.4d0 0.4d0 
+  >        9     0.001d0 0.001d0
+  >        10    0.001d0 0.001d0 -0.001d0 -0.001d0
+  >        11    2.5d2 
+  >        12    5.d-3
+  >        13    $para1 eup=-1.0d0 edown=-1.0d0 uu=2.0d0 $end 
+  >        14    $field fieldtype= 1 lreadomega = T $end
+  >        15    0.06d0 0.06d0 0.06d0 0.06d0
+  >        16    $jobinfo lsparse=T psfjob=T itype_psf=1 $end
+  >        19    $adiabatic lad=T $end
+  >        20    $resume icont=0 lresume=T nresume=2000 $end 
           It is noted that the standard input file does not require the line numbers in the left side.
   		
   Users can run HEOM-QUICK2 with the command 
-  "./path/to/HEOM-QUICK2.x.x.x/bin/HEOM-QUICK2.x <input_file_name> out_file_name".
+  >"./path/to/HEOM-QUICK2.x.x.x/bin/HEOM-QUICK2.x <input_file_name> out_file_name".
   
-  Ex4. calculate time-dependent linear response properties of a system
+  ## Ex4. 
+       calculate time-dependent linear response properties of a system
        HEOM-QUICK2 generates a series of "TAPE_(tt).resume" files 
        which records the intermediate results of RDO&ADOs during time propagation in Ex3. 
        To evaluate time-dependent linear response properties of the system, 
@@ -351,89 +356,92 @@ How to run HEOM-QUICK2
        before the HEOM-QUICK2 calculation. 
        The bath correlation functions by the Prony fitting spectrum 
        decomposition scheme and truncate the hierarchy by the adiabatic scheme. 
+
   The input file is 
-          1     6 
-          2     4 
-          3     0 
-          4     1
-          5     2 
-          6     2 
-          7     5.0d0 5.0d0 
-          8     0.4d0 0.4d0 
-          9     0.001d0 0.001d0
-          10    0.001d0 0.001d0 -0.001d0 -0.001d0
-          11    2.5d2 
-          12    5.d-3
-          13    $para1 eup=-1.0d0 edown=-1.0d0 uu=2.0d0 $end 
-          14    $field fieldtype= 1 lreadomega = T $end
-          15    0.06d0 0.06d0 0.06d0 0.06d0
-          16    $jobinfo lsparse=T psfjob=T itype_psf=1 $end
-          19    $adiabatic lad=T $end
-          20    $resume icont=0 lresume=T nresume=2000 $end
-          21    $dos ldos=T iorbs_dos=1 ispin_dos=1 lfreq_dos=T 
-          22         freq_dos= xxxx maxit_dos=20000 crit_dos=1.d-7 $end
+>          1     6 
+>          2     4 
+>          3     0 
+>          4     1
+>          5     2 
+>          6     2 
+>          7     5.0d0 5.0d0 
+>          8     0.4d0 0.4d0 
+>          9     0.001d0 0.001d0
+>          10    0.001d0 0.001d0 -0.001d0 -0.001d0
+>          11    2.5d2 
+>          12    5.d-3
+>          13    $para1 eup=-1.0d0 edown=-1.0d0 uu=2.0d0 $end 
+>          14    $field fieldtype= 1 lreadomega = T $end
+>          15    0.06d0 0.06d0 0.06d0 0.06d0
+>          16    $jobinfo lsparse=T psfjob=T itype_psf=1 $end
+>          19    $adiabatic lad=T $end
+>          20    $resume icont=0 lresume=T nresume=2000 $end
+>          21    $dos ldos=T iorbs_dos=1 ispin_dos=1 lfreq_dos=T 
+>          22         freq_dos= xxxx maxit_dos=20000 crit_dos=1.d-7 $end
           It is noted that the standard input file does not require the line numbers in the left side.
+
   Users can run HEOM-QUICK2 with the command 
-  "./path/to/HEOM-QUICK2.x.x.x/bin/HEOM-QUICK2.x <input_file_name> out_file_name".
+>  "./path/to/HEOM-QUICK2.x.x.x/bin/HEOM-QUICK2.x <input_file_name> out_file_name".
+
   These above examples are given in "/path/to/HEOM-QUICK2.x.x.x/readme/example".
 
   
-  Now we introduce the tags in these input files. 
-        Line 1: task type;
-            "1": time propagation from an initial state given by previous calculations;
-            "2": iterative calculation to solve steady state from an initial state given by the program;
-            "3": iterative calculation to solve steady state from an initial state given by previous calculations;
-            "4": time propagation from an initial state given by the program;
-            "6": calculate time-dependent response properties from "TAPE.resume";
-        Line 2: truncation tier;
-        Line 3: the number of Padé or Matsubara poles, deactivated in Prony scheme;
-        Line 4: the number of impurity;
-        Line 5: spin degrees of freedom;
-        Line 6: the number of baths;
-        Line 7: band width of each bath;
-        Line 8: coupling strengths between each bath and system;
-        Line 9: temperature of each bath;
-        Line 10: magnitude of spin-specific bias voltage;
-        Line 11: length of time evolution, deactivated for steady-state calculation;
-        Line 12: time step length;
-        para1: the energetic parameters of SIAM; 
-             The program offers other namelists for different model systems:
-               para2: two-level system;
-               para3: spinless two-impurity Anderson models;
-               para4: two-impurity Anderson models; 
-               para5: three-impurity Anderson models;
-               para_ hubbard: the single-site Hubbard model.
-        field: external bias voltage:
-             fieldtype=0: exponential voltage, require the inverse of characteristic time;
-             fieldtype=1: sinusoidal voltage, require the frequency if lreadomega=T;
-        jobinfo: the job control tag:
-               lsparse=T: use the sparse matrix technique;
-               psfjob =T: use the Prony fitting spectrum decomposition scheme;
-               psdfff =T: use the Fano spectrum decomposition scheme;
-               psdjob=T: use the Padé spectrum decomposition scheme, now default;
-               itype_psf: the preset results of Prony scheme at different temperature;
-               itype_fff: the preset results of Fano scheme with different scaling factors;
-        converge: the control tag in iterative calculations;
-                maxit0: the maximum step in iteration calculations;
-                crit: the criterion in iteration calculations;
-        method: the iterative algorithms in iterative calculations:
-              methodss=1: use the biconjugate gradient algorithm, does not support sparse matrix and the adiabatic truncation scheme;
-              methodss=2: use the transpose-free quasi-minimal-residue algorithm, supports sparse matrix and the adiabatic truncation scheme, now default;
-              methodss=4: use the Jacobi iteration algorithm, does not support the adiabatic truncation scheme;
-        tdjob: the time propagation algorithms:
-             tdmethod=1: use the 4th-order Runge-Kutta algorithm, supports sparse matrix and the adiabatic truncation scheme, now default;
-             tdmethod=2: use the Chebyshev expansion algorithm, does not support sparse matrix and the adiabatic truncation scheme;
-        adiabatic: the adiabatic truncation scheme: lad=T use the adiabatic scheme;
-        resume: the continuation job control tags for time propagation:
-              icont=1 & lresume=T: resume from previous "TAPE.resume";
-              nresume: save "TAPE_(tt).resume" after running "nresume" steps;
-        dos: the linear response calculation tags:
-           ldos: calculate linear response properties;
-           iorbs_dos& ispin_dos: the impurity and spin indices of system operators;
-           lfreq_dos: calculate response properties in frequency domain based on the iterative method, now default;
-           freq_dos: calculate response properties at a frequency equal to "freq_dos";
-           maxit_dos: the maximum step in iteration calculations;
-           crit_dos: the criterion in iteration calculations.
+##  Now we introduce the tags in these input files. 
+>        Line 1: task type;
+>            "1": time propagation from an initial state given by previous calculations;
+>            "2": iterative calculation to solve steady state from an initial state given by the program;
+>            "3": iterative calculation to solve steady state from an initial state given by previous calculations;
+>            "4": time propagation from an initial state given by the program;
+>            "6": calculate time-dependent response properties from "TAPE.resume";
+>        Line 2: truncation tier;
+>        Line 3: the number of Padé or Matsubara poles, deactivated in Prony scheme;
+>        Line 4: the number of impurity;
+>        Line 5: spin degrees of freedom;
+>        Line 6: the number of baths;
+>        Line 7: band width of each bath;
+>        Line 8: coupling strengths between each bath and system;
+>        Line 9: temperature of each bath;
+>        Line 10: magnitude of spin-specific bias voltage;
+>        Line 11: length of time evolution, deactivated for steady-state calculation;
+>        Line 12: time step length;
+>        para1: the energetic parameters of SIAM; 
+>             The program offers other namelists for different model systems:
+>               para2: two-level system;
+>               para3: spinless two-impurity Anderson models;
+>               para4: two-impurity Anderson models; 
+>               para5: three-impurity Anderson models;
+>               para_ hubbard: the single-site Hubbard model.
+>        field: external bias voltage:
+>             fieldtype=0: exponential voltage, require the inverse of characteristic time;
+>             fieldtype=1: sinusoidal voltage, require the frequency if lreadomega=T;
+>        jobinfo: the job control tag:
+>               lsparse=T: use the sparse matrix technique;
+>               psfjob =T: use the Prony fitting spectrum decomposition scheme;
+>               psdfff =T: use the Fano spectrum decomposition scheme;
+>               psdjob=T: use the Padé spectrum decomposition scheme, now default;
+>               itype_psf: the preset results of Prony scheme at different temperature;
+>               itype_fff: the preset results of Fano scheme with different scaling factors;
+>        converge: the control tag in iterative calculations;
+>                maxit0: the maximum step in iteration calculations;
+>                crit: the criterion in iteration calculations;
+>        method: the iterative algorithms in iterative calculations:
+>              methodss=1: use the biconjugate gradient algorithm, does not support sparse matrix and the adiabatic truncation scheme;
+>              methodss=2: use the transpose-free quasi-minimal-residue algorithm, supports sparse matrix and the adiabatic truncation scheme, now default;
+>              methodss=4: use the Jacobi iteration algorithm, does not support the adiabatic truncation scheme;
+>        tdjob: the time propagation algorithms:
+>             tdmethod=1: use the 4th-order Runge-Kutta algorithm, supports sparse matrix and the adiabatic truncation scheme, now default;
+>             tdmethod=2: use the Chebyshev expansion algorithm, does not support sparse matrix and the adiabatic truncation scheme;
+>        adiabatic: the adiabatic truncation scheme: lad=T use the adiabatic scheme;
+>        resume: the continuation job control tags for time propagation:
+>              icont=1 & lresume=T: resume from previous "TAPE.resume";
+>              nresume: save "TAPE_(tt).resume" after running "nresume" steps;
+>        dos: the linear response calculation tags:
+>           ldos: calculate linear response properties;
+>           iorbs_dos& ispin_dos: the impurity and spin indices of system operators;
+>           lfreq_dos: calculate response properties in frequency domain based on the iterative method, now default;
+>           freq_dos: calculate response properties at a frequency equal to "freq_dos";
+>           maxit_dos: the maximum step in iteration calculations;
+>           crit_dos: the criterion in iteration calculations.
 
 
 
