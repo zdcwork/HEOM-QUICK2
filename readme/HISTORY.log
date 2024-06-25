@@ -1,0 +1,641 @@
+
+VERSION (Date/Content)
+
+------------------------------------
+
+[0.3] 28 Jun, 2007 
+
+(1) diagonal correlation is taken as default by setting array "dxip" in <evaluatepara.f90>.
+(2) ifort make option changed from -O2 to -ipo -O3 -xN
+
+------------------------------------
+
+[0.4] 28 Jun, 2007
+
+(1) add array "amsori" for creation/annihilation operators which satisfy anti-commutation
+    relation; the array "amsall" contain only 1.d0 as non-zero elements, and they satisfy 
+    anti-commutation relation only between identical creation/annihilation operators. 
+    (see <checkanticomm.f90> for details)
+
+------------------------------------
+
+[0.41] 06 Jul, 2007
+
+(1) add "toffL" and "toffR" for applied voltages. "toffL/R" is the turn-off time of bias
+    voltage for the lead L/R.
+
+------------------------------------
+
+[0.42] 12 Jul, 2007
+
+(1) in <evaluatepara.f90>, define "dxip" to be half of its original value, i.e., linewidth is
+    one half of its original value (to match linewidth definition in literature)
+
+------------------------------------
+
+[-0.32] 14 Aug, 2007
+
+(1) use new derivations, finite anchoring tier for fermion baths.
+
+Note : POP and residue corrections UNAVAILABLE.
+
+------------------------------------
+
+[-0.33] 07 Sep, 2007
+
+(1) <calchs.f90> updated for norbs=2, nspin=1 case (double quantum dot)
+
+[-0.34] 10 Sep, 2007
+
+(1) Double quantum dot case is treated with AD HOC modification of correlation functions. 
+
+------------------------------------
+
+[-0.399] / [-0.40]  07 Nov, 2007
+
+(1) An "operator" is now labeled by (\sigma, \mu, s, \alpha). Each operator can appear
+    only once for any ADO.
+    As a result, the HEOM terminates at a finite tier 2*N_\alpha*N_c, where N_c is 
+    number of system orbitals coupled to the environment.
+
+------------------------------------
+
+[-0.499] / [-0.50]  08 Nov, 2007
+
+(1) An "operator" is now labeled by k=(\sigma, \mu, s, \alpha), where \sigma can be plus
+    or minus, \mu labels orbital, s is spin, and \alpha is lead index. Each operator 
+    is further spanned by different memory time (labeled by Matsubara index m, via
+    fluctuation-dissipation theorem, with diagonal correlation function presumed). 
+
+(2) Each operator can appear more than once for an ADO. If this happens, anti-commutation
+    relation needs to be considered. For instance, for an operator "a_k" which appears 
+    twice in an ADO, i.e., a_{ki} a_{kj}, where i and j are Matsubara indices, only 
+    those with i < j are to be included into HEOM. This thus avoid double counting (or 
+    redundancy) for ADOs.
+
+(3) As a result, the HEOM does not have a finite terminal tier, since there is no 
+    limitation on the appearance events for an arbitrary operator.
+
+------------------------------------
+
+[-0.503] / [-0.504]  17 Nov, 2007
+
+(1) POP truncation with ntier=2 for BICG steady states.
+
+(2) Symmetrization for POP influence functional is considered for ver=-0.503;
+    but not considered for ver=-0.504.
+
+------------------------------------
+
+[-0.505 ~ -0.511] 29 Nov, 2007
+
+(1) Time-dependent external field applied on the reduced system is added.
+
+(2) Dirac-delta-type excitation from t0 to t0+ is added (under check).
+
+(3) ac fields are changed from [1 - dcos(wt)] form to dsin(wt), so that dc component
+    is filtered.
+
+(4) some minor changes made for the main program.
+
+------------------------------------
+
+[-0.52] 14 Dec, 2007
+
+(1) <evaluatepara.f90> corrected for the evaluations of "cb" and "cd".
+
+------------------------------------
+
+[-0.522] 03 Jan, 2008
+
+(1) check (output) selected ADO for debugging purpose (ado.data)
+
+------------------------------------
+
+[-0.530] 04 Jan, 2008
+
+(1) Dirac-delta-function-type voltage pulse applied to leads from t0 to t0+ is added
+    (gauge invariance checked)
+
+------------------------------------
+
+[-0.540] 17 Jan, 2008
+
+(1) Chebyshev expansion algorithm for time-independent EOM (step or delta function
+    voltage) is added.
+
+------------------------------------
+
+[-0.549 ~ 0.59] 18 Feb, 2008
+
+(1) Lite-level (no identical-operator contribution) version
+
+(2) thermo-electrics-related observables processed
+
+(3) some minor modifications
+
+------------------------------------
+
+[-0.591] 24 Feb, 2008
+
+(1) some minor modifications, 
+(2) again <evaluatepara.f90> is corrected for the evaluations of "cb" and "cd".
+    (the uses of dipm and mpm for "cb" and "cd" are replaced by dpm)
+
+------------------------------------
+
+[-0.69 ~ -0.691] 27 Feb, 2008
+
+(1) Off-diagonal system-bath coupling taken into account 
+    (by turn on "offcor = .true."  in the namelist "bathcorr"), the definition for
+    linewidth matrix is changed accordingly.
+
+(2) some minor changes
+
+------------------------------------
+
+[-0.70] 29 Feb, 2008
+
+(1) some minor changes (of default values for flags)
+
+------------------------------------
+
+[-0.701] 04 Apr, 2008
+
+(1) resume job available for chebyshev propagator now.
+
+------------------------------------
+
+[-0.702] 19 Apr, 2008
+
+(1) megaflux (magnetic flux effor on offdiagonal coupling), see <evaluatepara.f90> for details
+
+------------------------------------
+
+[-0.703] 21 Apr, 2008
+
+(1) modified "offcor" (bcenterL = bcenterR = 0)
+
+------------------------------------
+
+[-0.71] 15 Jun, 2008
+
+(1) sinusoidal energy shift modified
+
+(2) In <bicg/calc_atrx_bicg.f90>, upper-tier evaluation optimized.
+
+------------------------------------
+
+[-0.711] 18 Jun, 2008
+
+(1) "offcor" modified again, now Drude part can have different gama coef.
+    (returned to the styple of version=-0.702, and that of ver=-0.703 is abandoned).
+  
+(2) An important bug is found in <calc_atrx_bicg.f90> where variables "dbi" and "ddi"
+    are now clarified (in older version, some mistakes by typo mixing them up).
+
+(3) Multi-Frequency-Dispersed (MFD) version for Lorentzian linewidth is drafted and debugged.
+
+------------------------------------
+
+[-0.713] 25 Jun, 2008
+
+(1) MFD is now tested.
+
+(2) name of executable is changed from "qdt_trans.x" to "heom.x"
+
+------------------------------------
+
+[-0.72] 11 Jul, 2008
+
+(1) MFD is under tested. Numerical stability is not good, especially for steady states.
+    Therefore, the integration along real axis is replaced by a shifted horizontal axis.
+    The y shift is determined by y = 1/2 * min(|W|, pi*T) to avoid any pole.
+
+(2) MFD for time evolution with 4th-order Runge-Kutta algorithm and with Chebyshev.
+                    
+------------------------------------
+
+[-0.721] 12 Jul, 2008
+
+(1) <makespectral.f90> is modified to allow a customized dimensionless dos(energy) func.
+
+(2) MFD for Kondo problem is not good, because T is low, and hence yshift is tiny.
+    To solve this, have to combine MFD to spectral decomposition (SD) technique.
+
+------------------------------------
+
+[-0.793] 12 Aug, 2008
+
+(1) A new and exact scheme of exponential expansion for correlation functions.
+    ncor (total exponential terms) = ndrude (poles from Jw) + nmats (Matsubara terms) + &
+                                     nfreq  (discretization of frequency integral)
+
+(2) Clarified and simplified code 
+
+(3) General spectral density function J(w) can be adopted now.
+
+------------------------------------
+
+[-0.796] 03 Sep, 2008
+
+(1) ispectral=2 added : dos(energy) = sinc(energy)**2
+
+    Important!
+    The combined SD-MFD scheme (ndrude+nmats+nfreq) works only for density-of-states
+    functions that can be analytically oontinued to complex plane.
+    A counter-example which cannot be applied is that:
+    dos(w) = dsqrt(1 - (w/a)**2) for |w|<=a and 0 otherwise. (JCP, Mujica, 1994)
+
+(2) Now fieldtype=5 added : cos(Omega*t); different from fieldtype=1 : sin(Omega*t)
+
+------------------------------------
+
+[-0.799] 14 Oct, 2008
+
+(1) More fieldtype options available, some of them are quite complicated.
+
+(2) megaflux=.true. modified, <makespectral.f90>, <specdensfunc.f90>, and 
+    <evaulatepara.f90> are modified accordingly. <crosscorr.f90> added.
+    for norbs=2, nspin=1 case, \Gamma_{12} = a * exp(eye * phi), now
+    a and phi become frequency dependent (non-Markovian cross-correlation), i.e.,
+    \Gamma_{12}(w) = a(w) * exp(eye * phi(w)), where a(w) and phi(w) can be
+    analytically continued to complex plane (no poles).
+
+    It is important to note that \Gamma_{21} = a * exp(-eye * phi) should be
+    used explicitly for analytical continuation, not dconjg(\Gamma_{12}). 
+    Therefore, the evaluation of "cd" is corrected in <evaluatepara.f90>.
+
+------------------------------------
+
+[-0.800] 15 Oct, 2008
+
+(1) minor change in <crosscorr.f90>.
+
+(2) minor change in <evaluatepara.f90> for monitoring the parameters and 
+    correlation functions.
+
+------------------------------------
+
+[-0.801] 25 Nov, 2008
+
+(1) the calculation of correlation functions with \sigma=+ is corrected 
+    (only offcor=.true. cases are affected).
+
+(2) references updated.
+
+------------------------------------
+
+[-0.803] 04 Dec, 2008
+
+(1) <crosscorr.f90> modified.
+
+(2) documentations added in <readme> folder.
+
+------------------------------------
+
+[-0.810] 23 Sep, 2009
+
+(1) Polynomial function decomposition (PFD) scheme for correlation function
+    implemented.
+
+------------------------------------
+
+[-0.820] 24 Sep, 2009
+
+(1) Remove problematic and unnecessary "lite" option
+
+(2) Allows for scaling coefficients so that all ADOs become dimensionless density operators
+
+------------------------------------
+
+[-0.832] 17 Aug, 2011
+
+(1) Modify matrix multiplication involving sparse creation/annihilation operator
+    matrix in both steady-state and time-dependent calculation
+    (to improve efficiency)
+
+(2) Now input file can have any name, run the program by 
+    $ ./heom < input_file > output_file &
+
+------------------------------------
+
+[-0.843] 18 Aug, 2011
+
+(1) Refine PFD scheme, and add Pade Spectral Decomposition (PSD) scheme
+
+------------------------------------
+
+[-0.855] 22 Aug, 2011
+
+(1) Add Transpose-Free Quasi-Minimal-Residue (TFQMR) method for solving
+    steady state
+
+(2) Improve the efficiency and memory usage of TFQMR method
+
+------------------------------------
+
+[-0.857] 24 Aug, 2011
+
+(1) Add CouPled two-term Look-ahead Quasi-Minimal-Residue (CPLQMR) method for
+    solving steady state
+
+------------------------------------
+
+[-0.860] 25 Aug, 2011
+
+(1) Add initial OpenMP support, now it works for solving steady state by 
+    using TFQMR method
+
+---------------------
+
+[-0.861] 25 Aug, 2011
+
+(1) Add initial OpenMP support for RK4 time propagator
+
+---------------------
+
+[-0.862] 04 Sep, 2011
+
+(1) Add initial OpenMP support for BICG method
+
+(2) Remove the inefficient DIIS method and BICG_I/O mode
+
+----------------------
+
+[-0.867] 14 Sep, 2011
+
+(1) Allow for calculation of system correlation function at equilibrium
+    (such as <a_i^+(t) a_i(0)> which is related to system density of states)
+
+-----------------------------------------
+
+[-0.872] 08 Nov, 2011
+
+(1) Corrected calculation of system correlation function at equilibrium 
+
+(2) Support calculation on multi-lead quantum dots
+
+(3) Simplified (modified) input format
+
+(4) Fixed various minor bugs
+
+-----------------------------------------
+
+[-0.873] 23 Nov, 2011
+
+(1) Add hubbard model for system Hamiltonian and its HF version
+
+-----------------------------------------
+
+[-0.874] 06 Jan, 2012
+
+(1) Caculate system equilibrium dynamic properties such as system
+correlation functions, spectral function, and retarded Green function
+by frequency-domain approach (each calculation gives dynamic properties at
+one frequency point)
+
+-----------------------------------------
+
+[-0.875] 16 Jan, 2012
+
+(1) For init=4, skip linear solver for stationary state, and do td from a 
+user-defined initial state. The diagonal elements of initial density matrix 
+are read from input (through the "readini" namelist), and the ADOs are set as
+zero
+
+-----------------------------------------
+
+[-0.876] 18 Jan, 2012
+
+(1) Provides a general format to input system Hamiltonian, see main/genhs.f90
+and remarks therein
+
+
+-----------------------------------------
+
+[-0.877] 07 May, 2012
+
+(1) Merge identical leads to reduce computational cost for equilibrium properties
+    Note: 
+    a. only init=2 or init=3 is allowed
+    b. does not work with megaflux=T 
+    c. checkspectral now works only for ialf=1
+    d. identical leads means: same bandwidth, temperature, and engyshift=0
+
+-----------------------------------------
+
+[-0.879] 07 Aug, 2012
+
+(1) PSD_LOR scheme, use lorentzian function fitting for residual reservoir 
+    correlation function 
+
+(2) Correct estimate for Kondo temperature for single impurity Anderson model (SIAM)
+
+-----------------------------------------
+
+[-0.880] 08 Aug, 2012
+
+(1) Correct the estimate of Kondo temperature, now it provides
+    Poor Man's Kondo energy scale and the Kondo temperature of a symmetric
+    Anderson impurity model (see Eq.20 of arXiv:1207.2631v1) 
+
+(2) Calculation of noncollinear local magnetic susceptibility by
+    adding a small z-direction magnetic field. Also gives the <Sz> and <Sz^2>
+
+-----------------------------------------
+
+[-0.882] 09 Oct, 2012
+
+(1) Support multi-lorentzian represented reservoir spectral functions  
+    (invoked by $band namelist)
+
+(2) Correct the output of retarded Green's functions and self-energies 
+    in <corrfunc.f90>
+
+-----------------------------------------
+
+[-0.884] 06 Feb, 2013
+
+(1) Improve the sorting of indextable by using Quicksort algorithm from 
+    `Numerical Recipes in Fortran'
+
+(2) Introduce filter at the truncation level of hierarchy. The filter 
+    is activated by setting `lfilter = .true.':
+    Remove ADOs involving less than `nfilter_count' memory contents 
+    which have the `nfilter_long' fastest decay rate
+
+-----------------------------------------
+
+[-0.887] 22 Oct, 2013
+
+(1) Modify `offcor = .true.' case: compare with the AB-ring of PRB 83,
+    115318 (2011) (see Fig. 2 there).
+    This issue requires further testing
+
+(2) Explore the sparsity of ADOs (lchksparse and lchkdos).
+    When doing the checking, stringent convergence criteria for linear
+    solver such as TFQMR should be used (crit or crit_dos = 1.e-9 or smaller)
+
+-----------------------------------------
+
+[-0.888] 11 Nov, 2013
+
+(1) This is a major upgrade of this code. 
+    The program now allows to use SPARSE mode to run all calculations, 
+    including ground/steady-state and time-evolution, as well as the 
+    calculation of system spectral density function 
+
+    To activate the SPARSE mode, include the following line in input:
+
+    $jobinfo  lsparse = .true.  $end
+  
+    The program predetermines the nonzero elements of reduced density 
+    matrix and all ADOs and save them in sparse COO format. All the
+    subsequent matrix manipulations are carried out using COO format
+    (sometimes need to transform back to dense matrix). The sparsity
+    topology of rho and all ADOs are determined based on the sparisty
+    of Hamiltonian; see <prelude_spa.f90> and <prelude_cf_spa.f90>.
+
+    Note: 
+    If some elements of Hamiltonian matrix are zero in initial ground
+    state, but become nonzero in the later time evolution. These nonzero  
+    elements should be included in the consideration/determination of 
+    sparsity topology of rho and all ADOs. In such a case, the code
+    needs to be modified to include this change (not available yet in
+    this version)
+
+    About COO format for storage of ADOs:
+    [a] in dense format, rho(1:nrho,1:nrho,1:nunk), where nunk is 
+        number of ADOs. 
+    
+    [b] in sparse COO format, nunk is still number of ADO matrices. 
+        Other relevant variables/arrays are 
+        lunk_spa             : all nonzero elements of ADO 
+        rho_spa(1:lunk_spa)  : values       of all nonzero elements 
+        irow_spa(1:lunk_spa) : row    index of all nonzero elements
+        icol_spa(1:lunk_spa) : column index of all nonzero elements
+        nnz_spa(1:nunk)      : number of nonzeros for each ADO matrix
+        ind_spa(1:nunk)      : the position of first nonzero of a certain ADO
+                               in the arrays rho_spa, irow_spa, and icol_spa
+  
+    [c] some useful subroutines which handle the manipulation of 
+        sparse matrix and sparse-dense conversion are in folder <utility>
+
+(2) Fixed some bugs
+
+-----------------------------------------
+
+[-0.889] 15 Nov, 2013
+
+(1) Speeed-up for SPARSE mode TFQMR solver for OpenMP jobs (Serial codes
+    remain unchanged)
+ 
+    Important: 
+    This version requires all COO sparse matrix are sorted in the following way: 
+    The nonzero elements with smaller column indices always appear earlier in 
+    the COO value array. Refer to subroutine 'zmat_dns2coo'
+
+(2) Fixed some bugs
+   
+-----------------------------------------
+
+[-0.890] 30 Nov, 2013 -- 11 Dec, 2013
+
+(1) 'idiff = .false.' situation in <main/buildcoef.f90> is deemed as error --
+    Physically, each operator (a_ms or a_ms^\dag) is resolved by ncor terms,
+    and each term may appear multiple times (two identical terms do not cancel)
+
+(2) 'ltrun_der = .true.' uses a new truncation scheme: the derivatives (instead
+    of the values) of the terminal-tier ADOs are presumed as zero
+    (still under development and testing)
+
+(3) Fixed a small bug in <corrfunc/corrfunc.f90>
+
+(4) Speed up for SPARSE mode
+
+(5) Unify 'serial' and 'openmp' parts. Smplify the code structure 
+
+(6) Improve/Expand the Files IO 
+
+-----------------------------------------
+
+[-0.892] 01 Jul, 2014
+
+(1) Minor modification of <main/evaluatepara.f90>
+
+(2) Verify again the `offcor = .true.' case: compare with the AB-ring of PRB 83,
+    115318 (2011) (see Fig. 2 there; and cf. ver=-0.883).
+    Note that, to reproduce the literature results, the initial reduced density
+    matrix at t0 = 0 should be modified -- initially the decoupled system is in
+    the empty state (rho(1,1,1) = 1, and all other matrix elements are zero).
+
+-----------------------------------------
+
+[-0.893] 15 Jul, 2014
+
+(1) For AB-ring case (norbs=2 & nspin=2 & offcor=T & lspin3d=T) where multiple 
+    stationary states exist (corresponding to different spin states), use different
+    initial condition of rho to obtain the different stationary state. This is
+    done by assigning different values to 'iguess' of namelist 'guess0'
+
+(2) For lspin3d=T case, add crystal field splitting Hamiltonian (or zero-field
+    splitting) with the form of H' = Dxx * Sx^2 + Dyy * Sy^2 + Dzz * Sz^2
+
+-----------------------------------------
+
+[-0.894] 06 Aug, 2014
+
+(1) Improve the designation of sparsity, remove a small bug which occurs at a
+    very large U
+
+(2) Add 'lrcmplx' to namelist 'coupling' to allow the input of complex couplings
+
+(3) Add two subroutines for the calculation of concurrence between two levels 
+    (or two quantum dots), the new subroutines are in a new folder 'qubits'
+
+-----------------------------------------
+
+[-0.895] 28 Oct, 2014
+
+(1) Add the SPARSE MODE for delta-function voltage, see <fermion/modinileads_spa.f90> 
+
+-----------------------------------------
+
+[-0.900] 05 Apr, 2016
+
+(1) Change the program name to HEOM-QUICK; update the program info
+
+(2) Add heat bath treated at complete second-order perturbative level, see the 
+    namelist 'heat_bath'; see <heat_bath/prelude_hb.f90>
+
+    Use 'lhb=.true.' to activate. Current code does not support BICG solver
+
+    The code supports two types of bath spectral model: Drude and super-Drude models.
+    They correspond to itype_hb=1 and itype_hb=2, respectively.
+
+    It is assumed that the existence of heat bath should not (physically) change the
+    systmem physical space, and hence the sparsity of density matrices are expected to
+    be same as without the heat bath 
+
+-----------------------------------------
+
+[-0.901] 03 Jun, 2016
+
+(1) Fix a bug in <prelude_spa.f90> -- replace the problematic exp(H) operation by 
+    using a finite-order Taylor series; see <calc_exp_hmat.f90>
+
+-----------------------------------------
+
+[-0.902] 23 Jun, 2016
+
+(1) Modify the second-order perturbative treatment of heat bath -- replace the Green
+    function in the Hilbert space by that in the Liouville space; see 
+    <heat_bath/calc_qst_hb.f90> 
+
+-----------------------------------------
+
+[-0.903] 09 Oct, 2017
+
+(1) Start to add the Simplified HEOM method with end-time treatment for the Grassmann
+    variables

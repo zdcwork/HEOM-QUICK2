@@ -1,0 +1,19 @@
+compile : no -static option
+!
+current approximation 
+
+C_ab(t-tau) = delta_ab * C_aa(t - tau)    (only diagonal correlation is considered)
+!
+------------------------------
+
+tentative roadmap:
+
+version = -0.95,  RC1
+version = -1.00, final. 
+
+------------------------------
+
+1. Efficiency issue of A^T * X operation for solving steady state
+   Currently it is done in Liouville space. In the future
+   it should be modified and done in Hilbert space 
+-----------
