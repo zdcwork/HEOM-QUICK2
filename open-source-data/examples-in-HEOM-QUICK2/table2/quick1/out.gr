@@ -1,0 +1,2598 @@
+ 
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 
+                       H E O M - Q U I C K                                
+ 
+               Hierarchical Equations of Motion for                       
+             QUantum Impurity with a Correlated Kernel                    
+ 
+                           developed by                                   
+          Prof. Xiao Zheng and Prof. YiJing Yan's Groups @               
+           University of Science and Technology of China                  
+                         Fudan University                                 
+ 
+             Email: xz58@ustc.edu.cn, xzheng@fudan.edu.cn                 
+ 
+               VERSION     2.020
+ 
+            CopyRight (C) 2007-2023. All Rights Reserved.                 
+ 
+   References:                                                            
+   [1] J. S. Jin, S. Welack, J. Y. Luo, X. Q. Li, P. Cui, R. X. Xu,       
+       and Y. J. Yan, J. Chem. Phys. 126, 134113 (2007)                   
+   [2] J. S. Jin, X. Zheng, and Y. J. Yan, J. Chem. Phys. 128,            
+       234703 (2008)                                                      
+   [3] X. Zheng, J. S. Jin, and Y. J. Yan, J. Chem. Phys. 129,            
+       184112 (2008)                                                      
+   [4] X. Zheng, J. S. Jin, and Y. J. Yan, New J. Phys. 10,               
+       093016 (2008)                                                      
+   [5] X. Zheng, J. Y. Luo, J. S. Jin, and Y. J. Yan, J. Chem. Phys.      
+       130, 124508 (2009)                                                 
+   [6] X. Zheng, J. S. Jin, S. Welack, M. Luo, and Y. J. Yan,             
+       J. Chem. Phys. 130, 164708 (2009)                                  
+   [7] J. Hu, R. X. Xu, and Y. J. Yan, J. Chem. Phys. 133, 101106 (2010)  
+   [8] J. Hu, M. Luo, F. Jiang, R. X. Xu, and Y. J. Yan,                  
+       J. Chem. Phys. 134, 244106 (2011)                                  
+   [9] Z. Li, N. H. Tong, X. Zheng, J. H. Wei, J. Hu, and Y. J. Yan,      
+       Phys. Rev. Lett. 109, 266403 (2012)                                
+  [10] S. Wang, X. Zheng, J. Jin, and Y. J. Yan,                          
+       Phys. Rev. B 88, 035129 (2013)                                     
+  [11] D. Hou, R. Wang, X. Zheng, N. H. Tong, J. H. Wei, and Y. J. Yan,   
+       Phys. Rev. B 90, 045141 (2014)                                     
+  [12] D. Hou, S. Wang, R. Wang, L. Ye, R. X. Xu, X. Zheng, and Y. J. Yan,
+       J. Chem. Phys. 142, 104112 (2015)                                  
+  [13] L. Ye, X. Wang, D. Hou, R. X. Xu, X. Zheng, and Y. J. Yan,         
+       WIREs Comput. Mol. Sci. 6, 608 (2016)                              
+  [14] H.-D. Zhang, Q. Qiao, R. X. Xu, X. Zheng, and Y. J. Yan,           
+       J. Chem. Phys. 147, 044105 (2017)                                  
+  [15] L. Ye, H. D. Zhang, Y. Wang, X. Zheng, and Y. J. Yan,              
+       J. Chem. Phys. 147, 074111 (2017)                                  
+  [16] L. Han, H.-D. Zhang, X. Zheng, and Y. J. Yan,                      
+       J. Chem. Phys. 148, 234108 (2018)                                  
+  [17] L. Cui, H.-D. Zhang, X. Zheng, R.-X. Xu, and Y. J. Yan,            
+       J. Chem. Phys. 151, 024110 (2019)                                  
+  [18] H.-D. Zhang, L. Cui, H. Gong, R.-X. Xu, X. Zheng, and Y. J. Yan,   
+       J. Chem. Phys. 152, 064107 (2020)                                  
+  [19] D. Zhang, X. Ding, H.-D. Zhang, X. Zheng, and Y. J. Yan,           
+       Chin. J. Chem. Phys. 34, 905 (2021)                                
+  [20] Z.-H. Chen, Y. Wang, X. Zheng, R.-X. Xu, and Y. J. Yan,            
+       J. Chem. Phys. 156, 221102 (2022)                                  
+  [21] X. Ding, D. Zhang, L. Ye, X. Zheng, and Y. J. Yan,                 
+       J. Chem. Phys. 157, 224107 (2022)                                  
+  [22] D. Zhang, L. Zuo, L. Ye, Z.-H. Chen, Y. Wang, R.-X. Xu, X. Zheng,  
+       and Y. J. Yan, J. Chem. Phys. 158, 014106 (2023)                   
+ 
+ +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 
+
+ Job started on 
+ 23/05/2024  18:36:05
+
+ 
+ genoutput: original input file ========================================> 
+     2                                                                                                                  
+     5                                                                                                                  
+     34                                                                                                                 
+     1                                                                                                                  
+     2                                                                                                                  
+     2                                                                                                                  
+  3.0d0 3.0d0                                                                                                           
+  0.4d0 0.4d0                                                                                                           
+  0.003d0 0.003d0                                                                                                       
+  0.001d0 0.0010d0 0.d0 0.d0                                                                                            
+  1.d3                                                                                                                  
+  2.d-2                                                                                                                 
+                                                                                                                        
+ $para1  eup=-1.0d0 edown=-1.0d0 uu=2.0d0  fixdot=T $end                                                                
+                                                                                                                        
+ $field  fieldtype=0  $end                                                                                              
+ 1.d-20 1.d-20 1.d-20 1.d-20                                                                                            
+                                                                                                                        
+ $jobinfo  lsparse=T psdjob=T  itype_fff=3  $end                                                                        
+                                                                                                                        
+ $converge maxit0=20000 crit=2.d-6   $end                                                                               
+ genoutput: <=========================================== end of input file
+sj_dbg_timer_start: ntimer=   1
+ 
+ get_omp_env: number of threads =           48
+ get_omp_env: number of procs   =           48
+ get_omp_env: max thread number =           48
+ get_omp_env: check nthreads_omp           48
+ get_omp_env: The code is running in parallel mode 
+ 
+ main: COP truncation is adopted for the hierarchy 
+ 
+  Pade-Spectral-Decomposition (PSD) Scheme is used 
+ 
+ units for quantum dots are employed                      
+ energy~meV, time~ps, freq.~10^12Hz, j~pA, jheat~fW, capa.~fF 
+ if you want the input and output values in the atomic unit
+ please add the following statement in the input file
+ "$units funits = 2 $end"
+ 
+ evaluatepara: input file read successfully! 
+ evaluatepara: bcenter(nalf,nspin) 
+  0.000000000000000E+000  0.000000000000000E+000  0.000000000000000E+000
+  0.000000000000000E+000
+ 
+ evaluatepara: system parameters used 
+ evaluatepara: init  =            2
+ evaluatepara: ntier =            5
+ evaluatepara: nmats =           34
+ evaluatepara: norbs =            1
+ evaluatepara: nspin =            2
+ evaluatepara: nalf  =            2
+ evaluatepara: bandwidth(nalf) 
+evaluatepara:  0.300000E+001   0.300000E+001
+ evaluatepara: bcenter(nalf,nspin) 
+evaluatepara:  0.000000E+000   0.000000E+000   0.000000E+000   0.000000E+000
+ evaluatepara: linewidth(nalf,norbs) 
+evaluatepara:  0.400000E+000   0.400000E+000
+ evaluatepara: dinvbeta(nalf) 
+evaluatepara:  0.300000E-002   0.300000E-002
+ evaluatepara: engyshift(nalf,nspin) 
+evaluatepara:  0.100000E-002   0.100000E-002   0.000000E+000   0.000000E+000
+ 
+  total basis funcs to unravel bath correlation func           35
+  # of Drude poles                 1
+  # of Pade       terms           34
+ 
+ evaluatepara: Temperature of leads (Kelvin) 
+  3.480900000000000E-002  3.480900000000000E-002
+ zpout_psd: show dcoefeta
+zpout_psd: dcoefeta(   1) =  0.100000E+001
+zpout_psd: dcoefeta(   2) =  0.100000E+001
+zpout_psd: dcoefeta(   3) =  0.100000E+001
+zpout_psd: dcoefeta(   4) =  0.100000E+001
+zpout_psd: dcoefeta(   5) =  0.100000E+001
+zpout_psd: dcoefeta(   6) =  0.100000E+001
+zpout_psd: dcoefeta(   7) =  0.100000E+001
+zpout_psd: dcoefeta(   8) =  0.100000E+001
+zpout_psd: dcoefeta(   9) =  0.100000E+001
+zpout_psd: dcoefeta(  10) =  0.100000E+001
+zpout_psd: dcoefeta(  11) =  0.100000E+001
+zpout_psd: dcoefeta(  12) =  0.100000E+001
+zpout_psd: dcoefeta(  13) =  0.100000E+001
+zpout_psd: dcoefeta(  14) =  0.100000E+001
+zpout_psd: dcoefeta(  15) =  0.100000E+001
+zpout_psd: dcoefeta(  16) =  0.100000E+001
+zpout_psd: dcoefeta(  17) =  0.100000E+001
+zpout_psd: dcoefeta(  18) =  0.100000E+001
+zpout_psd: dcoefeta(  19) =  0.100016E+001
+zpout_psd: dcoefeta(  20) =  0.100438E+001
+zpout_psd: dcoefeta(  21) =  0.104688E+001
+zpout_psd: dcoefeta(  22) =  0.120787E+001
+zpout_psd: dcoefeta(  23) =  0.150030E+001
+zpout_psd: dcoefeta(  24) =  0.189049E+001
+zpout_psd: dcoefeta(  25) =  0.239431E+001
+zpout_psd: dcoefeta(  26) =  0.307005E+001
+zpout_psd: dcoefeta(  27) =  0.402063E+001
+zpout_psd: dcoefeta(  28) =  0.543218E+001
+zpout_psd: dcoefeta(  29) =  0.767268E+001
+zpout_psd: dcoefeta(  30) =  0.115597E+002
+zpout_psd: dcoefeta(  31) =  0.192305E+002
+zpout_psd: dcoefeta(  32) =  0.378619E+002
+zpout_psd: dcoefeta(  33) =  0.105477E+003
+zpout_psd: dcoefeta(  34) =  0.950631E+003
+ 
+  coupling matrix for sytem-lead_L 
+             1
+   1  0.400000D+00
+ 
+  coupling matrix for sytem-lead_R 
+             1
+   1  0.400000D+00
+ 
+  check nonnegative-definite property for SL 
+  check nonnegative-definite property for SR 
+  checkspectral complete! 
+  dxip is verified to be OK! linewidth are as follows 
+  left    0.400000E+00
+ right    0.400000E+00
+ 
+ evaluatepara: sorting memory components in decreasing decay rate 
+ evaluatepara: rank, kmats, dmemexp                               
+  1    35   0.896263E+001
+  2     1   0.300000E+001
+  3    34   0.299174E+001
+  4    33   0.180011E+001
+  5    32   0.129129E+001
+  6    31   0.101012E+001
+  7    30   0.832517E+000
+  8    29   0.710756E+000
+  9    28   0.622603E+000
+ 10    27   0.556320E+000
+ 11    26   0.505154E+000
+ 12    25   0.464985E+000
+ 13    24   0.433178E+000
+ 14    23   0.407825E+000
+ 15    22   0.386806E+000
+ 16    21   0.367593E+000
+ 17    20   0.348718E+000
+ 18    19   0.329867E+000
+ 19    18   0.311018E+000
+ 20    17   0.292168E+000
+ 21    16   0.273319E+000
+ 22    15   0.254469E+000
+ 23    14   0.235619E+000
+ 24    13   0.216770E+000
+ 25    12   0.197920E+000
+ 26    11   0.179071E+000
+ 27    10   0.160221E+000
+ 28     9   0.141372E+000
+ 29     8   0.122522E+000
+ 30     7   0.103673E+000
+ 31     6   0.848230E-001
+ 32     5   0.659734E-001
+ 33     4   0.471239E-001
+ 34     3   0.282743E-001
+ 35     2   0.942478E-002
+ evaluatepara: imats, kpmats                                      
+  1     2
+  2    35
+  3    34
+  4    33
+  5    32
+  6    31
+  7    30
+  8    29
+  9    28
+ 10    27
+ 11    26
+ 12    25
+ 13    24
+ 14    23
+ 15    22
+ 16    21
+ 17    20
+ 18    19
+ 19    18
+ 20    17
+ 21    16
+ 22    15
+ 23    14
+ 24    13
+ 25    12
+ 26    11
+ 27    10
+ 28     9
+ 29     8
+ 30     7
+ 31     6
+ 32     5
+ 33     4
+ 34     3
+ 35     1
+ 
+ evaluatepara: fermi function is approximated by PSD expansion 
+ 
+  Matsubara/Pade/Prony parameters 
+ 
+ isgn= 1  nalf= 1  iorbs= 1  ispin= 1
+ mats=   1   cb     0.0000    -0.0028 cgamma    -0.0094     0.0000 impact %  30.305
+ mats=   2   cb     0.0000    -0.0028 cgamma    -0.0283     0.0000 impact %  10.102
+ mats=   3   cb     0.0000    -0.0028 cgamma    -0.0471     0.0000 impact %   6.062
+ mats=   4   cb     0.0000    -0.0028 cgamma    -0.0660     0.0000 impact %   4.330
+ mats=   5   cb     0.0000    -0.0028 cgamma    -0.0848     0.0000 impact %   3.369
+ mats=   6   cb     0.0000    -0.0028 cgamma    -0.1037     0.0000 impact %   2.757
+ mats=   7   cb     0.0000    -0.0028 cgamma    -0.1225     0.0000 impact %   2.333
+ mats=   8   cb     0.0000    -0.0028 cgamma    -0.1414     0.0000 impact %   2.023
+ mats=   9   cb     0.0000    -0.0028 cgamma    -0.1602     0.0000 impact %   1.785
+ mats=  10   cb     0.0000    -0.0028 cgamma    -0.1791     0.0000 impact %   1.598
+ mats=  11   cb     0.0000    -0.0028 cgamma    -0.1979     0.0000 impact %   1.446
+ mats=  12   cb     0.0000    -0.0028 cgamma    -0.2168     0.0000 impact %   1.321
+ mats=  13   cb     0.0000    -0.0028 cgamma    -0.2356     0.0000 impact %   1.216
+ mats=  14   cb     0.0000    -0.0028 cgamma    -0.2545     0.0000 impact %   1.126
+ mats=  15   cb     0.0000    -0.0028 cgamma    -0.2733     0.0000 impact %   1.049
+ mats=  16   cb     0.0000    -0.0028 cgamma    -0.2922     0.0000 impact %   0.982
+ mats=  17   cb     0.0000    -0.0028 cgamma    -0.3110     0.0000 impact %   0.923
+ mats=  18   cb     0.0000    -0.0028 cgamma    -0.3299     0.0000 impact %   0.871
+ mats=  19   cb     0.0000    -0.0028 cgamma    -0.3487     0.0000 impact %   0.825
+ mats=  20   cb     0.0000    -0.0028 cgamma    -0.3676     0.0000 impact %   0.785
+ mats=  21   cb     0.0000    -0.0029 cgamma    -0.3868     0.0000 impact %   0.762
+ mats=  22   cb     0.0000    -0.0034 cgamma    -0.4078     0.0000 impact %   0.777
+ mats=  23   cb     0.0000    -0.0042 cgamma    -0.4332     0.0000 impact %   0.816
+ mats=  24   cb     0.0000    -0.0054 cgamma    -0.4650     0.0000 impact %   0.855
+ mats=  25   cb     0.0000    -0.0068 cgamma    -0.5052     0.0000 impact %   0.888
+ mats=  26   cb     0.0000    -0.0088 cgamma    -0.5563     0.0000 impact %   0.915
+ mats=  27   cb     0.0000    -0.0116 cgamma    -0.6226     0.0000 impact %   0.940
+ mats=  28   cb     0.0000    -0.0159 cgamma    -0.7108     0.0000 impact %   0.964
+ mats=  29   cb     0.0000    -0.0230 cgamma    -0.8325     0.0000 impact %   0.989
+ mats=  30   cb     0.0000    -0.0361 cgamma    -1.0101     0.0000 impact %   1.021
+ mats=  31   cb     0.0000    -0.0654 cgamma    -1.2913     0.0000 impact %   1.075
+ mats=  32   cb     0.0000    -0.1639 cgamma    -1.8001     0.0000 impact %   1.220
+ mats=  33   cb     0.0000   -53.1152 cgamma    -2.9917     0.0000 impact %  13.220
+ mats=  34   cb     0.0000     0.3322 cgamma    -8.9626     0.0000 impact %   0.349
+ 
+ evaluatepara: exponential voltages are applied, parameters are 
+ evaluatepara: amplitude, amps(nspin, malf) 
+  1.000000000000000E-003  1.000000000000000E-003  0.000000000000000E+000
+  0.000000000000000E+000
+ evaluatepara: characteristic decay time, tchar(nspin, malf) 
+  9.999999999999999E-021  9.999999999999999E-021  9.999999999999999E-021
+  9.999999999999999E-021
+ evaluatepara: lead energy shift at t=infty: ialf, ispin, eshift
+ evaluatepara:            1           1  1.000000000000000E-003
+ evaluatepara: lead energy shift at t=infty: ialf, ispin, eshift
+ evaluatepara:            1           2  1.000000000000000E-003
+ evaluatepara: lead energy shift at t=infty: ialf, ispin, eshift
+ evaluatepara:            2           1  0.000000000000000E+000
+ evaluatepara: lead energy shift at t=infty: ialf, ispin, eshift
+ evaluatepara:            2           2  0.000000000000000E+000
+ 
+ evaluatepara: gatetype =            0
+ evaluatepara: gpara1 =   0.000000000000000E+000
+ evaluatepara: gpara2 =   0.000000000000000E+000
+ evaluatepara: gpara3 =   0.000000000000000E+000
+ evaluatepara: gpara4 =   0.000000000000000E+000
+ 
+ evaluatepara: egate =   0.000000000000000E+000
+ evaluatepara: ton_gate =   0.100000000000000     
+ evaluatepara: toff_gate =   0.200000000000000     
+ 
+ no external field is applied to the dot
+ 
+  C_{iorbs,iorbsp,ispin,ialf,isgn}(t) written to <corr.data> 
+  checking C^\sigma(t)         
+ iorbs= 1   iorbsp= 1   ispin= 1   ialf= 1   isgn= 1
+ 
+relative discrepancy to exact corrfunc      0.984   %
+ exact,  exact - approximate    341.267265196927        3.35794897715534     
+  output cb parameters 
+  isgn, ialf, icor, ispin, iorbs2, cb 
+  1   1   1   1   1     0.69245213     53.18619155
+  1   1   1   2   1     0.69245213     53.18619155
+  1   1   2   1   1     0.00000000     -0.00276984
+  1   1   2   2   1     0.00000000     -0.00276984
+  1   1   3   1   1     0.00000000     -0.00277005
+  1   1   3   2   1     0.00000000     -0.00277005
+  1   1   4   1   1     0.00000000     -0.00277049
+  1   1   4   2   1     0.00000000     -0.00277049
+  1   1   5   1   1     0.00000000     -0.00277115
+  1   1   5   2   1     0.00000000     -0.00277115
+  1   1   6   1   1     0.00000000     -0.00277202
+  1   1   6   2   1     0.00000000     -0.00277202
+  1   1   7   1   1     0.00000000     -0.00277312
+  1   1   7   2   1     0.00000000     -0.00277312
+  1   1   8   1   1     0.00000000     -0.00277444
+  1   1   8   2   1     0.00000000     -0.00277444
+  1   1   9   1   1     0.00000000     -0.00277597
+  1   1   9   2   1     0.00000000     -0.00277597
+  1   1  10   1   1     0.00000000     -0.00277773
+  1   1  10   2   1     0.00000000     -0.00277773
+  1   1  11   1   1     0.00000000     -0.00277971
+  1   1  11   2   1     0.00000000     -0.00277971
+  1   1  12   1   1     0.00000000     -0.00278192
+  1   1  12   2   1     0.00000000     -0.00278192
+  1   1  13   1   1     0.00000000     -0.00278435
+  1   1  13   2   1     0.00000000     -0.00278435
+  1   1  14   1   1     0.00000000     -0.00278700
+  1   1  14   2   1     0.00000000     -0.00278700
+  1   1  15   1   1     0.00000000     -0.00278988
+  1   1  15   2   1     0.00000000     -0.00278988
+  1   1  16   1   1     0.00000000     -0.00279299
+  1   1  16   2   1     0.00000000     -0.00279299
+  1   1  17   1   1     0.00000000     -0.00279633
+  1   1  17   2   1     0.00000000     -0.00279633
+  1   1  18   1   1     0.00000000     -0.00279990
+  1   1  18   2   1     0.00000000     -0.00279990
+  1   1  19   1   1     0.00000000     -0.00280371
+  1   1  19   2   1     0.00000000     -0.00280371
+  1   1  20   1   1     0.00000000     -0.00280821
+  1   1  20   2   1     0.00000000     -0.00280821
+  1   1  21   1   1     0.00000000     -0.00282433
+  1   1  21   2   1     0.00000000     -0.00282433
+  1   1  22   1   1     0.00000000     -0.00294869
+  1   1  22   2   1     0.00000000     -0.00294869
+  1   1  23   1   1     0.00000000     -0.00340857
+  1   1  23   2   1     0.00000000     -0.00340857
+  1   1  24   1   1     0.00000000     -0.00424404
+  1   1  24   2   1     0.00000000     -0.00424404
+  1   1  25   1   1     0.00000000     -0.00536520
+  1   1  25   2   1     0.00000000     -0.00536520
+  1   1  26   1   1     0.00000000     -0.00682531
+  1   1  26   2   1     0.00000000     -0.00682531
+  1   1  27   1   1     0.00000000     -0.00880628
+  1   1  27   2   1     0.00000000     -0.00880628
+  1   1  28   1   1     0.00000000     -0.01163762
+  1   1  28   2   1     0.00000000     -0.01163762
+  1   1  29   1   1     0.00000000     -0.01594086
+  1   1  29   2   1     0.00000000     -0.01594086
+  1   1  30   1   1     0.00000000     -0.02302498
+  1   1  30   2   1     0.00000000     -0.02302498
+  1   1  31   1   1     0.00000000     -0.03611238
+  1   1  31   2   1     0.00000000     -0.03611238
+  1   1  32   1   1     0.00000000     -0.06537714
+  1   1  32   2   1     0.00000000     -0.06537714
+  1   1  33   1   1     0.00000000     -0.16387119
+  1   1  33   2   1     0.00000000     -0.16387119
+  1   1  34   1   1     0.00000000    -53.11515700
+  1   1  34   2   1     0.00000000    -53.11515700
+  1   1  35   1   1     0.00000000      0.33223086
+  1   1  35   2   1     0.00000000      0.33223086
+  1   2   1   1   1     0.69245213     53.18619155
+  1   2   1   2   1     0.69245213     53.18619155
+  1   2   2   1   1     0.00000000     -0.00276984
+  1   2   2   2   1     0.00000000     -0.00276984
+  1   2   3   1   1     0.00000000     -0.00277005
+  1   2   3   2   1     0.00000000     -0.00277005
+  1   2   4   1   1     0.00000000     -0.00277049
+  1   2   4   2   1     0.00000000     -0.00277049
+  1   2   5   1   1     0.00000000     -0.00277115
+  1   2   5   2   1     0.00000000     -0.00277115
+  1   2   6   1   1     0.00000000     -0.00277202
+  1   2   6   2   1     0.00000000     -0.00277202
+  1   2   7   1   1     0.00000000     -0.00277312
+  1   2   7   2   1     0.00000000     -0.00277312
+  1   2   8   1   1     0.00000000     -0.00277444
+  1   2   8   2   1     0.00000000     -0.00277444
+  1   2   9   1   1     0.00000000     -0.00277597
+  1   2   9   2   1     0.00000000     -0.00277597
+  1   2  10   1   1     0.00000000     -0.00277773
+  1   2  10   2   1     0.00000000     -0.00277773
+  1   2  11   1   1     0.00000000     -0.00277971
+  1   2  11   2   1     0.00000000     -0.00277971
+  1   2  12   1   1     0.00000000     -0.00278192
+  1   2  12   2   1     0.00000000     -0.00278192
+  1   2  13   1   1     0.00000000     -0.00278435
+  1   2  13   2   1     0.00000000     -0.00278435
+  1   2  14   1   1     0.00000000     -0.00278700
+  1   2  14   2   1     0.00000000     -0.00278700
+  1   2  15   1   1     0.00000000     -0.00278988
+  1   2  15   2   1     0.00000000     -0.00278988
+  1   2  16   1   1     0.00000000     -0.00279299
+  1   2  16   2   1     0.00000000     -0.00279299
+  1   2  17   1   1     0.00000000     -0.00279633
+  1   2  17   2   1     0.00000000     -0.00279633
+  1   2  18   1   1     0.00000000     -0.00279990
+  1   2  18   2   1     0.00000000     -0.00279990
+  1   2  19   1   1     0.00000000     -0.00280371
+  1   2  19   2   1     0.00000000     -0.00280371
+  1   2  20   1   1     0.00000000     -0.00280821
+  1   2  20   2   1     0.00000000     -0.00280821
+  1   2  21   1   1     0.00000000     -0.00282433
+  1   2  21   2   1     0.00000000     -0.00282433
+  1   2  22   1   1     0.00000000     -0.00294869
+  1   2  22   2   1     0.00000000     -0.00294869
+  1   2  23   1   1     0.00000000     -0.00340857
+  1   2  23   2   1     0.00000000     -0.00340857
+  1   2  24   1   1     0.00000000     -0.00424404
+  1   2  24   2   1     0.00000000     -0.00424404
+  1   2  25   1   1     0.00000000     -0.00536520
+  1   2  25   2   1     0.00000000     -0.00536520
+  1   2  26   1   1     0.00000000     -0.00682531
+  1   2  26   2   1     0.00000000     -0.00682531
+  1   2  27   1   1     0.00000000     -0.00880628
+  1   2  27   2   1     0.00000000     -0.00880628
+  1   2  28   1   1     0.00000000     -0.01163762
+  1   2  28   2   1     0.00000000     -0.01163762
+  1   2  29   1   1     0.00000000     -0.01594086
+  1   2  29   2   1     0.00000000     -0.01594086
+  1   2  30   1   1     0.00000000     -0.02302498
+  1   2  30   2   1     0.00000000     -0.02302498
+  1   2  31   1   1     0.00000000     -0.03611238
+  1   2  31   2   1     0.00000000     -0.03611238
+  1   2  32   1   1     0.00000000     -0.06537714
+  1   2  32   2   1     0.00000000     -0.06537714
+  1   2  33   1   1     0.00000000     -0.16387119
+  1   2  33   2   1     0.00000000     -0.16387119
+  1   2  34   1   1     0.00000000    -53.11515700
+  1   2  34   2   1     0.00000000    -53.11515700
+  1   2  35   1   1     0.00000000      0.33223086
+  1   2  35   2   1     0.00000000      0.33223086
+  2   1   1   1   1     0.69245213     53.18619155
+  2   1   1   2   1     0.69245213     53.18619155
+  2   1   2   1   1     0.00000000     -0.00276984
+  2   1   2   2   1     0.00000000     -0.00276984
+  2   1   3   1   1     0.00000000     -0.00277005
+  2   1   3   2   1     0.00000000     -0.00277005
+  2   1   4   1   1     0.00000000     -0.00277049
+  2   1   4   2   1     0.00000000     -0.00277049
+  2   1   5   1   1     0.00000000     -0.00277115
+  2   1   5   2   1     0.00000000     -0.00277115
+  2   1   6   1   1     0.00000000     -0.00277202
+  2   1   6   2   1     0.00000000     -0.00277202
+  2   1   7   1   1     0.00000000     -0.00277312
+  2   1   7   2   1     0.00000000     -0.00277312
+  2   1   8   1   1     0.00000000     -0.00277444
+  2   1   8   2   1     0.00000000     -0.00277444
+  2   1   9   1   1     0.00000000     -0.00277597
+  2   1   9   2   1     0.00000000     -0.00277597
+  2   1  10   1   1     0.00000000     -0.00277773
+  2   1  10   2   1     0.00000000     -0.00277773
+  2   1  11   1   1     0.00000000     -0.00277971
+  2   1  11   2   1     0.00000000     -0.00277971
+  2   1  12   1   1     0.00000000     -0.00278192
+  2   1  12   2   1     0.00000000     -0.00278192
+  2   1  13   1   1     0.00000000     -0.00278435
+  2   1  13   2   1     0.00000000     -0.00278435
+  2   1  14   1   1     0.00000000     -0.00278700
+  2   1  14   2   1     0.00000000     -0.00278700
+  2   1  15   1   1     0.00000000     -0.00278988
+  2   1  15   2   1     0.00000000     -0.00278988
+  2   1  16   1   1     0.00000000     -0.00279299
+  2   1  16   2   1     0.00000000     -0.00279299
+  2   1  17   1   1     0.00000000     -0.00279633
+  2   1  17   2   1     0.00000000     -0.00279633
+  2   1  18   1   1     0.00000000     -0.00279990
+  2   1  18   2   1     0.00000000     -0.00279990
+  2   1  19   1   1     0.00000000     -0.00280371
+  2   1  19   2   1     0.00000000     -0.00280371
+  2   1  20   1   1     0.00000000     -0.00280821
+  2   1  20   2   1     0.00000000     -0.00280821
+  2   1  21   1   1     0.00000000     -0.00282433
+  2   1  21   2   1     0.00000000     -0.00282433
+  2   1  22   1   1     0.00000000     -0.00294869
+  2   1  22   2   1     0.00000000     -0.00294869
+  2   1  23   1   1     0.00000000     -0.00340857
+  2   1  23   2   1     0.00000000     -0.00340857
+  2   1  24   1   1     0.00000000     -0.00424404
+  2   1  24   2   1     0.00000000     -0.00424404
+  2   1  25   1   1     0.00000000     -0.00536520
+  2   1  25   2   1     0.00000000     -0.00536520
+  2   1  26   1   1     0.00000000     -0.00682531
+  2   1  26   2   1     0.00000000     -0.00682531
+  2   1  27   1   1     0.00000000     -0.00880628
+  2   1  27   2   1     0.00000000     -0.00880628
+  2   1  28   1   1     0.00000000     -0.01163762
+  2   1  28   2   1     0.00000000     -0.01163762
+  2   1  29   1   1     0.00000000     -0.01594086
+  2   1  29   2   1     0.00000000     -0.01594086
+  2   1  30   1   1     0.00000000     -0.02302498
+  2   1  30   2   1     0.00000000     -0.02302498
+  2   1  31   1   1     0.00000000     -0.03611238
+  2   1  31   2   1     0.00000000     -0.03611238
+  2   1  32   1   1     0.00000000     -0.06537714
+  2   1  32   2   1     0.00000000     -0.06537714
+  2   1  33   1   1     0.00000000     -0.16387119
+  2   1  33   2   1     0.00000000     -0.16387119
+  2   1  34   1   1     0.00000000    -53.11515700
+  2   1  34   2   1     0.00000000    -53.11515700
+  2   1  35   1   1     0.00000000      0.33223086
+  2   1  35   2   1     0.00000000      0.33223086
+  2   2   1   1   1     0.69245213     53.18619155
+  2   2   1   2   1     0.69245213     53.18619155
+  2   2   2   1   1     0.00000000     -0.00276984
+  2   2   2   2   1     0.00000000     -0.00276984
+  2   2   3   1   1     0.00000000     -0.00277005
+  2   2   3   2   1     0.00000000     -0.00277005
+  2   2   4   1   1     0.00000000     -0.00277049
+  2   2   4   2   1     0.00000000     -0.00277049
+  2   2   5   1   1     0.00000000     -0.00277115
+  2   2   5   2   1     0.00000000     -0.00277115
+  2   2   6   1   1     0.00000000     -0.00277202
+  2   2   6   2   1     0.00000000     -0.00277202
+  2   2   7   1   1     0.00000000     -0.00277312
+  2   2   7   2   1     0.00000000     -0.00277312
+  2   2   8   1   1     0.00000000     -0.00277444
+  2   2   8   2   1     0.00000000     -0.00277444
+  2   2   9   1   1     0.00000000     -0.00277597
+  2   2   9   2   1     0.00000000     -0.00277597
+  2   2  10   1   1     0.00000000     -0.00277773
+  2   2  10   2   1     0.00000000     -0.00277773
+  2   2  11   1   1     0.00000000     -0.00277971
+  2   2  11   2   1     0.00000000     -0.00277971
+  2   2  12   1   1     0.00000000     -0.00278192
+  2   2  12   2   1     0.00000000     -0.00278192
+  2   2  13   1   1     0.00000000     -0.00278435
+  2   2  13   2   1     0.00000000     -0.00278435
+  2   2  14   1   1     0.00000000     -0.00278700
+  2   2  14   2   1     0.00000000     -0.00278700
+  2   2  15   1   1     0.00000000     -0.00278988
+  2   2  15   2   1     0.00000000     -0.00278988
+  2   2  16   1   1     0.00000000     -0.00279299
+  2   2  16   2   1     0.00000000     -0.00279299
+  2   2  17   1   1     0.00000000     -0.00279633
+  2   2  17   2   1     0.00000000     -0.00279633
+  2   2  18   1   1     0.00000000     -0.00279990
+  2   2  18   2   1     0.00000000     -0.00279990
+  2   2  19   1   1     0.00000000     -0.00280371
+  2   2  19   2   1     0.00000000     -0.00280371
+  2   2  20   1   1     0.00000000     -0.00280821
+  2   2  20   2   1     0.00000000     -0.00280821
+  2   2  21   1   1     0.00000000     -0.00282433
+  2   2  21   2   1     0.00000000     -0.00282433
+  2   2  22   1   1     0.00000000     -0.00294869
+  2   2  22   2   1     0.00000000     -0.00294869
+  2   2  23   1   1     0.00000000     -0.00340857
+  2   2  23   2   1     0.00000000     -0.00340857
+  2   2  24   1   1     0.00000000     -0.00424404
+  2   2  24   2   1     0.00000000     -0.00424404
+  2   2  25   1   1     0.00000000     -0.00536520
+  2   2  25   2   1     0.00000000     -0.00536520
+  2   2  26   1   1     0.00000000     -0.00682531
+  2   2  26   2   1     0.00000000     -0.00682531
+  2   2  27   1   1     0.00000000     -0.00880628
+  2   2  27   2   1     0.00000000     -0.00880628
+  2   2  28   1   1     0.00000000     -0.01163762
+  2   2  28   2   1     0.00000000     -0.01163762
+  2   2  29   1   1     0.00000000     -0.01594086
+  2   2  29   2   1     0.00000000     -0.01594086
+  2   2  30   1   1     0.00000000     -0.02302498
+  2   2  30   2   1     0.00000000     -0.02302498
+  2   2  31   1   1     0.00000000     -0.03611238
+  2   2  31   2   1     0.00000000     -0.03611238
+  2   2  32   1   1     0.00000000     -0.06537714
+  2   2  32   2   1     0.00000000     -0.06537714
+  2   2  33   1   1     0.00000000     -0.16387119
+  2   2  33   2   1     0.00000000     -0.16387119
+  2   2  34   1   1     0.00000000    -53.11515700
+  2   2  34   2   1     0.00000000    -53.11515700
+  2   2  35   1   1     0.00000000      0.33223086
+  2   2  35   2   1     0.00000000      0.33223086
+ 
+ evaluatepara: number of decoupled dissipative operators            0
+ evaluatepara: number of decoupled drawers                          0
+ 
+  highest tier to achieve         :            4
+  number of leads                 :            2
+  number of signs                 :            2
+  number of Drude terms           :            1
+  number of Mastubara terms       :           34
+  number of exponential functions :           35
+  number of energy levels         :            1
+  number of spin considered       :            2
+ 
+  number of balls available       :            4
+  number of operators             :            8
+  number of drawers               :          280
+  dimension of Hamiltonian        :            4
+ 
+  itier, # of cases, index memory 
+   1             1             1             1             1
+   2             4             4           140           140
+   3            20            40         24500         49000
+   4            60           180       2572500       7717500
+   5           170           680     255106250    1020425000
+ 
+   total number of matrices is              257703391
+   total number of unknowns is             4123254256
+     est. length of indextable             1028191641
+     number of combinations is                    255
+      length of operator-table                    905
+       highest tier considered            5
+ 
+  OK! memory allocation for indextable successful.
+  memory for indextable :    3922.23984146118       MB
+  possible cases for 
+  # of balls            1  # of operators            8
+        1|         1
+        2|         2
+        3|         3
+        4|         4
+  possible cases for 
+  # of balls            2  # of operators            8
+        1|         1    1
+        2|         1    2
+        3|         1    3
+        4|         1    4
+        5|         1    5
+        6|         1    6
+        7|         1    7
+        8|         1    8
+        9|         2    2
+       10|         2    3
+       11|         2    4
+       12|         2    6
+       13|         2    7
+       14|         2    8
+       15|         3    3
+       16|         3    4
+       17|         3    7
+       18|         3    8
+       19|         4    4
+       20|         4    8
+  possible cases for 
+  # of balls            3  # of operators            8
+        1|         1    1    1
+        2|         1    1    2
+        3|         1    1    3
+        4|         1    1    4
+        5|         1    1    5
+        6|         1    1    6
+        7|         1    1    7
+        8|         1    1    8
+        9|         1    2    2
+       10|         1    2    3
+       11|         1    2    4
+       12|         1    2    5
+       13|         1    2    6
+       14|         1    2    7
+       15|         1    2    8
+       16|         1    3    3
+       17|         1    3    4
+       18|         1    3    5
+       19|         1    3    6
+       20|         1    3    7
+       21|         1    3    8
+       22|         1    4    4
+       23|         1    4    5
+       24|         1    4    6
+       25|         1    4    7
+       26|         1    4    8
+       27|         1    6    6
+       28|         1    6    7
+       29|         1    6    8
+       30|         1    7    7
+       31|         1    7    8
+       32|         1    8    8
+       33|         2    2    2
+       34|         2    2    3
+       35|         2    2    4
+       36|         2    2    6
+       37|         2    2    7
+       38|         2    2    8
+       39|         2    3    3
+       40|         2    3    4
+       41|         2    3    6
+       42|         2    3    7
+       43|         2    3    8
+       44|         2    4    4
+       45|         2    4    6
+       46|         2    4    7
+       47|         2    4    8
+       48|         2    7    7
+       49|         2    7    8
+       50|         2    8    8
+       51|         3    3    3
+       52|         3    3    4
+       53|         3    3    7
+       54|         3    3    8
+       55|         3    4    4
+       56|         3    4    7
+       57|         3    4    8
+       58|         3    8    8
+       59|         4    4    4
+       60|         4    4    8
+  possible cases for 
+  # of balls            4  # of operators            8
+ 
+  entering sortindextable3 ...        
+  indextable on tier            2  is sorted by   3.299999999839542E-005  secs
+  indextable on tier            3  is sorted by   3.685000000000827E-003  secs
+  indextable on tier            4  is sorted by   0.472422999999999       secs
+  indextable on tier            5  is sorted by    42.4446480000000       secs
+ 
+  length of indextable at itier            3
+  actual        22120  estimated                  22120
+  cpu time elapsed:   6.174299999999988E-002
+ 
+  length of indextable at itier            4
+  actual      1848980  estimated                1848980
+  cpu time elapsed:    7.61721600000001     
+ 
+  length of indextable at itier            5
+  actual    136111010  estimated              136111010
+  cpu time elapsed:    750.434552000000     
+ 
+  itier,  ifirst,  ilast 
+           1                     1                     1
+           2                     2                   141
+           3                   142                 44381
+           4                 44382               5591321
+           5               5591322             550035361
+ 
+  itier,  nfirst,  nlast 
+           1                     1                     1
+           2                     2                   141
+           3                   142                 22261
+           4                 22262               1871241
+           5               1871242             137982251
+ 
+  itier,  ioprfirst,  ioprlast 
+           1                     1                     1
+           2                     2                     5
+           3                     6                    45
+           4                    46                   225
+           5                   226                   905
+ 
+  itier,  noprfirst,  noprlast 
+           1                     1                     1
+           2                     2                     5
+           3                     6                    25
+           4                    26                    85
+           5                    86                   255
+ 
+   actual length of indextable              550035361
+   total number of unknowns is             2207716016
+ 
+  anti-commutation relation check pass! 
+ 
+ arrangeoperator: # of nonzero element in c_ms :            2
+ 
+ arrangeoperator: SPARSE mode is turned on 
+ 
+ arrangeoperator: amsall successfully converted to CSR format 
+ buildspin3d: spin operator constructed and verified 
+ 
+  entering buildcoefindex     
+  this could take a while ... 
+ 
+  coefindex.data not found 
+itier =   2 length      140      0.067488
+itier =   3 length    22120     11.351503
+itier =   4 length  1848980   1013.623167
+itier =   5 length ********    952.946136
+ 
+  total searches made      :             1073982560
+  estimated general memory :    12319.2464523315       MB 
+ 
+  memory allocation for indexcoef successful! 
+ 
+  leaving buildcoefindex    4107.04883300000     
+ 
+ main:   SPARSE MODE is turned on  
+ prelude_spa: system Hamiltonian 
+ 
+  real part 
+             1             2             3             4
+   1  0.000000D+00  0.000000D+00  0.000000D+00  0.000000D+00
+   2  0.000000D+00 -0.100000D+01  0.000000D+00  0.000000D+00
+   3  0.000000D+00  0.000000D+00 -0.100000D+01  0.000000D+00
+   4  0.000000D+00  0.000000D+00  0.000000D+00  0.000000D+00
+ 
+  imag part 
+             1             2             3             4
+   1  0.000000D+00  0.000000D+00  0.000000D+00  0.000000D+00
+   2  0.000000D+00  0.000000D+00  0.000000D+00  0.000000D+00
+   3  0.000000D+00  0.000000D+00  0.000000D+00  0.000000D+00
+   4  0.000000D+00  0.000000D+00  0.000000D+00  0.000000D+00
+ prelude_spa: nnz_hsys =            4
+ prelude_spa: nnz(rhosys) =            4
+ prelude_spa: (irow, icol) of nonzero elements of rhosys 
+           1           1           1
+           2           2           2
+           3           3           3
+           4           4           4
+ 
+ prelude_spa: running through all the tiers 
+itier=   2 size=                  284        0.0013
+itier=   3 size=                39484        0.1743
+itier=   4 size=              2107284       12.8290
+itier=   5 size=            144716884     1035.0043
+ prelude_spa: memory allocated for sparsity info    4891.38815689087       MB 
+ 
+ prelude_spa: total unknown variables =             2207716016
+ prelude_spa: nonzero variables       =              144716884
+ prelude_spa: sparsity ratio for rho  =   6.555049786801927E-002
+ prelude_spa: leaving subroutine 
+ 
+ 
+ initialize_spa1: nnz(rhosys) =            4
+ initialize_spa1: (irow, icol) of nonzero elements in rhosys 
+           1           1           1
+           2           2           2
+           3           3           3
+           4           4           4
+ 
+ initialize1_spa: nonzero diagonal elements in rhosys            4
+  initialization done                               
+  solve linear problem for steady state, no td job! 
+ 
+  parameters for Hamiltonian 
+   eup =    -1.00000000   edown =    -1.00000000   U =     2.00000000
+ 
+  Bethe Ansatz Kondo temperature, T_K (energy unit) =   8.877583677243964E-002
+    With the additional exponent, T_K (energy unit) =   0.121543687968870     
+ 
+  Symmetric Anderson Kondo temperature              =   0.121543687968870     
+ 
+  Haldane's expression for Kondo temperature        =   3.646290093099931E-002
+    With the additional exponent, T_K (energy unit) =   4.992164100415512E-002
+ calchs: deviation from p-h symmetry =   0.000000000000000E+000
+ calchs: renormalized dot energy =   -1.07862012094695     
+ 
+  Asymmetric Anderson Kondo temperature             =   1.966480930613548E-002
+ 
+ calchs: real part of equilibrium Hamiltonian 
+             1             2             3             4
+   1  0.000000D+00  0.000000D+00  0.000000D+00  0.000000D+00
+   2  0.000000D+00 -0.100000D+01  0.000000D+00  0.000000D+00
+   3  0.000000D+00  0.000000D+00 -0.100000D+01  0.000000D+00
+   4  0.000000D+00  0.000000D+00  0.000000D+00  0.000000D+00
+ calchs: fixdot=TRUE The system Hamiltonian is fixed during time evolution 
+ 
+ analyze_hs: analyze all eigenstates of system Hamiltonian 
+  nk    eig      occ_u    occ_d     occ    <Sz>    <S^2> 
+   1    -1.0000   1.000   0.000   1.000   0.500   0.750
+   2    -1.0000   0.000   1.000   1.000  -0.500   0.750
+   3     0.0000   0.000   0.000   0.000   0.000   0.000
+   4     0.0000   1.000   1.000   2.000   0.000   0.000
+ 
+ analyze_hs: lanahs=T and lbzman=T found 
+ analyze_hs: use Boltzmann distribution to populate states 
+ analyze_hs: set lhseig = F 
+ analyze_hs: rho_spa updated 
+ 
+ main: lchkado is turned off in sparse mode 
+ 
+  steady state parameters  
+  maximal cycles allowed :        20000
+  convergence criteria   :   2.000000000000000E-006
+ 
+  TFQMR memory allocated    19873.8397979736       MB 
+  Total memory used         41006.7142486572       MB 
+ 
+ solve_tfqmr: entering solve_tfqmr, nrho            4
+ solve_tfqmr: length of TFQMR vector              289433770
+ 
+ calc_ax_tfqmr_spa_omp: first entry
+ 
+ solve_tfqmr: rhosys before tfqmr cycles 
+ 
+  real part 
+             1             2             3             4
+   1  0.859296-145  0.000000D+00  0.000000D+00  0.000000D+00
+   2  0.000000D+00  0.500000D+00  0.000000D+00  0.000000D+00
+   3  0.000000D+00  0.000000D+00  0.500000D+00  0.000000D+00
+   4  0.000000D+00  0.000000D+00  0.000000D+00  0.859296-145
+ 
+  imag part 
+             1             2             3             4
+   1  0.000000D+00  0.000000D+00  0.000000D+00  0.000000D+00
+   2  0.000000D+00  0.000000D+00  0.000000D+00  0.000000D+00
+   3  0.000000D+00  0.000000D+00  0.000000D+00  0.000000D+00
+   4  0.000000D+00  0.000000D+00  0.000000D+00  0.000000D+00
+ 
+ solve_tfqmr: initial norm    106.307238138871     
+       0       0 0.1000E+01 0.1000E+01
+ iter_tfqmr            0   106.307238138871     
+ solve_tfqmr: the file <rho_spa.chk> updated 
+       1       1 0.1402E+01 0.1000E+01
+       1       2 0.1716E+01 0.1000E+01
+       2       3 0.1974E+01 0.1000E+01
+       2       4 0.2075E+01 0.1000E+01
+       3       5 0.2116E+01 0.1000E+01
+       3       6 0.2107E+01 0.1000E+01
+       4       7 0.2252E+01 0.1000E+01
+       4       8 0.2389E+01 0.1000E+01
+       5       9 0.2518E+01 0.1000E+01
+       5      10 0.2641E+01 0.1000E+01
+       6      11 0.2758E+01 0.1000E+01
+       6      12 0.2871E+01 0.1000E+01
+       7      13 0.2979E+01 0.1000E+01
+       7      14 0.3084E+01 0.1000E+01
+       8      15 0.3185E+01 0.1000E+01
+       8      16 0.3283E+01 0.1000E+01
+       9      17 0.3378E+01 0.1000E+01
+       9      18 0.3470E+01 0.1000E+01
+      10      19 0.3561E+01 0.1000E+01
+      10      20 0.3648E+01 0.1000E+01
+      11      21 0.3734E+01 0.1000E+01
+      11      22 0.3818E+01 0.1000E+01
+      12      23 0.3900E+01 0.1000E+01
+      12      24 0.3981E+01 0.1000E+01
+      13      25 0.4060E+01 0.1000E+01
+      13      26 0.4137E+01 0.1000E+01
+      14      27 0.4213E+01 0.1000E+01
+      14      28 0.4287E+01 0.1000E+01
+      15      29 0.4353E+01 0.1000E+01
+      15      30 0.4313E+01 0.1000E+01
+      16      31 0.4379E+01 0.1000E+01
+      16      32 0.4447E+01 0.1000E+01
+      17      33 0.4514E+01 0.1000E+01
+      17      34 0.4579E+01 0.1000E+01
+      18      35 0.4644E+01 0.1000E+01
+      18      36 0.4708E+01 0.1000E+01
+      19      37 0.4771E+01 0.1000E+01
+      19      38 0.4834E+01 0.1000E+01
+      20      39 0.4895E+01 0.1000E+01
+      20      40 0.4807E+01 0.1000E+01
+      21      41 0.4796E+01 0.1000E+01
+      21      42 0.4842E+01 0.1000E+01
+      22      43 0.4880E+01 0.1000E+01
+      22      44 0.4927E+01 0.1000E+01
+      23      45 0.4979E+01 0.1000E+01
+      23      46 0.5033E+01 0.1000E+01
+      24      47 0.5086E+01 0.1000E+01
+      24      48 0.5139E+01 0.1000E+01
+      25      49 0.5191E+01 0.1000E+01
+      25      50 0.5243E+01 0.1000E+01
+ iter_tfqmr           50   122.280354947473     
+      26      51 0.5294E+01 0.1000E+01
+      26      52 0.5288E+01 0.1000E+01
+      27      53 0.5053E+01 0.1000E+01
+      27      54 0.4444E+01 0.1000E+01
+      28      55 0.4025E+01 0.1000E+01
+      28      56 0.3931E+01 0.1000E+01
+      29      57 0.3938E+01 0.1000E+01
+      29      58 0.3970E+01 0.1000E+01
+      30      59 0.3997E+01 0.1000E+01
+      30      60 0.4025E+01 0.1000E+01
+      31      61 0.4052E+01 0.1000E+01
+      31      62 0.4084E+01 0.1000E+01
+      32      63 0.4097E+01 0.1000E+01
+      32      64 0.4102E+01 0.1000E+01
+      33      65 0.3902E+01 0.1000E+01
+      33      66 0.3826E+01 0.1000E+01
+      34      67 0.3336E+01 0.1000E+01
+      34      68 0.3301E+01 0.1000E+01
+      35      69 0.3304E+01 0.1000E+01
+      35      70 0.3321E+01 0.1000E+01
+      36      71 0.3303E+01 0.1000E+01
+      36      72 0.3210E+01 0.1000E+01
+      37      73 0.2743E+01 0.1000E+01
+      37      74 0.2499E+01 0.1000E+01
+      38      75 0.2389E+01 0.1000E+01
+      38      76 0.2398E+01 0.1000E+01
+      39      77 0.2403E+01 0.1000E+01
+      39      78 0.2398E+01 0.1000E+01
+      40      79 0.2156E+01 0.1000E+01
+      40      80 0.1805E+01 0.1000E+01
+      41      81 0.1786E+01 0.1000E+01
+      41      82 0.1796E+01 0.1000E+01
+      42      83 0.1807E+01 0.1000E+01
+      42      84 0.1818E+01 0.1000E+01
+      43      85 0.1829E+01 0.1000E+01
+      43      86 0.1839E+01 0.1000E+01
+      44      87 0.1849E+01 0.1000E+01
+      44      88 0.1856E+01 0.1000E+01
+      45      89 0.1866E+01 0.1000E+01
+      45      90 0.1876E+01 0.1000E+01
+      46      91 0.1884E+01 0.1000E+01
+      46      92 0.1883E+01 0.1000E+01
+      47      93 0.1805E+01 0.1000E+01
+      47      94 0.1764E+01 0.1000E+01
+      48      95 0.1769E+01 0.1000E+01
+      48      96 0.1778E+01 0.1000E+01
+      49      97 0.1787E+01 0.1000E+01
+      49      98 0.1796E+01 0.1000E+01
+      50      99 0.1801E+01 0.1000E+01
+      50     100 0.1776E+01 0.1000E+01
+ iter_tfqmr          100   24.0454854094687     
+ solve_tfqmr: the file <rho_spa.chk> updated 
+      51     101 0.1782E+01 0.1000E+01
+      51     102 0.1790E+01 0.1000E+01
+      52     103 0.1798E+01 0.1000E+01
+      52     104 0.1794E+01 0.1000E+01
+      53     105 0.1763E+01 0.1000E+01
+      53     106 0.1664E+01 0.1000E+01
+      54     107 0.1368E+01 0.1000E+01
+      54     108 0.1310E+01 0.1000E+01
+      55     109 0.7994E+00 0.1000E+01
+      55     110 0.7315E+00 0.1000E+01
+      56     111 0.7223E+00 0.1000E+01
+      56     112 0.7233E+00 0.1000E+01
+      57     113 0.7264E+00 0.1000E+01
+      57     114 0.7296E+00 0.1000E+01
+      58     115 0.7328E+00 0.1000E+01
+      58     116 0.7336E+00 0.1000E+01
+      59     117 0.7353E+00 0.1000E+01
+      59     118 0.7375E+00 0.1000E+01
+      60     119 0.7391E+00 0.1000E+01
+      60     120 0.7413E+00 0.1000E+01
+      61     121 0.7443E+00 0.1000E+01
+      61     122 0.7474E+00 0.1000E+01
+      62     123 0.7504E+00 0.1000E+01
+      62     124 0.7532E+00 0.1000E+01
+      63     125 0.7547E+00 0.1000E+01
+      63     126 0.7503E+00 0.1000E+01
+      64     127 0.7533E+00 0.1000E+01
+      64     128 0.7562E+00 0.1000E+01
+      65     129 0.7591E+00 0.1000E+01
+      65     130 0.7621E+00 0.1000E+01
+      66     131 0.7649E+00 0.1000E+01
+      66     132 0.7670E+00 0.1000E+01
+      67     133 0.7612E+00 0.1000E+01
+      67     134 0.7540E+00 0.1000E+01
+      68     135 0.7431E+00 0.1000E+01
+      68     136 0.7279E+00 0.1000E+01
+      69     137 0.7166E+00 0.1000E+01
+      69     138 0.7080E+00 0.1000E+01
+      70     139 0.6989E+00 0.1000E+01
+      70     140 0.6944E+00 0.1000E+01
+      71     141 0.6941E+00 0.1000E+01
+      71     142 0.6964E+00 0.1000E+01
+      72     143 0.6949E+00 0.1000E+01
+      72     144 0.6817E+00 0.1000E+01
+      73     145 0.6783E+00 0.1000E+01
+      73     146 0.6800E+00 0.1000E+01
+      74     147 0.6819E+00 0.1000E+01
+      74     148 0.6841E+00 0.1000E+01
+      75     149 0.6863E+00 0.1000E+01
+      75     150 0.6886E+00 0.1000E+01
+ iter_tfqmr          150   9.70856597375297     
+ solve_tfqmr: the file <rho_spa.chk> updated 
+      76     151 0.6896E+00 0.1000E+01
+      76     152 0.5722E+00 0.1000E+01
+      77     153 0.5274E+00 0.1000E+01
+      77     154 0.5040E+00 0.1000E+01
+      78     155 0.4975E+00 0.1000E+01
+      78     156 0.4979E+00 0.1000E+01
+      79     157 0.4991E+00 0.1000E+01
+      79     158 0.5005E+00 0.1000E+01
+      80     159 0.4955E+00 0.1000E+01
+      80     160 0.4944E+00 0.1000E+01
+      81     161 0.4959E+00 0.1000E+01
+      81     162 0.4975E+00 0.1000E+01
+      82     163 0.4989E+00 0.1000E+01
+      82     164 0.4714E+00 0.1000E+01
+      83     165 0.4492E+00 0.1000E+01
+      83     166 0.4475E+00 0.1000E+01
+      84     167 0.4311E+00 0.1000E+01
+      84     168 0.4028E+00 0.1000E+01
+      85     169 0.4020E+00 0.1000E+01
+      85     170 0.4031E+00 0.1000E+01
+      86     171 0.4040E+00 0.1000E+01
+      86     172 0.4052E+00 0.1000E+01
+      87     173 0.4060E+00 0.1000E+01
+      87     174 0.4070E+00 0.1000E+01
+      88     175 0.3958E+00 0.1000E+01
+      88     176 0.3796E+00 0.1000E+01
+      89     177 0.3782E+00 0.1000E+01
+      89     178 0.3791E+00 0.1000E+01
+      90     179 0.3798E+00 0.1000E+01
+      90     180 0.3804E+00 0.1000E+01
+      91     181 0.3810E+00 0.1000E+01
+      91     182 0.3819E+00 0.1000E+01
+      92     183 0.3824E+00 0.1000E+01
+      92     184 0.3798E+00 0.1000E+01
+      93     185 0.3730E+00 0.1000E+01
+      93     186 0.3663E+00 0.1000E+01
+      94     187 0.3618E+00 0.1000E+01
+      94     188 0.3591E+00 0.1000E+01
+      95     189 0.3578E+00 0.1000E+01
+      95     190 0.3574E+00 0.1000E+01
+      96     191 0.3583E+00 0.1000E+01
+      96     192 0.3592E+00 0.1000E+01
+      97     193 0.3601E+00 0.1000E+01
+      97     194 0.3610E+00 0.1000E+01
+      98     195 0.3619E+00 0.1000E+01
+      98     196 0.3628E+00 0.1000E+01
+      99     197 0.3637E+00 0.1000E+01
+      99     198 0.3647E+00 0.1000E+01
+     100     199 0.3656E+00 0.1000E+01
+     100     200 0.3665E+00 0.1000E+01
+ iter_tfqmr          200   5.91365217201768     
+ solve_tfqmr: the file <rho_spa.chk> updated 
+     101     201 0.3674E+00 0.1000E+01
+     101     202 0.3683E+00 0.1000E+01
+     102     203 0.3691E+00 0.1000E+01
+     102     204 0.3699E+00 0.1000E+01
+     103     205 0.3707E+00 0.1000E+01
+     103     206 0.3715E+00 0.1000E+01
+     104     207 0.3723E+00 0.1000E+01
+     104     208 0.3732E+00 0.1000E+01
+     105     209 0.3739E+00 0.1000E+01
+     105     210 0.3747E+00 0.1000E+01
+     106     211 0.3756E+00 0.1000E+01
+     106     212 0.3765E+00 0.1000E+01
+     107     213 0.3774E+00 0.1000E+01
+     107     214 0.3783E+00 0.1000E+01
+     108     215 0.3791E+00 0.1000E+01
+     108     216 0.3800E+00 0.1000E+01
+     109     217 0.3808E+00 0.1000E+01
+     109     218 0.3817E+00 0.1000E+01
+     110     219 0.3826E+00 0.1000E+01
+     110     220 0.3834E+00 0.1000E+01
+     111     221 0.3843E+00 0.1000E+01
+     111     222 0.3851E+00 0.1000E+01
+     112     223 0.3860E+00 0.1000E+01
+     112     224 0.3868E+00 0.1000E+01
+     113     225 0.3877E+00 0.1000E+01
+     113     226 0.3885E+00 0.1000E+01
+     114     227 0.3894E+00 0.1000E+01
+     114     228 0.3902E+00 0.1000E+01
+     115     229 0.3911E+00 0.1000E+01
+     115     230 0.3904E+00 0.1000E+01
+     116     231 0.3912E+00 0.1000E+01
+     116     232 0.3921E+00 0.1000E+01
+     117     233 0.3929E+00 0.1000E+01
+     117     234 0.3936E+00 0.1000E+01
+     118     235 0.3910E+00 0.1000E+01
+     118     236 0.3732E+00 0.1000E+01
+     119     237 0.3734E+00 0.1000E+01
+     119     238 0.3742E+00 0.1000E+01
+     120     239 0.3745E+00 0.1000E+01
+     120     240 0.3647E+00 0.1000E+01
+     121     241 0.3639E+00 0.1000E+01
+     121     242 0.3647E+00 0.1000E+01
+     122     243 0.3650E+00 0.1000E+01
+     122     244 0.3649E+00 0.1000E+01
+     123     245 0.3655E+00 0.1000E+01
+     123     246 0.3662E+00 0.1000E+01
+     124     247 0.3669E+00 0.1000E+01
+     124     248 0.3674E+00 0.1000E+01
+     125     249 0.3681E+00 0.1000E+01
+     125     250 0.3687E+00 0.1000E+01
+ iter_tfqmr          250   5.95041500665301     
+     126     251 0.3695E+00 0.1000E+01
+     126     252 0.3702E+00 0.1000E+01
+     127     253 0.3709E+00 0.1000E+01
+     127     254 0.3716E+00 0.1000E+01
+     128     255 0.3723E+00 0.1000E+01
+     128     256 0.3730E+00 0.1000E+01
+     129     257 0.3737E+00 0.1000E+01
+     129     258 0.3744E+00 0.1000E+01
+     130     259 0.3748E+00 0.1000E+01
+     130     260 0.3752E+00 0.1000E+01
+     131     261 0.3755E+00 0.1000E+01
+     131     262 0.3757E+00 0.1000E+01
+     132     263 0.3760E+00 0.1000E+01
+     132     264 0.3762E+00 0.1000E+01
+     133     265 0.3730E+00 0.1000E+01
+     133     266 0.3701E+00 0.1000E+01
+     134     267 0.3506E+00 0.1000E+01
+     134     268 0.3352E+00 0.1000E+01
+     135     269 0.3214E+00 0.1000E+01
+     135     270 0.3089E+00 0.1000E+01
+     136     271 0.3023E+00 0.1000E+01
+     136     272 0.3028E+00 0.1000E+01
+     137     273 0.3033E+00 0.1000E+01
+     137     274 0.3034E+00 0.1000E+01
+     138     275 0.3005E+00 0.1000E+01
+     138     276 0.2920E+00 0.1000E+01
+     139     277 0.2832E+00 0.1000E+01
+     139     278 0.2831E+00 0.1000E+01
+     140     279 0.2836E+00 0.1000E+01
+     140     280 0.2841E+00 0.1000E+01
+     141     281 0.2846E+00 0.1000E+01
+     141     282 0.2849E+00 0.1000E+01
+     142     283 0.2853E+00 0.1000E+01
+     142     284 0.2858E+00 0.1000E+01
+     143     285 0.2853E+00 0.1000E+01
+     143     286 0.2638E+00 0.1000E+01
+     144     287 0.2641E+00 0.1000E+01
+     144     288 0.2645E+00 0.1000E+01
+     145     289 0.2649E+00 0.1000E+01
+     145     290 0.2644E+00 0.1000E+01
+     146     291 0.2631E+00 0.1000E+01
+     146     292 0.2623E+00 0.1000E+01
+     147     293 0.2557E+00 0.1000E+01
+     147     294 0.2445E+00 0.1000E+01
+     148     295 0.2405E+00 0.1000E+01
+     148     296 0.2404E+00 0.1000E+01
+     149     297 0.2343E+00 0.1000E+01
+     149     298 0.2111E+00 0.1000E+01
+     150     299 0.2069E+00 0.1000E+01
+     150     300 0.2070E+00 0.1000E+01
+ iter_tfqmr          300   3.95413671825885     
+ solve_tfqmr: the file <rho_spa.chk> updated 
+     151     301 0.2043E+00 0.1000E+01
+     151     302 0.1750E+00 0.1000E+01
+     152     303 0.1428E+00 0.1000E+01
+     152     304 0.1105E+00 0.1000E+01
+     153     305 0.9993E-01 0.1000E+01
+     153     306 0.9566E-01 0.1000E+01
+     154     307 0.9390E-01 0.1000E+01
+     154     308 0.9354E-01 0.1000E+01
+     155     309 0.9358E-01 0.1000E+01
+     155     310 0.9371E-01 0.1000E+01
+     156     311 0.9384E-01 0.1000E+01
+     156     312 0.9396E-01 0.1000E+01
+     157     313 0.9410E-01 0.1000E+01
+     157     314 0.9425E-01 0.1000E+01
+     158     315 0.9434E-01 0.1000E+01
+     158     316 0.9356E-01 0.1000E+01
+     159     317 0.9108E-01 0.1000E+01
+     159     318 0.8793E-01 0.1000E+01
+     160     319 0.8731E-01 0.1000E+01
+     160     320 0.8727E-01 0.1000E+01
+     161     321 0.8584E-01 0.1000E+01
+     161     322 0.7806E-01 0.1000E+01
+     162     323 0.7783E-01 0.1000E+01
+     162     324 0.7794E-01 0.1000E+01
+     163     325 0.7803E-01 0.1000E+01
+     163     326 0.7807E-01 0.1000E+01
+     164     327 0.7816E-01 0.1000E+01
+     164     328 0.7827E-01 0.1000E+01
+     165     329 0.7838E-01 0.1000E+01
+     165     330 0.7850E-01 0.1000E+01
+     166     331 0.7862E-01 0.1000E+01
+     166     332 0.7873E-01 0.1000E+01
+     167     333 0.7885E-01 0.1000E+01
+     167     334 0.7896E-01 0.1000E+01
+     168     335 0.7908E-01 0.1000E+01
+     168     336 0.7919E-01 0.1000E+01
+     169     337 0.7931E-01 0.1000E+01
+     169     338 0.7942E-01 0.1000E+01
+     170     339 0.7946E-01 0.1000E+01
+     170     340 0.7911E-01 0.1000E+01
+     171     341 0.7917E-01 0.1000E+01
+     171     342 0.7928E-01 0.1000E+01
+     172     343 0.7885E-01 0.1000E+01
+     172     344 0.7477E-01 0.1000E+01
+     173     345 0.6900E-01 0.1000E+01
+     173     346 0.6283E-01 0.1000E+01
+     174     347 0.6286E-01 0.1000E+01
+     174     348 0.6295E-01 0.1000E+01
+     175     349 0.6304E-01 0.1000E+01
+     175     350 0.6305E-01 0.1000E+01
+ iter_tfqmr          350  0.568075214598976     
+ solve_tfqmr: the file <rho_spa.chk> updated 
+     176     351 0.6308E-01 0.1000E+01
+     176     352 0.6313E-01 0.1000E+01
+     177     353 0.6312E-01 0.1000E+01
+     177     354 0.6303E-01 0.1000E+01
+     178     355 0.6294E-01 0.1000E+01
+     178     356 0.6293E-01 0.1000E+01
+     179     357 0.6299E-01 0.1000E+01
+     179     358 0.6308E-01 0.1000E+01
+     180     359 0.6316E-01 0.1000E+01
+     180     360 0.6323E-01 0.1000E+01
+     181     361 0.6325E-01 0.1000E+01
+     181     362 0.6322E-01 0.1000E+01
+     182     363 0.6331E-01 0.1000E+01
+     182     364 0.6340E-01 0.1000E+01
+     183     365 0.6348E-01 0.1000E+01
+     183     366 0.6357E-01 0.1000E+01
+     184     367 0.6366E-01 0.1000E+01
+     184     368 0.6374E-01 0.1000E+01
+     185     369 0.6382E-01 0.1000E+01
+     185     370 0.6390E-01 0.1000E+01
+     186     371 0.6399E-01 0.1000E+01
+     186     372 0.6408E-01 0.1000E+01
+     187     373 0.6416E-01 0.1000E+01
+     187     374 0.6424E-01 0.1000E+01
+     188     375 0.6433E-01 0.1000E+01
+     188     376 0.6441E-01 0.1000E+01
+     189     377 0.6450E-01 0.1000E+01
+     189     378 0.6458E-01 0.1000E+01
+     190     379 0.6467E-01 0.1000E+01
+     190     380 0.6473E-01 0.1000E+01
+     191     381 0.6476E-01 0.1000E+01
+     191     382 0.6482E-01 0.1000E+01
+     192     383 0.6445E-01 0.1000E+01
+     192     384 0.6098E-01 0.1000E+01
+     193     385 0.6062E-01 0.1000E+01
+     193     386 0.6065E-01 0.1000E+01
+     194     387 0.5743E-01 0.1000E+01
+     194     388 0.3153E-01 0.1000E+01
+     195     389 0.3089E-01 0.1000E+01
+     195     390 0.3092E-01 0.1000E+01
+     196     391 0.3075E-01 0.1000E+01
+     196     392 0.3031E-01 0.1000E+01
+     197     393 0.3005E-01 0.1000E+01
+     197     394 0.3008E-01 0.1000E+01
+     198     395 0.3009E-01 0.1000E+01
+     198     396 0.3012E-01 0.1000E+01
+     199     397 0.3015E-01 0.1000E+01
+     199     398 0.3019E-01 0.1000E+01
+     200     399 0.3023E-01 0.1000E+01
+     200     400 0.3026E-01 0.1000E+01
+ iter_tfqmr          400  0.210822854942601     
+ solve_tfqmr: the file <rho_spa.chk> updated 
+     201     401 0.3030E-01 0.1000E+01
+     201     402 0.3034E-01 0.1000E+01
+     202     403 0.3038E-01 0.1000E+01
+     202     404 0.3041E-01 0.1000E+01
+     203     405 0.3045E-01 0.1000E+01
+     203     406 0.3049E-01 0.1000E+01
+     204     407 0.3053E-01 0.1000E+01
+     204     408 0.3056E-01 0.1000E+01
+     205     409 0.3060E-01 0.1000E+01
+     205     410 0.3059E-01 0.1000E+01
+     206     411 0.3062E-01 0.1000E+01
+     206     412 0.3065E-01 0.1000E+01
+     207     413 0.3069E-01 0.1000E+01
+     207     414 0.3073E-01 0.1000E+01
+     208     415 0.3068E-01 0.1000E+01
+     208     416 0.3055E-01 0.1000E+01
+     209     417 0.3042E-01 0.1000E+01
+     209     418 0.3030E-01 0.1000E+01
+     210     419 0.3022E-01 0.1000E+01
+     210     420 0.3025E-01 0.1000E+01
+     211     421 0.3029E-01 0.1000E+01
+     211     422 0.3032E-01 0.1000E+01
+     212     423 0.3036E-01 0.1000E+01
+     212     424 0.3034E-01 0.1000E+01
+     213     425 0.3035E-01 0.1000E+01
+     213     426 0.3038E-01 0.1000E+01
+     214     427 0.3041E-01 0.1000E+01
+     214     428 0.3045E-01 0.1000E+01
+     215     429 0.3044E-01 0.1000E+01
+     215     430 0.2964E-01 0.1000E+01
+     216     431 0.2963E-01 0.1000E+01
+     216     432 0.2966E-01 0.1000E+01
+     217     433 0.2966E-01 0.1000E+01
+     217     434 0.2936E-01 0.1000E+01
+     218     435 0.2384E-01 0.1000E+01
+     218     436 0.1852E-01 0.1000E+01
+     219     437 0.1606E-01 0.1000E+01
+     219     438 0.1577E-01 0.1000E+01
+     220     439 0.1579E-01 0.1000E+01
+     220     440 0.1581E-01 0.1000E+01
+     221     441 0.1582E-01 0.1000E+01
+     221     442 0.1406E-01 0.1000E+01
+     222     443 0.1324E-01 0.1000E+01
+     222     444 0.1314E-01 0.1000E+01
+     223     445 0.1313E-01 0.1000E+01
+     223     446 0.1315E-01 0.1000E+01
+     224     447 0.1316E-01 0.1000E+01
+     224     448 0.1317E-01 0.1000E+01
+     225     449 0.1319E-01 0.1000E+01
+     225     450 0.1319E-01 0.1000E+01
+ iter_tfqmr          450  0.151106976832188     
+ solve_tfqmr: the file <rho_spa.chk> updated 
+     226     451 0.1319E-01 0.1000E+01
+     226     452 0.1321E-01 0.1000E+01
+     227     453 0.1321E-01 0.1000E+01
+     227     454 0.1320E-01 0.1000E+01
+     228     455 0.1321E-01 0.1000E+01
+     228     456 0.1323E-01 0.1000E+01
+     229     457 0.1324E-01 0.1000E+01
+     229     458 0.1325E-01 0.1000E+01
+     230     459 0.1327E-01 0.1000E+01
+     230     460 0.1328E-01 0.1000E+01
+     231     461 0.1330E-01 0.1000E+01
+     231     462 0.1331E-01 0.1000E+01
+     232     463 0.1332E-01 0.1000E+01
+     232     464 0.1333E-01 0.1000E+01
+     233     465 0.1333E-01 0.1000E+01
+     233     466 0.1331E-01 0.1000E+01
+     234     467 0.1325E-01 0.1000E+01
+     234     468 0.1321E-01 0.1000E+01
+     235     469 0.1320E-01 0.1000E+01
+     235     470 0.1321E-01 0.1000E+01
+     236     471 0.1310E-01 0.1000E+01
+     236     472 0.1298E-01 0.1000E+01
+     237     473 0.1288E-01 0.1000E+01
+     237     474 0.1282E-01 0.1000E+01
+     238     475 0.1281E-01 0.1000E+01
+     238     476 0.1282E-01 0.1000E+01
+     239     477 0.1282E-01 0.1000E+01
+     239     478 0.1282E-01 0.1000E+01
+     240     479 0.1279E-01 0.1000E+01
+     240     480 0.1274E-01 0.1000E+01
+     241     481 0.1272E-01 0.1000E+01
+     241     482 0.1272E-01 0.1000E+01
+     242     483 0.1272E-01 0.1000E+01
+     242     484 0.1272E-01 0.1000E+01
+     243     485 0.1271E-01 0.1000E+01
+     243     486 0.1269E-01 0.1000E+01
+     244     487 0.1260E-01 0.1000E+01
+     244     488 0.1246E-01 0.1000E+01
+     245     489 0.1239E-01 0.1000E+01
+     245     490 0.1239E-01 0.1000E+01
+     246     491 0.1222E-01 0.1000E+01
+     246     492 0.1180E-01 0.1000E+01
+     247     493 0.1010E-01 0.1000E+01
+     247     494 0.8726E-02 0.1000E+01
+     248     495 0.8278E-02 0.1000E+01
+     248     496 0.8269E-02 0.1000E+01
+     249     497 0.8276E-02 0.1000E+01
+     249     498 0.8284E-02 0.1000E+01
+     250     499 0.8288E-02 0.1000E+01
+     250     500 0.8233E-02 0.1000E+01
+ iter_tfqmr          500  9.586219848642236E-002
+ solve_tfqmr: the file <rho_spa.chk> updated 
+     251     501 0.8238E-02 0.1000E+01
+     251     502 0.8246E-02 0.1000E+01
+     252     503 0.8254E-02 0.1000E+01
+     252     504 0.8262E-02 0.1000E+01
+     253     505 0.8229E-02 0.1000E+01
+     253     506 0.8120E-02 0.1000E+01
+     254     507 0.8087E-02 0.1000E+01
+     254     508 0.8092E-02 0.1000E+01
+     255     509 0.8099E-02 0.1000E+01
+     255     510 0.8107E-02 0.1000E+01
+     256     511 0.8115E-02 0.1000E+01
+     256     512 0.8123E-02 0.1000E+01
+     257     513 0.8130E-02 0.1000E+01
+     257     514 0.8136E-02 0.1000E+01
+     258     515 0.8142E-02 0.1000E+01
+     258     516 0.8148E-02 0.1000E+01
+     259     517 0.8154E-02 0.1000E+01
+     259     518 0.8160E-02 0.1000E+01
+     260     519 0.8167E-02 0.1000E+01
+     260     520 0.8174E-02 0.1000E+01
+     261     521 0.8181E-02 0.1000E+01
+     261     522 0.8188E-02 0.1000E+01
+     262     523 0.8196E-02 0.1000E+01
+     262     524 0.8203E-02 0.1000E+01
+     263     525 0.8211E-02 0.1000E+01
+     263     526 0.8219E-02 0.1000E+01
+     264     527 0.8227E-02 0.1000E+01
+     264     528 0.8235E-02 0.1000E+01
+     265     529 0.8242E-02 0.1000E+01
+     265     530 0.8250E-02 0.1000E+01
+     266     531 0.8257E-02 0.1000E+01
+     266     532 0.8264E-02 0.1000E+01
+     267     533 0.8247E-02 0.1000E+01
+     267     534 0.8073E-02 0.1000E+01
+     268     535 0.7422E-02 0.1000E+01
+     268     536 0.6940E-02 0.1000E+01
+     269     537 0.6636E-02 0.1000E+01
+     269     538 0.6446E-02 0.1000E+01
+     270     539 0.6369E-02 0.1000E+01
+     270     540 0.6367E-02 0.1000E+01
+     271     541 0.6368E-02 0.1000E+01
+     271     542 0.6374E-02 0.1000E+01
+     272     543 0.6380E-02 0.1000E+01
+     272     544 0.6385E-02 0.1000E+01
+     273     545 0.6391E-02 0.1000E+01
+     273     546 0.6397E-02 0.1000E+01
+     274     547 0.6388E-02 0.1000E+01
+     274     548 0.5572E-02 0.1000E+01
+     275     549 0.5061E-02 0.1000E+01
+     275     550 0.4933E-02 0.1000E+01
+ iter_tfqmr          550  4.103535219525430E-002
+ solve_tfqmr: the file <rho_spa.chk> updated 
+     276     551 0.4913E-02 0.1000E+01
+     276     552 0.4915E-02 0.1000E+01
+     277     553 0.4900E-02 0.1000E+01
+     277     554 0.4795E-02 0.1000E+01
+     278     555 0.4609E-02 0.1000E+01
+     278     556 0.4384E-02 0.1000E+01
+     279     557 0.4333E-02 0.1000E+01
+     279     558 0.4334E-02 0.1000E+01
+     280     559 0.4315E-02 0.1000E+01
+     280     560 0.4261E-02 0.1000E+01
+     281     561 0.4251E-02 0.1000E+01
+     281     562 0.4255E-02 0.1000E+01
+     282     563 0.4259E-02 0.1000E+01
+     282     564 0.4263E-02 0.1000E+01
+     283     565 0.4266E-02 0.1000E+01
+     283     566 0.4270E-02 0.1000E+01
+     284     567 0.4273E-02 0.1000E+01
+     284     568 0.4276E-02 0.1000E+01
+     285     569 0.4280E-02 0.1000E+01
+     285     570 0.4283E-02 0.1000E+01
+     286     571 0.4287E-02 0.1000E+01
+     286     572 0.4291E-02 0.1000E+01
+     287     573 0.4295E-02 0.1000E+01
+     287     574 0.4295E-02 0.1000E+01
+     288     575 0.4298E-02 0.1000E+01
+     288     576 0.4301E-02 0.1000E+01
+     289     577 0.4305E-02 0.1000E+01
+     289     578 0.4309E-02 0.1000E+01
+     290     579 0.4313E-02 0.1000E+01
+     290     580 0.4316E-02 0.1000E+01
+     291     581 0.4320E-02 0.1000E+01
+     291     582 0.4324E-02 0.1000E+01
+     292     583 0.4327E-02 0.1000E+01
+     292     584 0.4329E-02 0.1000E+01
+     293     585 0.4333E-02 0.1000E+01
+     293     586 0.4337E-02 0.1000E+01
+     294     587 0.4340E-02 0.1000E+01
+     294     588 0.4342E-02 0.1000E+01
+     295     589 0.4312E-02 0.1000E+01
+     295     590 0.4242E-02 0.1000E+01
+     296     591 0.4226E-02 0.1000E+01
+     296     592 0.4230E-02 0.1000E+01
+     297     593 0.4225E-02 0.1000E+01
+     297     594 0.4212E-02 0.1000E+01
+     298     595 0.4159E-02 0.1000E+01
+     298     596 0.4007E-02 0.1000E+01
+     299     597 0.3989E-02 0.1000E+01
+     299     598 0.3991E-02 0.1000E+01
+     300     599 0.3987E-02 0.1000E+01
+     300     600 0.3968E-02 0.1000E+01
+ iter_tfqmr          600  3.826449898456355E-002
+ solve_tfqmr: the file <rho_spa.chk> updated 
+     301     601 0.3885E-02 0.1000E+01
+     301     602 0.3759E-02 0.1000E+01
+     302     603 0.3721E-02 0.1000E+01
+     302     604 0.3714E-02 0.1000E+01
+     303     605 0.3710E-02 0.1000E+01
+     303     606 0.3710E-02 0.1000E+01
+     304     607 0.3712E-02 0.1000E+01
+     304     608 0.3714E-02 0.1000E+01
+     305     609 0.3715E-02 0.1000E+01
+     305     610 0.3717E-02 0.1000E+01
+     306     611 0.3720E-02 0.1000E+01
+     306     612 0.3723E-02 0.1000E+01
+     307     613 0.3726E-02 0.1000E+01
+     307     614 0.3729E-02 0.1000E+01
+     308     615 0.3731E-02 0.1000E+01
+     308     616 0.3729E-02 0.1000E+01
+     309     617 0.3732E-02 0.1000E+01
+     309     618 0.3735E-02 0.1000E+01
+     310     619 0.3737E-02 0.1000E+01
+     310     620 0.3732E-02 0.1000E+01
+     311     621 0.3734E-02 0.1000E+01
+     311     622 0.3736E-02 0.1000E+01
+     312     623 0.3739E-02 0.1000E+01
+     312     624 0.3742E-02 0.1000E+01
+     313     625 0.3745E-02 0.1000E+01
+     313     626 0.3748E-02 0.1000E+01
+     314     627 0.3751E-02 0.1000E+01
+     314     628 0.3753E-02 0.1000E+01
+     315     629 0.3756E-02 0.1000E+01
+     315     630 0.3758E-02 0.1000E+01
+     316     631 0.3760E-02 0.1000E+01
+     316     632 0.3763E-02 0.1000E+01
+     317     633 0.3766E-02 0.1000E+01
+     317     634 0.3769E-02 0.1000E+01
+     318     635 0.3772E-02 0.1000E+01
+     318     636 0.3774E-02 0.1000E+01
+     319     637 0.3777E-02 0.1000E+01
+     319     638 0.3780E-02 0.1000E+01
+     320     639 0.3783E-02 0.1000E+01
+     320     640 0.3786E-02 0.1000E+01
+     321     641 0.3789E-02 0.1000E+01
+     321     642 0.3792E-02 0.1000E+01
+     322     643 0.3795E-02 0.1000E+01
+     322     644 0.3797E-02 0.1000E+01
+     323     645 0.3781E-02 0.1000E+01
+     323     646 0.3760E-02 0.1000E+01
+     324     647 0.3730E-02 0.1000E+01
+     324     648 0.3715E-02 0.1000E+01
+     325     649 0.3710E-02 0.1000E+01
+     325     650 0.3710E-02 0.1000E+01
+ iter_tfqmr          650  3.006983328556572E-002
+ solve_tfqmr: the file <rho_spa.chk> updated 
+     326     651 0.3625E-02 0.1000E+01
+     326     652 0.3375E-02 0.1000E+01
+     327     653 0.3375E-02 0.1000E+01
+     327     654 0.3377E-02 0.1000E+01
+     328     655 0.3380E-02 0.1000E+01
+     328     656 0.3382E-02 0.1000E+01
+     329     657 0.3380E-02 0.1000E+01
+     329     658 0.3191E-02 0.1000E+01
+     330     659 0.3176E-02 0.1000E+01
+     330     660 0.3178E-02 0.1000E+01
+     331     661 0.3180E-02 0.1000E+01
+     331     662 0.3182E-02 0.1000E+01
+     332     663 0.3133E-02 0.1000E+01
+     332     664 0.2996E-02 0.1000E+01
+     333     665 0.2928E-02 0.1000E+01
+     333     666 0.2916E-02 0.1000E+01
+     334     667 0.2916E-02 0.1000E+01
+     334     668 0.2918E-02 0.1000E+01
+     335     669 0.2920E-02 0.1000E+01
+     335     670 0.2920E-02 0.1000E+01
+     336     671 0.2922E-02 0.1000E+01
+     336     672 0.2924E-02 0.1000E+01
+     337     673 0.2925E-02 0.1000E+01
+     337     674 0.2925E-02 0.1000E+01
+     338     675 0.2923E-02 0.1000E+01
+     338     676 0.2920E-02 0.1000E+01
+     339     677 0.2868E-02 0.1000E+01
+     339     678 0.2793E-02 0.1000E+01
+     340     679 0.2789E-02 0.1000E+01
+     340     680 0.2791E-02 0.1000E+01
+     341     681 0.2793E-02 0.1000E+01
+     341     682 0.2795E-02 0.1000E+01
+     342     683 0.2792E-02 0.1000E+01
+     342     684 0.2773E-02 0.1000E+01
+     343     685 0.2586E-02 0.1000E+01
+     343     686 0.1752E-02 0.1000E+01
+     344     687 0.1603E-02 0.1000E+01
+     344     688 0.1579E-02 0.1000E+01
+     345     689 0.1567E-02 0.1000E+01
+     345     690 0.1563E-02 0.1000E+01
+     346     691 0.1563E-02 0.1000E+01
+     346     692 0.1564E-02 0.1000E+01
+     347     693 0.1566E-02 0.1000E+01
+     347     694 0.1567E-02 0.1000E+01
+     348     695 0.1568E-02 0.1000E+01
+     348     696 0.1569E-02 0.1000E+01
+     349     697 0.1568E-02 0.1000E+01
+     349     698 0.1568E-02 0.1000E+01
+     350     699 0.1567E-02 0.1000E+01
+     350     700 0.1567E-02 0.1000E+01
+ iter_tfqmr          700  1.221988446989581E-002
+ solve_tfqmr: the file <rho_spa.chk> updated 
+     351     701 0.1566E-02 0.1000E+01
+     351     702 0.1566E-02 0.1000E+01
+     352     703 0.1564E-02 0.1000E+01
+     352     704 0.1557E-02 0.1000E+01
+     353     705 0.1544E-02 0.1000E+01
+     353     706 0.1526E-02 0.1000E+01
+     354     707 0.1526E-02 0.1000E+01
+     354     708 0.1527E-02 0.1000E+01
+     355     709 0.1528E-02 0.1000E+01
+     355     710 0.1529E-02 0.1000E+01
+     356     711 0.1529E-02 0.1000E+01
+     356     712 0.1529E-02 0.1000E+01
+     357     713 0.1530E-02 0.1000E+01
+     357     714 0.1531E-02 0.1000E+01
+     358     715 0.1532E-02 0.1000E+01
+     358     716 0.1533E-02 0.1000E+01
+     359     717 0.1534E-02 0.1000E+01
+     359     718 0.1514E-02 0.1000E+01
+     360     719 0.1488E-02 0.1000E+01
+     360     720 0.1469E-02 0.1000E+01
+     361     721 0.1334E-02 0.1000E+01
+     361     722 0.1040E-02 0.1000E+01
+     362     723 0.1003E-02 0.1000E+01
+     362     724 0.1003E-02 0.1000E+01
+     363     725 0.1002E-02 0.1000E+01
+     363     726 0.1001E-02 0.1000E+01
+     364     727 0.1001E-02 0.1000E+01
+     364     728 0.1002E-02 0.1000E+01
+     365     729 0.1002E-02 0.1000E+01
+     365     730 0.1002E-02 0.1000E+01
+     366     731 0.1002E-02 0.1000E+01
+     366     732 0.1003E-02 0.1000E+01
+     367     733 0.1004E-02 0.1000E+01
+     367     734 0.1004E-02 0.1000E+01
+     368     735 0.1000E-02 0.1000E+01
+     368     736 0.9652E-03 0.1000E+01
+     369     737 0.9534E-03 0.1000E+01
+     369     738 0.9536E-03 0.1000E+01
+     370     739 0.9393E-03 0.1000E+01
+     370     740 0.9007E-03 0.1000E+01
+     371     741 0.8684E-03 0.1000E+01
+     371     742 0.8466E-03 0.1000E+01
+     372     743 0.8472E-03 0.1000E+01
+     372     744 0.8477E-03 0.1000E+01
+     373     745 0.8483E-03 0.1000E+01
+     373     746 0.8489E-03 0.1000E+01
+     374     747 0.8494E-03 0.1000E+01
+     374     748 0.8492E-03 0.1000E+01
+     375     749 0.8497E-03 0.1000E+01
+     375     750 0.8503E-03 0.1000E+01
+ iter_tfqmr          750  6.499676972309907E-003
+ solve_tfqmr: the file <rho_spa.chk> updated 
+     376     751 0.8509E-03 0.1000E+01
+     376     752 0.8514E-03 0.1000E+01
+     377     753 0.8518E-03 0.1000E+01
+     377     754 0.8516E-03 0.1000E+01
+     378     755 0.8519E-03 0.1000E+01
+     378     756 0.8523E-03 0.1000E+01
+     379     757 0.8526E-03 0.1000E+01
+     379     758 0.8524E-03 0.1000E+01
+     380     759 0.8527E-03 0.1000E+01
+     380     760 0.8532E-03 0.1000E+01
+     381     761 0.8537E-03 0.1000E+01
+     381     762 0.8543E-03 0.1000E+01
+     382     763 0.8547E-03 0.1000E+01
+     382     764 0.8548E-03 0.1000E+01
+     383     765 0.8521E-03 0.1000E+01
+     383     766 0.8490E-03 0.1000E+01
+     384     767 0.8456E-03 0.1000E+01
+     384     768 0.8423E-03 0.1000E+01
+     385     769 0.8427E-03 0.1000E+01
+     385     770 0.8433E-03 0.1000E+01
+     386     771 0.8438E-03 0.1000E+01
+     386     772 0.8444E-03 0.1000E+01
+     387     773 0.8449E-03 0.1000E+01
+     387     774 0.8455E-03 0.1000E+01
+     388     775 0.8460E-03 0.1000E+01
+     388     776 0.8465E-03 0.1000E+01
+     389     777 0.8470E-03 0.1000E+01
+     389     778 0.8428E-03 0.1000E+01
+     390     779 0.8192E-03 0.1000E+01
+     390     780 0.7652E-03 0.1000E+01
+     391     781 0.6284E-03 0.1000E+01
+     391     782 0.5093E-03 0.1000E+01
+     392     783 0.4100E-03 0.1000E+01
+     392     784 0.3451E-03 0.1000E+01
+     393     785 0.3268E-03 0.1000E+01
+     393     786 0.3235E-03 0.1000E+01
+     394     787 0.3060E-03 0.1000E+01
+     394     788 0.3019E-03 0.1000E+01
+     395     789 0.2955E-03 0.1000E+01
+     395     790 0.2879E-03 0.1000E+01
+     396     791 0.2823E-03 0.1000E+01
+     396     792 0.2781E-03 0.1000E+01
+     397     793 0.2753E-03 0.1000E+01
+     397     794 0.2738E-03 0.1000E+01
+     398     795 0.2732E-03 0.1000E+01
+     398     796 0.2734E-03 0.1000E+01
+     399     797 0.2721E-03 0.1000E+01
+     399     798 0.2700E-03 0.1000E+01
+     400     799 0.2701E-03 0.1000E+01
+     400     800 0.2703E-03 0.1000E+01
+ iter_tfqmr          800  1.370065735932433E-003
+ solve_tfqmr: the file <rho_spa.chk> updated 
+     401     801 0.2704E-03 0.1000E+01
+     401     802 0.2706E-03 0.1000E+01
+     402     803 0.2708E-03 0.1000E+01
+     402     804 0.2709E-03 0.1000E+01
+     403     805 0.2711E-03 0.1000E+01
+     403     806 0.2713E-03 0.1000E+01
+     404     807 0.2714E-03 0.1000E+01
+     404     808 0.2716E-03 0.1000E+01
+     405     809 0.2714E-03 0.1000E+01
+     405     810 0.2694E-03 0.1000E+01
+     406     811 0.2695E-03 0.1000E+01
+     406     812 0.2697E-03 0.1000E+01
+     407     813 0.2697E-03 0.1000E+01
+     407     814 0.2620E-03 0.1000E+01
+     408     815 0.2620E-03 0.1000E+01
+     408     816 0.2622E-03 0.1000E+01
+     409     817 0.2623E-03 0.1000E+01
+     409     818 0.2623E-03 0.1000E+01
+     410     819 0.2623E-03 0.1000E+01
+     410     820 0.2624E-03 0.1000E+01
+     411     821 0.2624E-03 0.1000E+01
+     411     822 0.2624E-03 0.1000E+01
+     412     823 0.2625E-03 0.1000E+01
+     412     824 0.2627E-03 0.1000E+01
+     413     825 0.2628E-03 0.1000E+01
+     413     826 0.2630E-03 0.1000E+01
+     414     827 0.2632E-03 0.1000E+01
+     414     828 0.2633E-03 0.1000E+01
+     415     829 0.2634E-03 0.1000E+01
+     415     830 0.2590E-03 0.1000E+01
+     416     831 0.1309E-03 0.1000E+01
+     416     832 0.9749E-04 0.1000E+01
+     417     833 0.8097E-04 0.1000E+01
+     417     834 0.7832E-04 0.1000E+01
+     418     835 0.7823E-04 0.1000E+01
+     418     836 0.7827E-04 0.1000E+01
+     419     837 0.7832E-04 0.1000E+01
+     419     838 0.7837E-04 0.1000E+01
+     420     839 0.7841E-04 0.1000E+01
+     420     840 0.7842E-04 0.1000E+01
+     421     841 0.7846E-04 0.1000E+01
+     421     842 0.7851E-04 0.1000E+01
+     422     843 0.7855E-04 0.1000E+01
+     422     844 0.7860E-04 0.1000E+01
+     423     845 0.7865E-04 0.1000E+01
+     423     846 0.7869E-04 0.1000E+01
+     424     847 0.7874E-04 0.1000E+01
+     424     848 0.7877E-04 0.1000E+01
+     425     849 0.7871E-04 0.1000E+01
+     425     850 0.7845E-04 0.1000E+01
+ iter_tfqmr          850  5.078164942199861E-004
+ solve_tfqmr: the file <rho_spa.chk> updated 
+     426     851 0.7621E-04 0.1000E+01
+     426     852 0.7328E-04 0.1000E+01
+     427     853 0.6894E-04 0.1000E+01
+     427     854 0.6526E-04 0.1000E+01
+     428     855 0.6517E-04 0.1000E+01
+     428     856 0.6521E-04 0.1000E+01
+     429     857 0.6524E-04 0.1000E+01
+     429     858 0.6521E-04 0.1000E+01
+     430     859 0.6519E-04 0.1000E+01
+     430     860 0.6522E-04 0.1000E+01
+     431     861 0.6524E-04 0.1000E+01
+     431     862 0.6527E-04 0.1000E+01
+     432     863 0.6530E-04 0.1000E+01
+     432     864 0.6533E-04 0.1000E+01
+     433     865 0.6508E-04 0.1000E+01
+     433     866 0.6342E-04 0.1000E+01
+     434     867 0.6346E-04 0.1000E+01
+     434     868 0.6349E-04 0.1000E+01
+     435     869 0.6353E-04 0.1000E+01
+     435     870 0.6357E-04 0.1000E+01
+     436     871 0.6360E-04 0.1000E+01
+     436     872 0.4957E-04 0.1000E+01
+     437     873 0.3768E-04 0.1000E+01
+     437     874 0.3131E-04 0.1000E+01
+     438     875 0.2856E-04 0.1000E+01
+     438     876 0.2797E-04 0.1000E+01
+     439     877 0.2784E-04 0.1000E+01
+     439     878 0.2784E-04 0.1000E+01
+     440     879 0.2784E-04 0.1000E+01
+     440     880 0.2785E-04 0.1000E+01
+     441     881 0.2786E-04 0.1000E+01
+     441     882 0.2788E-04 0.1000E+01
+     442     883 0.2789E-04 0.1000E+01
+     442     884 0.2788E-04 0.1000E+01
+     443     885 0.2756E-04 0.1000E+01
+     443     886 0.2717E-04 0.1000E+01
+     444     887 0.2702E-04 0.1000E+01
+     444     888 0.2703E-04 0.1000E+01
+     445     889 0.2705E-04 0.1000E+01
+     445     890 0.2706E-04 0.1000E+01
+     446     891 0.2705E-04 0.1000E+01
+     446     892 0.2596E-04 0.1000E+01
+     447     893 0.2427E-04 0.1000E+01
+     447     894 0.2312E-04 0.1000E+01
+     448     895 0.2165E-04 0.1000E+01
+     448     896 0.1998E-04 0.1000E+01
+     449     897 0.1952E-04 0.1000E+01
+     449     898 0.1943E-04 0.1000E+01
+     450     899 0.1907E-04 0.1000E+01
+     450     900 0.1822E-04 0.1000E+01
+ iter_tfqmr          900  1.612471305982576E-004
+ solve_tfqmr: the file <rho_spa.chk> updated 
+     451     901 0.1821E-04 0.1000E+01
+     451     902 0.1822E-04 0.1000E+01
+     452     903 0.1823E-04 0.1000E+01
+     452     904 0.1823E-04 0.1000E+01
+     453     905 0.1821E-04 0.1000E+01
+     453     906 0.1818E-04 0.1000E+01
+     454     907 0.1818E-04 0.1000E+01
+     454     908 0.1818E-04 0.1000E+01
+     455     909 0.1818E-04 0.1000E+01
+     455     910 0.1818E-04 0.1000E+01
+     456     911 0.1819E-04 0.1000E+01
+     456     912 0.1820E-04 0.1000E+01
+     457     913 0.1821E-04 0.1000E+01
+     457     914 0.1822E-04 0.1000E+01
+     458     915 0.1823E-04 0.1000E+01
+     458     916 0.1824E-04 0.1000E+01
+     459     917 0.1825E-04 0.1000E+01
+     459     918 0.1826E-04 0.1000E+01
+     460     919 0.1827E-04 0.1000E+01
+     460     920 0.1828E-04 0.1000E+01
+     461     921 0.1829E-04 0.1000E+01
+     461     922 0.1830E-04 0.1000E+01
+     462     923 0.1831E-04 0.1000E+01
+     462     924 0.1832E-04 0.1000E+01
+     463     925 0.1833E-04 0.1000E+01
+     463     926 0.1834E-04 0.1000E+01
+     464     927 0.1835E-04 0.1000E+01
+     464     928 0.1836E-04 0.1000E+01
+     465     929 0.1836E-04 0.1000E+01
+     465     930 0.1837E-04 0.1000E+01
+     466     931 0.1838E-04 0.1000E+01
+     466     932 0.1839E-04 0.1000E+01
+     467     933 0.1840E-04 0.1000E+01
+     467     934 0.1839E-04 0.1000E+01
+     468     935 0.1838E-04 0.1000E+01
+     468     936 0.1839E-04 0.1000E+01
+     469     937 0.1840E-04 0.1000E+01
+     469     938 0.1841E-04 0.1000E+01
+     470     939 0.1841E-04 0.1000E+01
+     470     940 0.1834E-04 0.1000E+01
+     471     941 0.1834E-04 0.1000E+01
+     471     942 0.1835E-04 0.1000E+01
+     472     943 0.1836E-04 0.1000E+01
+     472     944 0.1837E-04 0.1000E+01
+     473     945 0.1837E-04 0.1000E+01
+     473     946 0.1837E-04 0.1000E+01
+     474     947 0.1838E-04 0.1000E+01
+     474     948 0.1839E-04 0.1000E+01
+     475     949 0.1840E-04 0.1000E+01
+     475     950 0.1841E-04 0.1000E+01
+ iter_tfqmr          950  1.647927007242026E-004
+     476     951 0.1842E-04 0.1000E+01
+     476     952 0.1843E-04 0.1000E+01
+     477     953 0.1844E-04 0.1000E+01
+     477     954 0.1845E-04 0.1000E+01
+     478     955 0.1845E-04 0.1000E+01
+     478     956 0.1846E-04 0.1000E+01
+     479     957 0.1838E-04 0.1000E+01
+     479     958 0.1823E-04 0.1000E+01
+     480     959 0.1823E-04 0.1000E+01
+     480     960 0.1824E-04 0.1000E+01
+     481     961 0.1825E-04 0.1000E+01
+     481     962 0.1811E-04 0.1000E+01
+     482     963 0.1801E-04 0.1000E+01
+     482     964 0.1798E-04 0.1000E+01
+     483     965 0.1799E-04 0.1000E+01
+     483     966 0.1800E-04 0.1000E+01
+     484     967 0.1801E-04 0.1000E+01
+     484     968 0.1802E-04 0.1000E+01
+     485     969 0.1803E-04 0.1000E+01
+     485     970 0.1803E-04 0.1000E+01
+     486     971 0.1804E-04 0.1000E+01
+     486     972 0.1805E-04 0.1000E+01
+     487     973 0.1806E-04 0.1000E+01
+     487     974 0.1807E-04 0.1000E+01
+     488     975 0.1807E-04 0.1000E+01
+     488     976 0.1805E-04 0.1000E+01
+     489     977 0.1788E-04 0.1000E+01
+     489     978 0.1703E-04 0.1000E+01
+     490     979 0.1614E-04 0.1000E+01
+     490     980 0.1564E-04 0.1000E+01
+     491     981 0.1500E-04 0.1000E+01
+     491     982 0.1451E-04 0.1000E+01
+     492     983 0.1441E-04 0.1000E+01
+     492     984 0.1439E-04 0.1000E+01
+     493     985 0.1382E-04 0.1000E+01
+     493     986 0.1071E-04 0.1000E+01
+     494     987 0.1033E-04 0.1000E+01
+     494     988 0.1032E-04 0.1000E+01
+     495     989 0.1027E-04 0.1000E+01
+     495     990 0.1020E-04 0.1000E+01
+     496     991 0.1017E-04 0.1000E+01
+     496     992 0.1017E-04 0.1000E+01
+     497     993 0.1018E-04 0.1000E+01
+     497     994 0.1018E-04 0.1000E+01
+     498     995 0.1019E-04 0.1000E+01
+     498     996 0.1019E-04 0.1000E+01
+     499     997 0.1020E-04 0.1000E+01
+     499     998 0.1020E-04 0.1000E+01
+     500     999 0.1021E-04 0.1000E+01
+     500    1000 0.1021E-04 0.1000E+01
+ iter_tfqmr         1000  5.689728535699249E-005
+ solve_tfqmr: the file <rho_spa.chk> updated 
+     501    1001 0.1022E-04 0.1000E+01
+     501    1002 0.1022E-04 0.1000E+01
+     502    1003 0.1023E-04 0.1000E+01
+     502    1004 0.1023E-04 0.1000E+01
+     503    1005 0.1022E-04 0.1000E+01
+     503    1006 0.1012E-04 0.1000E+01
+     504    1007 0.1010E-04 0.1000E+01
+     504    1008 0.1011E-04 0.1000E+01
+     505    1009 0.1011E-04 0.1000E+01
+     505    1010 0.1012E-04 0.1000E+01
+     506    1011 0.1006E-04 0.1000E+01
+     506    1012 0.9736E-05 0.1000E+01
+     507    1013 0.9613E-05 0.1000E+01
+     507    1014 0.9588E-05 0.1000E+01
+     508    1015 0.9592E-05 0.1000E+01
+     508    1016 0.9597E-05 0.1000E+01
+     509    1017 0.9602E-05 0.1000E+01
+     509    1018 0.9602E-05 0.1000E+01
+     510    1019 0.9586E-05 0.1000E+01
+     510    1020 0.9584E-05 0.1000E+01
+     511    1021 0.9581E-05 0.1000E+01
+     511    1022 0.9578E-05 0.1000E+01
+     512    1023 0.9570E-05 0.1000E+01
+     512    1024 0.9575E-05 0.1000E+01
+     513    1025 0.9580E-05 0.1000E+01
+     513    1026 0.9584E-05 0.1000E+01
+     514    1027 0.9589E-05 0.1000E+01
+     514    1028 0.9339E-05 0.1000E+01
+     515    1029 0.9223E-05 0.1000E+01
+     515    1030 0.9211E-05 0.1000E+01
+     516    1031 0.8946E-05 0.1000E+01
+     516    1032 0.8664E-05 0.1000E+01
+     517    1033 0.8429E-05 0.1000E+01
+     517    1034 0.8268E-05 0.1000E+01
+     518    1035 0.8202E-05 0.1000E+01
+     518    1036 0.8198E-05 0.1000E+01
+     519    1037 0.8193E-05 0.1000E+01
+     519    1038 0.8194E-05 0.1000E+01
+     520    1039 0.7999E-05 0.1000E+01
+     520    1040 0.7758E-05 0.1000E+01
+     521    1041 0.7585E-05 0.1000E+01
+     521    1042 0.7509E-05 0.1000E+01
+     522    1043 0.7511E-05 0.1000E+01
+     522    1044 0.7515E-05 0.1000E+01
+     523    1045 0.7518E-05 0.1000E+01
+     523    1046 0.7522E-05 0.1000E+01
+     524    1047 0.7525E-05 0.1000E+01
+     524    1048 0.7526E-05 0.1000E+01
+     525    1049 0.7518E-05 0.1000E+01
+     525    1050 0.7514E-05 0.1000E+01
+ iter_tfqmr         1050  5.814386417024454E-005
+     526    1051 0.7509E-05 0.1000E+01
+     526    1052 0.7507E-05 0.1000E+01
+     527    1053 0.7497E-05 0.1000E+01
+     527    1054 0.7475E-05 0.1000E+01
+     528    1055 0.7470E-05 0.1000E+01
+     528    1056 0.7472E-05 0.1000E+01
+     529    1057 0.7476E-05 0.1000E+01
+     529    1058 0.7479E-05 0.1000E+01
+     530    1059 0.7475E-05 0.1000E+01
+     530    1060 0.7473E-05 0.1000E+01
+     531    1061 0.7454E-05 0.1000E+01
+     531    1062 0.7448E-05 0.1000E+01
+     532    1063 0.7419E-05 0.1000E+01
+     532    1064 0.7363E-05 0.1000E+01
+     533    1065 0.7081E-05 0.1000E+01
+     533    1066 0.6569E-05 0.1000E+01
+     534    1067 0.6086E-05 0.1000E+01
+     534    1068 0.5679E-05 0.1000E+01
+     535    1069 0.5545E-05 0.1000E+01
+     535    1070 0.5531E-05 0.1000E+01
+     536    1071 0.5505E-05 0.1000E+01
+     536    1072 0.5468E-05 0.1000E+01
+     537    1073 0.5402E-05 0.1000E+01
+     537    1074 0.5320E-05 0.1000E+01
+     538    1075 0.5244E-05 0.1000E+01
+     538    1076 0.5216E-05 0.1000E+01
+     539    1077 0.5196E-05 0.1000E+01
+     539    1078 0.5182E-05 0.1000E+01
+     540    1079 0.5181E-05 0.1000E+01
+     540    1080 0.5182E-05 0.1000E+01
+     541    1081 0.5184E-05 0.1000E+01
+     541    1082 0.5187E-05 0.1000E+01
+     542    1083 0.5189E-05 0.1000E+01
+     542    1084 0.5191E-05 0.1000E+01
+     543    1085 0.5193E-05 0.1000E+01
+     543    1086 0.5087E-05 0.1000E+01
+     544    1087 0.5079E-05 0.1000E+01
+     544    1088 0.5081E-05 0.1000E+01
+     545    1089 0.5056E-05 0.1000E+01
+     545    1090 0.4893E-05 0.1000E+01
+     546    1091 0.4726E-05 0.1000E+01
+     546    1092 0.4567E-05 0.1000E+01
+     547    1093 0.4512E-05 0.1000E+01
+     547    1094 0.4509E-05 0.1000E+01
+     548    1095 0.4469E-05 0.1000E+01
+     548    1096 0.4390E-05 0.1000E+01
+     549    1097 0.4313E-05 0.1000E+01
+     549    1098 0.4237E-05 0.1000E+01
+     550    1099 0.4175E-05 0.1000E+01
+     550    1100 0.4141E-05 0.1000E+01
+ iter_tfqmr         1100  5.123332605489562E-005
+ solve_tfqmr: the file <rho_spa.chk> updated 
+     551    1101 0.4129E-05 0.1000E+01
+     551    1102 0.4128E-05 0.1000E+01
+     552    1103 0.4086E-05 0.1000E+01
+     552    1104 0.3961E-05 0.1000E+01
+     553    1105 0.3855E-05 0.1000E+01
+     553    1106 0.3787E-05 0.1000E+01
+     554    1107 0.3781E-05 0.1000E+01
+     554    1108 0.3783E-05 0.1000E+01
+     555    1109 0.3784E-05 0.1000E+01
+     555    1110 0.3786E-05 0.1000E+01
+     556    1111 0.3788E-05 0.1000E+01
+     556    1112 0.3790E-05 0.1000E+01
+     557    1113 0.3791E-05 0.1000E+01
+     557    1114 0.3793E-05 0.1000E+01
+     558    1115 0.3795E-05 0.1000E+01
+     558    1116 0.3796E-05 0.1000E+01
+     559    1117 0.3798E-05 0.1000E+01
+     559    1118 0.3800E-05 0.1000E+01
+     560    1119 0.3801E-05 0.1000E+01
+     560    1120 0.3803E-05 0.1000E+01
+     561    1121 0.3805E-05 0.1000E+01
+     561    1122 0.3807E-05 0.1000E+01
+     562    1123 0.3808E-05 0.1000E+01
+     562    1124 0.3810E-05 0.1000E+01
+     563    1125 0.3812E-05 0.1000E+01
+     563    1126 0.3811E-05 0.1000E+01
+     564    1127 0.3812E-05 0.1000E+01
+     564    1128 0.3814E-05 0.1000E+01
+     565    1129 0.3816E-05 0.1000E+01
+     565    1130 0.3817E-05 0.1000E+01
+     566    1131 0.3819E-05 0.1000E+01
+     566    1132 0.3821E-05 0.1000E+01
+     567    1133 0.3822E-05 0.1000E+01
+     567    1134 0.3824E-05 0.1000E+01
+     568    1135 0.3825E-05 0.1000E+01
+     568    1136 0.3779E-05 0.1000E+01
+     569    1137 0.3666E-05 0.1000E+01
+     569    1138 0.3484E-05 0.1000E+01
+     570    1139 0.3237E-05 0.1000E+01
+     570    1140 0.2951E-05 0.1000E+01
+     571    1141 0.2935E-05 0.1000E+01
+     571    1142 0.2935E-05 0.1000E+01
+     572    1143 0.2929E-05 0.1000E+01
+     572    1144 0.2870E-05 0.1000E+01
+     573    1145 0.2732E-05 0.1000E+01
+     573    1146 0.2524E-05 0.1000E+01
+     574    1147 0.2525E-05 0.1000E+01
+     574    1148 0.2526E-05 0.1000E+01
+     575    1149 0.2527E-05 0.1000E+01
+     575    1150 0.2525E-05 0.1000E+01
+ iter_tfqmr         1150  2.191814364234250E-005
+ solve_tfqmr: the file <rho_spa.chk> updated 
+     576    1151 0.2526E-05 0.1000E+01
+     576    1152 0.2528E-05 0.1000E+01
+     577    1153 0.2529E-05 0.1000E+01
+     577    1154 0.2529E-05 0.1000E+01
+     578    1155 0.2507E-05 0.1000E+01
+     578    1156 0.2155E-05 0.1000E+01
+     579    1157 0.1840E-05 0.1000E+01
+     579    1158 0.1772E-05 0.1000E+01
+     580    1159 0.1597E-05 0.1000E+01
+     580    1160 0.1414E-05 0.1000E+01
+     581    1161 0.1272E-05 0.1000E+01
+     581    1162 0.1169E-05 0.1000E+01
+     582    1163 0.1105E-05 0.1000E+01
+     582    1164 0.1086E-05 0.1000E+01
+     583    1165 0.1028E-05 0.1000E+01
+     583    1166 0.9801E-06 0.1000E+01
+     584    1167 0.9352E-06 0.1000E+01
+     584    1168 0.8946E-06 0.1000E+01
+     585    1169 0.8587E-06 0.1000E+01
+     585    1170 0.8268E-06 0.1000E+01
+     586    1171 0.7983E-06 0.1000E+01
+     586    1172 0.7726E-06 0.1000E+01
+     587    1173 0.7492E-06 0.1000E+01
+     587    1174 0.7283E-06 0.1000E+01
+     588    1175 0.7098E-06 0.1000E+01
+     588    1176 0.6969E-06 0.1000E+01
+     589    1177 0.6811E-06 0.1000E+01
+     589    1178 0.6655E-06 0.1000E+01
+     590    1179 0.6512E-06 0.1000E+01
+     590    1180 0.6382E-06 0.1000E+01
+     591    1181 0.6325E-06 0.1000E+01
+     591    1182 0.6325E-06 0.1000E+01
+     592    1183 0.6328E-06 0.1000E+01
+     592    1184 0.6331E-06 0.1000E+01
+     593    1185 0.6333E-06 0.1000E+01
+     593    1186 0.6334E-06 0.1000E+01
+     594    1187 0.6332E-06 0.1000E+01
+     594    1188 0.6330E-06 0.1000E+01
+     595    1189 0.6332E-06 0.1000E+01
+     595    1190 0.6335E-06 0.1000E+01
+     596    1191 0.6338E-06 0.1000E+01
+     596    1192 0.6340E-06 0.1000E+01
+     597    1193 0.6343E-06 0.1000E+01
+     597    1194 0.6346E-06 0.1000E+01
+     598    1195 0.6348E-06 0.1000E+01
+     598    1196 0.6351E-06 0.1000E+01
+     599    1197 0.6354E-06 0.1000E+01
+     599    1198 0.6356E-06 0.1000E+01
+     600    1199 0.6358E-06 0.1000E+01
+     600    1200 0.6360E-06 0.1000E+01
+ iter_tfqmr         1200  9.580852207021605E-006
+ solve_tfqmr: the file <rho_spa.chk> updated 
+     601    1201 0.6358E-06 0.1000E+01
+     601    1202 0.6348E-06 0.1000E+01
+     602    1203 0.6330E-06 0.1000E+01
+     602    1204 0.6315E-06 0.1000E+01
+     603    1205 0.6253E-06 0.1000E+01
+     603    1206 0.6147E-06 0.1000E+01
+     604    1207 0.6012E-06 0.1000E+01
+     604    1208 0.5871E-06 0.1000E+01
+     605    1209 0.5743E-06 0.1000E+01
+     605    1210 0.5714E-06 0.1000E+01
+     606    1211 0.5701E-06 0.1000E+01
+     606    1212 0.5697E-06 0.1000E+01
+     607    1213 0.5643E-06 0.1000E+01
+     607    1214 0.5615E-06 0.1000E+01
+     608    1215 0.5591E-06 0.1000E+01
+     608    1216 0.5578E-06 0.1000E+01
+     609    1217 0.5570E-06 0.1000E+01
+     609    1218 0.5567E-06 0.1000E+01
+     610    1219 0.5566E-06 0.1000E+01
+     610    1220 0.5568E-06 0.1000E+01
+     611    1221 0.5569E-06 0.1000E+01
+     611    1222 0.5570E-06 0.1000E+01
+     612    1223 0.5571E-06 0.1000E+01
+     612    1224 0.5571E-06 0.1000E+01
+     613    1225 0.5572E-06 0.1000E+01
+     613    1226 0.5574E-06 0.1000E+01
+     614    1227 0.5575E-06 0.1000E+01
+     614    1228 0.5576E-06 0.1000E+01
+     615    1229 0.5578E-06 0.1000E+01
+     615    1230 0.5579E-06 0.1000E+01
+     616    1231 0.5581E-06 0.1000E+01
+     616    1232 0.5583E-06 0.1000E+01
+     617    1233 0.5585E-06 0.1000E+01
+     617    1234 0.5587E-06 0.1000E+01
+     618    1235 0.5588E-06 0.1000E+01
+     618    1236 0.5493E-06 0.1000E+01
+     619    1237 0.5387E-06 0.1000E+01
+     619    1238 0.5280E-06 0.1000E+01
+     620    1239 0.5177E-06 0.1000E+01
+     620    1240 0.5078E-06 0.1000E+01
+     621    1241 0.5012E-06 0.1000E+01
+     621    1242 0.5011E-06 0.1000E+01
+     622    1243 0.5007E-06 0.1000E+01
+     622    1244 0.4998E-06 0.1000E+01
+     623    1245 0.4997E-06 0.1000E+01
+     623    1246 0.4998E-06 0.1000E+01
+     624    1247 0.4999E-06 0.1000E+01
+     624    1248 0.5001E-06 0.1000E+01
+     625    1249 0.5003E-06 0.1000E+01
+     625    1250 0.5005E-06 0.1000E+01
+ iter_tfqmr         1250  8.182654023322586E-006
+ solve_tfqmr: the file <rho_spa.chk> updated 
+     626    1251 0.5006E-06 0.1000E+01
+     626    1252 0.4989E-06 0.1000E+01
+     627    1253 0.4933E-06 0.1000E+01
+     627    1254 0.4826E-06 0.1000E+01
+     628    1255 0.4827E-06 0.1000E+01
+     628    1256 0.4829E-06 0.1000E+01
+     629    1257 0.4831E-06 0.1000E+01
+     629    1258 0.4821E-06 0.1000E+01
+     630    1259 0.4823E-06 0.1000E+01
+     630    1260 0.4825E-06 0.1000E+01
+     631    1261 0.4826E-06 0.1000E+01
+     631    1262 0.4783E-06 0.1000E+01
+     632    1263 0.4778E-06 0.1000E+01
+     632    1264 0.4780E-06 0.1000E+01
+     633    1265 0.4781E-06 0.1000E+01
+     633    1266 0.4783E-06 0.1000E+01
+     634    1267 0.4779E-06 0.1000E+01
+     634    1268 0.4751E-06 0.1000E+01
+     635    1269 0.4753E-06 0.1000E+01
+     635    1270 0.4755E-06 0.1000E+01
+     636    1271 0.4757E-06 0.1000E+01
+     636    1272 0.4757E-06 0.1000E+01
+     637    1273 0.4758E-06 0.1000E+01
+     637    1274 0.4760E-06 0.1000E+01
+     638    1275 0.4762E-06 0.1000E+01
+     638    1276 0.4764E-06 0.1000E+01
+     639    1277 0.4766E-06 0.1000E+01
+     639    1278 0.4768E-06 0.1000E+01
+     640    1279 0.4769E-06 0.1000E+01
+     640    1280 0.4771E-06 0.1000E+01
+     641    1281 0.4764E-06 0.1000E+01
+     641    1282 0.4748E-06 0.1000E+01
+     642    1283 0.4733E-06 0.1000E+01
+     642    1284 0.4723E-06 0.1000E+01
+     643    1285 0.4711E-06 0.1000E+01
+     643    1286 0.4699E-06 0.1000E+01
+     644    1287 0.4688E-06 0.1000E+01
+     644    1288 0.4683E-06 0.1000E+01
+     645    1289 0.4680E-06 0.1000E+01
+     645    1290 0.4681E-06 0.1000E+01
+     646    1291 0.4668E-06 0.1000E+01
+     646    1292 0.4642E-06 0.1000E+01
+     647    1293 0.4613E-06 0.1000E+01
+     647    1294 0.4583E-06 0.1000E+01
+     648    1295 0.4566E-06 0.1000E+01
+     648    1296 0.4566E-06 0.1000E+01
+     649    1297 0.4567E-06 0.1000E+01
+     649    1298 0.4569E-06 0.1000E+01
+     650    1299 0.4569E-06 0.1000E+01
+     650    1300 0.4563E-06 0.1000E+01
+ iter_tfqmr         1300  7.390783172879749E-006
+ solve_tfqmr: the file <rho_spa.chk> updated 
+     651    1301 0.4554E-06 0.1000E+01
+     651    1302 0.4547E-06 0.1000E+01
+     652    1303 0.4542E-06 0.1000E+01
+     652    1304 0.4539E-06 0.1000E+01
+     653    1305 0.4527E-06 0.1000E+01
+     653    1306 0.4501E-06 0.1000E+01
+     654    1307 0.4490E-06 0.1000E+01
+     654    1308 0.4486E-06 0.1000E+01
+     655    1309 0.4469E-06 0.1000E+01
+     655    1310 0.4445E-06 0.1000E+01
+     656    1311 0.4411E-06 0.1000E+01
+     656    1312 0.4382E-06 0.1000E+01
+     657    1313 0.4381E-06 0.1000E+01
+     657    1314 0.4383E-06 0.1000E+01
+     658    1315 0.4385E-06 0.1000E+01
+     658    1316 0.4386E-06 0.1000E+01
+     659    1317 0.4383E-06 0.1000E+01
+     659    1318 0.4376E-06 0.1000E+01
+     660    1319 0.4367E-06 0.1000E+01
+     660    1320 0.4367E-06 0.1000E+01
+     661    1321 0.4356E-06 0.1000E+01
+     661    1322 0.4338E-06 0.1000E+01
+     662    1323 0.4338E-06 0.1000E+01
+     662    1324 0.4339E-06 0.1000E+01
+     663    1325 0.4338E-06 0.1000E+01
+     663    1326 0.4301E-06 0.1000E+01
+     664    1327 0.4292E-06 0.1000E+01
+     664    1328 0.4293E-06 0.1000E+01
+     665    1329 0.4295E-06 0.1000E+01
+     665    1330 0.4296E-06 0.1000E+01
+     666    1331 0.4297E-06 0.1000E+01
+     666    1332 0.4298E-06 0.1000E+01
+     667    1333 0.4298E-06 0.1000E+01
+     667    1334 0.4296E-06 0.1000E+01
+     668    1335 0.4291E-06 0.1000E+01
+     668    1336 0.4283E-06 0.1000E+01
+     669    1337 0.4276E-06 0.1000E+01
+     669    1338 0.4275E-06 0.1000E+01
+     670    1339 0.4275E-06 0.1000E+01
+     670    1340 0.4276E-06 0.1000E+01
+     671    1341 0.4277E-06 0.1000E+01
+     671    1342 0.4279E-06 0.1000E+01
+     672    1343 0.4281E-06 0.1000E+01
+     672    1344 0.4282E-06 0.1000E+01
+     673    1345 0.4284E-06 0.1000E+01
+     673    1346 0.4285E-06 0.1000E+01
+     674    1347 0.4287E-06 0.1000E+01
+     674    1348 0.4288E-06 0.1000E+01
+     675    1349 0.4288E-06 0.1000E+01
+     675    1350 0.4287E-06 0.1000E+01
+ iter_tfqmr         1350  6.604554845446430E-006
+ solve_tfqmr: the file <rho_spa.chk> updated 
+     676    1351 0.4287E-06 0.1000E+01
+     676    1352 0.4288E-06 0.1000E+01
+     677    1353 0.4267E-06 0.1000E+01
+     677    1354 0.4216E-06 0.1000E+01
+     678    1355 0.4168E-06 0.1000E+01
+     678    1356 0.4126E-06 0.1000E+01
+     679    1357 0.4086E-06 0.1000E+01
+     679    1358 0.4050E-06 0.1000E+01
+     680    1359 0.4013E-06 0.1000E+01
+     680    1360 0.3976E-06 0.1000E+01
+     681    1361 0.3955E-06 0.1000E+01
+     681    1362 0.3952E-06 0.1000E+01
+     682    1363 0.3932E-06 0.1000E+01
+     682    1364 0.3922E-06 0.1000E+01
+     683    1365 0.3923E-06 0.1000E+01
+     683    1366 0.3924E-06 0.1000E+01
+     684    1367 0.3925E-06 0.1000E+01
+     684    1368 0.3923E-06 0.1000E+01
+     685    1369 0.3915E-06 0.1000E+01
+     685    1370 0.3914E-06 0.1000E+01
+     686    1371 0.3807E-06 0.1000E+01
+     686    1372 0.3572E-06 0.1000E+01
+     687    1373 0.3491E-06 0.1000E+01
+     687    1374 0.3472E-06 0.1000E+01
+     688    1375 0.3446E-06 0.1000E+01
+     688    1376 0.3417E-06 0.1000E+01
+     689    1377 0.3393E-06 0.1000E+01
+     689    1378 0.3372E-06 0.1000E+01
+     690    1379 0.3367E-06 0.1000E+01
+     690    1380 0.3367E-06 0.1000E+01
+     691    1381 0.3364E-06 0.1000E+01
+     691    1382 0.3361E-06 0.1000E+01
+     692    1383 0.3357E-06 0.1000E+01
+     692    1384 0.3352E-06 0.1000E+01
+     693    1385 0.3353E-06 0.1000E+01
+     693    1386 0.3354E-06 0.1000E+01
+     694    1387 0.3355E-06 0.1000E+01
+     694    1388 0.3356E-06 0.1000E+01
+     695    1389 0.3358E-06 0.1000E+01
+     695    1390 0.3359E-06 0.1000E+01
+     696    1391 0.3360E-06 0.1000E+01
+     696    1392 0.3359E-06 0.1000E+01
+     697    1393 0.3346E-06 0.1000E+01
+     697    1394 0.3335E-06 0.1000E+01
+     698    1395 0.3324E-06 0.1000E+01
+     698    1396 0.3313E-06 0.1000E+01
+     699    1397 0.3303E-06 0.1000E+01
+     699    1398 0.3295E-06 0.1000E+01
+     700    1399 0.3291E-06 0.1000E+01
+     700    1400 0.3289E-06 0.1000E+01
+ iter_tfqmr         1400  4.553450519661040E-006
+ solve_tfqmr: the file <rho_spa.chk> updated 
+     701    1401 0.3290E-06 0.1000E+01
+     701    1402 0.3290E-06 0.1000E+01
+     702    1403 0.3291E-06 0.1000E+01
+     702    1404 0.3292E-06 0.1000E+01
+     703    1405 0.3292E-06 0.1000E+01
+     703    1406 0.3293E-06 0.1000E+01
+     704    1407 0.3292E-06 0.1000E+01
+     704    1408 0.3292E-06 0.1000E+01
+     705    1409 0.3257E-06 0.1000E+01
+     705    1410 0.3227E-06 0.1000E+01
+     706    1411 0.3196E-06 0.1000E+01
+     706    1412 0.3165E-06 0.1000E+01
+     707    1413 0.3121E-06 0.1000E+01
+     707    1414 0.3053E-06 0.1000E+01
+     708    1415 0.2992E-06 0.1000E+01
+     708    1416 0.2939E-06 0.1000E+01
+     709    1417 0.2936E-06 0.1000E+01
+     709    1418 0.2937E-06 0.1000E+01
+     710    1419 0.2937E-06 0.1000E+01
+     710    1420 0.2916E-06 0.1000E+01
+     711    1421 0.2905E-06 0.1000E+01
+     711    1422 0.2899E-06 0.1000E+01
+     712    1423 0.2882E-06 0.1000E+01
+     712    1424 0.2861E-06 0.1000E+01
+     713    1425 0.2851E-06 0.1000E+01
+     713    1426 0.2851E-06 0.1000E+01
+     714    1427 0.2821E-06 0.1000E+01
+     714    1428 0.2792E-06 0.1000E+01
+     715    1429 0.2733E-06 0.1000E+01
+     715    1430 0.2656E-06 0.1000E+01
+     716    1431 0.2562E-06 0.1000E+01
+     716    1432 0.2511E-06 0.1000E+01
+     717    1433 0.2481E-06 0.1000E+01
+     717    1434 0.2469E-06 0.1000E+01
+     718    1435 0.2457E-06 0.1000E+01
+     718    1436 0.2448E-06 0.1000E+01
+     719    1437 0.2449E-06 0.1000E+01
+     719    1438 0.2450E-06 0.1000E+01
+     720    1439 0.2451E-06 0.1000E+01
+     720    1440 0.2449E-06 0.1000E+01
+     721    1441 0.2439E-06 0.1000E+01
+     721    1442 0.2424E-06 0.1000E+01
+     722    1443 0.2424E-06 0.1000E+01
+     722    1444 0.2424E-06 0.1000E+01
+     723    1445 0.2425E-06 0.1000E+01
+     723    1446 0.2426E-06 0.1000E+01
+     724    1447 0.2427E-06 0.1000E+01
+     724    1448 0.2428E-06 0.1000E+01
+     725    1449 0.2428E-06 0.1000E+01
+     725    1450 0.2429E-06 0.1000E+01
+ iter_tfqmr         1450  2.888765847391196E-006
+ solve_tfqmr: the file <rho_spa.chk> updated 
+     726    1451 0.2430E-06 0.1000E+01
+     726    1452 0.2430E-06 0.1000E+01
+     727    1453 0.2425E-06 0.1000E+01
+     727    1454 0.2389E-06 0.1000E+01
+     728    1455 0.2390E-06 0.1000E+01
+     728    1456 0.2391E-06 0.1000E+01
+     729    1457 0.2392E-06 0.1000E+01
+     729    1458 0.2364E-06 0.1000E+01
+     730    1459 0.2229E-06 0.1000E+01
+     730    1460 0.2054E-06 0.1000E+01
+     731    1461 0.1892E-06 0.1000E+01
+     731    1462 0.1760E-06 0.1000E+01
+     732    1463 0.1759E-06 0.1000E+01
+     732    1464 0.1760E-06 0.1000E+01
+     733    1465 0.1760E-06 0.1000E+01
+     733    1466 0.1753E-06 0.1000E+01
+     734    1467 0.1729E-06 0.1000E+01
+     734    1468 0.1663E-06 0.1000E+01
+     735    1469 0.1621E-06 0.1000E+01
+     735    1470 0.1593E-06 0.1000E+01
+     736    1471 0.1590E-06 0.1000E+01
+     736    1472 0.1590E-06 0.1000E+01
+     737    1473 0.1589E-06 0.1000E+01
+     737    1474 0.1587E-06 0.1000E+01
+     738    1475 0.1586E-06 0.1000E+01
+     738    1476 0.1584E-06 0.1000E+01
+     739    1477 0.1583E-06 0.1000E+01
+     739    1478 0.1583E-06 0.1000E+01
+     740    1479 0.1583E-06 0.1000E+01
+     740    1480 0.1566E-06 0.1000E+01
+     741    1481 0.1490E-06 0.1000E+01
+     741    1482 0.1275E-06 0.1000E+01
+     742    1483 0.1227E-06 0.1000E+01
+     742    1484 0.1218E-06 0.1000E+01
+     743    1485 0.1086E-06 0.1000E+01
+     743    1486 0.8050E-07 0.1000E+01
+     744    1487 0.6579E-07 0.1000E+01
+     744    1488 0.5661E-07 0.1000E+01
+     745    1489 0.5004E-07 0.1000E+01
+     745    1490 0.4520E-07 0.1000E+01
+     746    1491 0.4103E-07 0.1000E+01
+     746    1492 0.3758E-07 0.1000E+01
+     747    1493 0.3487E-07 0.1000E+01
+     747    1494 0.3276E-07 0.1000E+01
+     748    1495 0.3105E-07 0.1000E+01
+     748    1496 0.2984E-07 0.1000E+01
+     749    1497 0.2944E-07 0.1000E+01
+     749    1498 0.2942E-07 0.1000E+01
+     750    1499 0.2942E-07 0.1000E+01
+     750    1500 0.2943E-07 0.1000E+01
+ iter_tfqmr         1500  2.574247779977434E-007
+ solve_tfqmr: TFQMR converged after        1500  iterations
+ solve_tfqmr: final norm   2.574247779965834E-007
+ 
+ outsteady: output steady state properties
+ 
+  occupation, spin up =   0.500080730836274     
+                 down =   0.500080730836589     
+ 
+  occupancy on all orbitals 
+ iorb=  1 ispin=  1 nele=    0.500
+ iorb=  1 ispin=  2 nele=    0.500
+ 
+ outsteady: steady electric current: 
+               jleft  =    85.0975701179584       pA 
+              jright  =   -85.0975698445394       pA 
+ 
+  spin current 
+               jleftu =    42.5487850116472       pA 
+               jleftd =    42.5487851063112       pA 
+              jrightu =   -42.5487853392714       pA 
+              jrightd =   -42.5487845052680       pA 
+ 
+ IVOUTPUT  1500    0.100000E-002    0.000000E+000    0.500081E+000    0.500081E+000    0.850976E+002   -0.850976E+002
+ 
+ outsteady: Esys =  -0.761519498010872     
+            Esb  =   -1.02368542031831     
+            Etot =   -1.78520491832918     
+ 
+ outsteady: spin moment of each orbital     
+ outsteady: iorbs, <Sx_i>, <Sy_i>, <Sz_i>   
+ SM    1   0.000000E+000   0.000000E+000  -0.157568E-012
+ 
+ outsteady: total spin-square moment       
+ outsteady: <Sx^2>, <Sy^2>, <Sz^2>, <S^2>  
+ S2     0.190380E+000   0.190380E+000   0.190380E+000   0.571140E+000
+ 
+ outsteady: iorbs, jorbs, <S_i * S_j>       
+ 
+ solve_tfqmr: leaving solve_tfqmr    788618.538763000     
+ 
+ main: CPU time for TFQMR solver    24746.5942859650     
+ 
+  steady-state reduce density matrix rho 
+ 
+  real part 
+             1             2             3             4
+   1  0.119160D+00  0.000000D+00  0.000000D+00  0.000000D+00
+   2  0.000000D+00  0.380760D+00  0.000000D+00  0.000000D+00
+   3  0.000000D+00  0.000000D+00  0.380760D+00  0.000000D+00
+   4  0.000000D+00  0.000000D+00  0.000000D+00  0.119321D+00
+ 
+  imag part 
+             1             2             3             4
+   1  0.000000D+00  0.000000D+00  0.000000D+00  0.000000D+00
+   2  0.000000D+00  0.000000D+00  0.000000D+00  0.000000D+00
+   3  0.000000D+00  0.000000D+00  0.000000D+00  0.000000D+00
+   4  0.000000D+00  0.000000D+00  0.000000D+00  0.000000D+00
+ 
+ checkrho_spa: check reduced density matrix 
+ 
+ checkrho_spa: positivite-definiteness check complete! 
+ checkrho_spa: rho is found OK! 
+ 
+ checkrho_spa: max element in rho and ADOs 
+ MAX  1  0.380759749006E+000
+ MAX  2  0.523518415368E+001
+ MAX  3  0.113944229660E+003
+ MAX  4  0.120620833657E+004
+ MAX  5  0.140110201703E+005
+ 
+ checkrho_spa: sum of abs_val of rho and ADOs 
+ SUM  1  0.100000000000E+001
+ SUM  2  0.844308271281E+002
+ SUM  3  0.902829292224E+004
+ SUM  4  0.317093868270E+006
+ SUM  5  0.934406726381E+007
+ outputnnz: T
+ 
+ outputnnz: <sparse_index.data> and <sparse_info.data> found 
+ outputnnz: start reading 
+ outputnnz: <sparse_index.data> and <sparse_info.data> read successfully
+ outputnnz: done
+ 
+ 
+ main: output to files finished
+ 
+ 
+  calculation done!             
+  cpu time for time evolution     0.000000000000000E+000
+  cpu time (overall)               795380.183530000     
+SJ_DBG_TIMER_STOP : ntimer=   1 CPU=[   795380.18316] REAL= [    31530.58232] 
+ 
+    general memory cost estimated    21132.8744506836       MB 
+        rk4 memory cost estimated   0.000000000000000E+000  MB 
+       bicg memory cost estimated   0.000000000000000E+000  MB 
+      tfqmr memory cost estimated    19873.8397979736       MB 
+     jacobi memory cost estimated   0.000000000000000E+000  MB 
+    corrfun memory cost estimated   0.000000000000000E+000  MB 
+ 
+
+ Job finished on 
+ 24/05/2024  03:21:35
+

@@ -1,0 +1,29 @@
+    2
+    3
+   34
+    2
+    2
+    2
+ 0.500000E+001    0.500000E+001
+ 0.400000E-001    0.400000E-001    0.160000E-001    0.160000E-001
+ 0.200000E-002    0.200000E-002
+ 0.000000E+000    0.000000E+000    0.500000E-002    0.500000E-002
+ 0.200000E+003
+ 0.200000E-001
+
+$para4 e1up=  -3.6000  e1down=  -3.6000  e2up=  -3.6000  e2down=  -3.6000
+ uu1=   4.6000  uu2=   4.5000  u12=   0.0000  t12=   0.0000 J12=  -1.0000 $end
+
+$converge  maxit0=5000   crit=5.00E-006  $end
+
+$jobinfo lsparse=.true.  psfjob=T itype_psf=7  $end
+
+$field  fieldtype= 0  $end
+ 0.100000E-019    0.100000E-019    0.100000E-019    0.100000E-019
+
+$resume  lresume=      T  nresume=   50  icont=  0  $end
+
+$spin3d  lspin3d=.true.  $end
+
+$zfs  lzfs=.true.  d_xx=  0.0000  d_yy =  0.0000  d_zz =  0.0086  $end
+

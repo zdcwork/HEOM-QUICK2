@@ -1,0 +1,21 @@
+     2
+     5
+     34
+     1
+     2
+     2
+  3.0d0 3.0d0
+  0.4d0 0.4d0 
+  0.003d0 0.003d0
+  0.001d0 0.0010d0 0.d0 0.d0
+  1.d3
+  2.d-2
+
+ $para1  eup=-1.0d0 edown=-1.0d0 uu=2.0d0  fixdot=T $end
+
+ $field  fieldtype=0  $end
+ 1.d-20 1.d-20 1.d-20 1.d-20
+
+ $jobinfo  lsparse=T psdjob=T  itype_fff=3  $end
+
+ $converge maxit0=20000 crit=2.d-6   $end

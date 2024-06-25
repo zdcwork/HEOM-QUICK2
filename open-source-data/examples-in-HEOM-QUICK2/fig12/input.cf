@@ -1,0 +1,36 @@
+    6
+    4
+    2
+    2
+    2
+    1
+ 4.d0
+ 0.6d0  0.6d0
+ 0.002d0
+ 0.d0   0.d0
+ 10.d0
+ 0.01d0
+
+$para4  e1up= -1.0d0  e1down= -1.0d0
+        e2up= -1.d0  e2down= -1.d0
+        u12= 0.d0      t12= 0.0
+        uu1= 2.d0      uu2= 2.0d0   j12= -0.5d0 fixdot=F $end
+
+$field  fieldtype= 0  $end
+0.10000000E-19   0.10000000E-19
+
+$jobinfo  lsparse=T  psdfff=T  itype_fff=3  $end
+
+$converge maxit0=20000 crit=1.d-6  $end
+
+$resume  icont=0  lresume=T   nresume=10  $end
+
+$adiabatic lad=.true. lad_fast=T  lset_fast=T  ncor_fast=0
+           ntier_ad=4,  dgama_slow=0.2  lcop_ad=T  lscba_ad=T
+           lcheck_ad=F   idegen_fast=1  ndegen_fast=2  $end
+
+ $dos ldos=T  iorbs_dos=1  ispin_dos=1
+    lfreq_dos=T  freq_dos=  0.000000000000000E+000
+    crit_dos=3.000E-007 $end
+ $combineleads  lequileads=F  $end
+

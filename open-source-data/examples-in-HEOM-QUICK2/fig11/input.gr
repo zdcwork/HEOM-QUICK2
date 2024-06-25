@@ -1,0 +1,24 @@
+    2
+    4
+    2
+    1
+    2
+    1
+5.0d0
+0.00001d0  0.00001d0
+0.0002d0
+0.d0   0.d0
+10.00d0
+0.01d0
+
+$para1  eup=0.0d0  edown=0.12d0  uu= 0.96d0    fixdot=F $end
+
+$field  fieldtype= 0  $end
+0.10000000E-19   0.10000000E-19
+
+$jobinfo  lsparse=T  psfjob=T  itype_psf=33  $end
+
+$converge maxit0=10000 crit=1.d-8 $end
+
+$adiabatic lad=.true. $end
+

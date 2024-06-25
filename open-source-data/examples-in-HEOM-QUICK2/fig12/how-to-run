@@ -1,0 +1,4 @@
+./path/to/HEOM-QUICK2.x < input.gr > out.gr
+./path/to/HEOM-QUICK2.x < input.td > out.td
+mv TAPE_****.resume TAPE.resume
+./path/to/HEOM-QUICK2.x < input.cf > out.tdcf
