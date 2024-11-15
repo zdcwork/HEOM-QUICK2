@@ -18,7 +18,7 @@
      
   and
   
->     Daochi Zhang, Lyuzhou Ye, Jiaan Cao, Yao Wang, Rui-Xue Xu, Xiao Zheng, YiJing Yan. HEOM-QUICK2: a general-purpose simulator for fermionic many-body open quantum systems -- An Update. arXiv2401.01715.
+>     Daochi Zhang, Lyuzhou Ye, Jiaan Cao, Yao Wang, Rui-Xue Xu, Xiao Zheng, YiJing Yan. HEOM-QUICK2: a general-purpose simulator for fermionic many-body open quantum systems -- An Update. WIREs Comput Mol Sci. 2024;14:e1727.
      
   which may also be downloaded from: https://arxiv.org/abs/2401.01715.
 
