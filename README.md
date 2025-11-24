@@ -320,6 +320,12 @@
        time propagation for SIAM subjected to ac voltage
        Now we impose a sinusoidal ac voltage on the SIAM in a steady state 
        calculated in Ex1 and simulate the resulting dissipation dynamics of SIAM. 
+	   In this example, SIAM evloves from a steady state in Ex1 at time tt=0 until 
+	   the final state at tt=250 with a time step Δt=0.005.
+	   HEOM-QUICK2 generates a series of "TAPE_(tt).resume" files 
+       which record the intermediate results of RDO&ADOs during time propagation.
+	   The program generates a "TAPE_(tt).resume" file 
+	   to store intermediate results every nresume=2000 steps of time evolution.
        The bath correlation functions by the Prony fitting spectrum 
        decomposition scheme and truncate the hierarchy by the adiabatic scheme. 
  
@@ -352,7 +358,8 @@
        HEOM-QUICK2 generates a series of "TAPE_(tt).resume" files 
        which records the intermediate results of RDO&ADOs during time propagation in Ex3. 
        To evaluate time-dependent linear response properties of the system, 
-       we should rename one of "TAPE_(tt).resume" as "TAPE.resume" 
+       we should we should backup "TAPE_(tt).resume" files in Ex3
+	   and rename one of "TAPE_(tt).resume" as "TAPE.resume" 
        before the HEOM-QUICK2 calculation. 
        The bath correlation functions by the Prony fitting spectrum 
        decomposition scheme and truncate the hierarchy by the adiabatic scheme. 
@@ -385,6 +392,83 @@
 
   These above examples are given in "/path/to/HEOM-QUICK2.x.x.x/readme/example".
 
+  ## Ex5. 
+       solve the equlibrium(or steady) state of SIAM subjected to bias voltage by time propagation method
+	   Beside the iterative approach in Ex1,
+	   we can also employ time propagtion to solve equlibrium(or steady) state of SIAM.
+       In this example, SIAM evloves from a groud state at time tt=0 until 
+	   the final state at tt=10.01 with a time step Δt=0.005.
+	   The program generates a "TAPE_(tt).resume" file 
+	   to store intermediate RDO&ADOs every nresume=1000 steps of time propagation.
+ 	   The bath correlation functions are unraveled by 
+       by the Prony fitting spectrum decomposition scheme 
+       and truncate the hierarchy by the adiabatic scheme.
+	   The fourth-order Runge-Kutta method is the default time evolution algorithm.
+
+  The input file is 
+>          1     4 
+>          2     4 
+>          3     0 
+>          4     1
+>          5     2 
+>          6     2 
+>          7     5.0d0 5.0d0 
+>          8     0.4d0 0.4d0 
+>          9     0.001d0 0.001d0 
+>          10    0.001d0 0.001d0 -0.001d0 -0.001d0
+>          11    10.01d0 
+>          12    5.d-3
+>          13    $para1 eup=-1.0d0 edown=-1.0d0 uu=2.0d0 $end 
+>          14    $field fieldtype=0 $end
+>          15    1.d-20 1.d-20 1.d-20 1.d-20
+>          16    $jobinfo lsparse=T psfjob=T itype_psf=1 $end
+>          17    $converge maxit0=20000 crit=1.d-7 $end
+>          18    $resume icont=0 lresume=T nresume=1000 $end
+>          19    $adiabatic lad=T $end
+>          It is noted that the standard input file does not require the line numbers in the left side.
+  		
+  Users can run HEOM-QUICK2 with the command 
+>  "./path/to/HEOM-QUICK2.x.x.x/bin/HEOM-QUICK2.x <input_file_name> out_file_name".
+
+  ## Ex6.
+       resume time propagation jobs for SIAM under a bias voltage
+	   To resume time propagation jobs, 
+       we should backup "TAPE_(tt).resume" files in Ex5
+	   and rename one of "TAPE_(tt).resume" as "TAPE.resume" 
+       before time evolution simulation. 
+	   The program will read the "TAPE.resume" and set the inital time
+	   as the final time sotred in "TAPE.resume".
+	   In this example, SIAM evloves from a final state in Ex5 until 
+	   a new final state at tt=20.01 with a time step Δt=0.005.
+	   The intermediate RDO&ADOs will be stored in the "TAPE_(tt).resume" files 
+	   every nresume=2000 steps of time propagation.
+       The bath correlation functions by the Prony fitting spectrum 
+       decomposition scheme and truncate the hierarchy by the adiabatic scheme. 
+
+  The input file is 
+>          1     4 
+>          2     4 
+>          3     0 
+>          4     1
+>          5     2 
+>          6     2 
+>          7     5.0d0 5.0d0 
+>          8     0.4d0 0.4d0 
+>          9     0.001d0 0.001d0
+>          10    0.001d0 0.001d0 -0.001d0 -0.001d0
+>          11    20.01d0 
+>          12    5.d-3
+>          13    $para1 eup=-1.0d0 edown=-1.0d0 uu=2.0d0 $end 
+>          14    $field fieldtype=0 $end
+>          15    1.d-20 1.d-20 1.d-20 1.d-20
+>          16    $jobinfo lsparse=T psfjob=T itype_psf=1 $end
+>          17    $converge maxit0=20000 crit=1.d-7 $end
+>          18    $resume icont=1 lresume=T nresume=4000 $end
+>          19    $adiabatic lad=T $end
+          It is noted that the standard input file does not require the line numbers in the left side.
+
+  Users can run HEOM-QUICK2 with the command 
+>  "./path/to/HEOM-QUICK2.x.x.x/bin/HEOM-QUICK2.x <input_file_name> out_file_name".
   
 ##  Now we introduce the tags in these input files. 
 >        Line 1: task type;
@@ -405,12 +489,12 @@
 >        Line 11: length of time evolution, deactivated for steady-state calculation;
 >        Line 12: time step length;
 >        para1: the energetic parameters of SIAM; 
->             The program offers other namelists for different model systems:
->               para2: two-level system;
+>           The program offers other namelists for different model systems:
+>               para2: two-level system (i.e. spinless SIAM);
 >               para3: spinless two-impurity Anderson models;
 >               para4: two-impurity Anderson models; 
 >               para5: three-impurity Anderson models;
->               para_ hubbard: the single-site Hubbard model.
+>               para_hubbard: the single-site Hubbard model.
 >        field: external bias voltage:
 >             fieldtype=0: exponential voltage, require the inverse of characteristic time;
 >             fieldtype=1: sinusoidal voltage, require the frequency if lreadomega=T;
@@ -419,8 +503,8 @@
 >               psfjob =T: use the Prony fitting spectrum decomposition scheme;
 >               psdfff =T: use the Fano spectrum decomposition scheme;
 >               psdjob=T: use the Padé spectrum decomposition scheme, now default;
->               itype_psf: the preset results of Prony scheme at different temperature;
->               itype_fff: the preset results of Fano scheme with different scaling factors;
+>               itype_psf: the preset results of Prony scheme at different temperature, see itype_psf_list.txt in /readme;
+>               itype_fff: the preset results of Fano scheme with different scaling factors, recommand itype_fff=3;
 >        converge: the control tag in iterative calculations;
 >                maxit0: the maximum step in iteration calculations;
 >                crit: the criterion in iteration calculations;
