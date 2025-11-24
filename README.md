@@ -425,7 +425,7 @@
 >          17    $converge maxit0=20000 crit=1.d-7 $end
 >          18    $resume icont=0 lresume=T nresume=1000 $end
 >          19    $adiabatic lad=T $end
->          It is noted that the standard input file does not require the line numbers in the left side.
+          It is noted that the standard input file does not require the line numbers in the left side.
   		
   Users can run HEOM-QUICK2 with the command 
 >  "./path/to/HEOM-QUICK2.x.x.x/bin/HEOM-QUICK2.x <input_file_name> out_file_name".
