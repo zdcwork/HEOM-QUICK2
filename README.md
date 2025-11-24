@@ -441,7 +441,7 @@
 	   In this example, SIAM evloves from a final state in Ex5 until 
 	   a new final state at tt=20.01 with a time step Δt=0.005.
 	   The intermediate RDO&ADOs will be stored in the "TAPE_(tt).resume" files 
-	   every nresume=2000 steps of time propagation.
+	   every nresume=1000 steps of time propagation.
        The bath correlation functions by the Prony fitting spectrum 
        decomposition scheme and truncate the hierarchy by the adiabatic scheme. 
 
@@ -463,7 +463,7 @@
 >          15    1.d-20 1.d-20 1.d-20 1.d-20
 >          16    $jobinfo lsparse=T psfjob=T itype_psf=1 $end
 >          17    $converge maxit0=20000 crit=1.d-7 $end
->          18    $resume icont=1 lresume=T nresume=4000 $end
+>          18    $resume icont=1 lresume=T nresume=1000 $end
 >          19    $adiabatic lad=T $end
           It is noted that the standard input file does not require the line numbers in the left side.
 
