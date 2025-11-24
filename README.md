@@ -436,8 +436,8 @@
        we should backup "TAPE_(tt).resume" files in Ex5
 	   and rename one of "TAPE_(tt).resume" as "TAPE.resume" 
        before time evolution simulation. 
-	   The program will read the "TAPE.resume" and set the inital time
-	   as the end time sotred in "TAPE.resume".
+	   The program will read the "TAPE.resume" file and set the inital time
+	   as the time instant stored in "TAPE.resume".
 	   In this example, SIAM evloves from a final state in Ex5 until 
 	   a new final state at tt=20.01 with a time step Δt=0.005.
 	   The intermediate RDO&ADOs will be stored in the "TAPE_(tt).resume" files 
