@@ -399,7 +399,7 @@
        In this example, SIAM evloves from a groud state at time tt=0 until 
 	   the final state at tt=10.01 with a time step Δt=0.005.
 	   The program generates a "TAPE_(tt).resume" file 
-	   to store intermediate RDO&ADOs every nresume=1000 steps of time propagation.
+	   to store intermediate RDO&ADOs every nresume(=1000 here) steps of time propagation.
  	   The bath correlation functions are unraveled by 
        by the Prony fitting spectrum decomposition scheme 
        and truncate the hierarchy by the adiabatic scheme.
@@ -437,11 +437,11 @@
 	   and rename one of "TAPE_(tt).resume" as "TAPE.resume" 
        before time evolution simulation. 
 	   The program will read the "TAPE.resume" and set the inital time
-	   as the final time sotred in "TAPE.resume".
+	   as the end time sotred in "TAPE.resume".
 	   In this example, SIAM evloves from a final state in Ex5 until 
 	   a new final state at tt=20.01 with a time step Δt=0.005.
 	   The intermediate RDO&ADOs will be stored in the "TAPE_(tt).resume" files 
-	   every nresume=1000 steps of time propagation.
+	   every nresume(=1000 here) steps of time propagation.
        The bath correlation functions by the Prony fitting spectrum 
        decomposition scheme and truncate the hierarchy by the adiabatic scheme. 
 
