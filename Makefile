@@ -1,6 +1,6 @@
 .SILENT:
 SHELL = /bin/sh
-NAME=$(HOME)/work/help_other/sww/program/heom/src.ver-2.064/bin/heom_quick2.06
+NAME=$(HOME)/program/src.ver-2.10/bin/heom_quick2
 
 DFT=$(NAME)
 

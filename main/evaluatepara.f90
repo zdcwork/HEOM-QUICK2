@@ -273,8 +273,8 @@ lprony = .False.
 lprony_only_read = .False.
 lprony_spectra = .TRUE.
 lfft = .False.
-nprony_real = 1
-nprony_imag = 10
+nprony_real = 60
+nprony_imag = 60
 nhankel = 3001
 tt_max_prony = 300.d0
 prony_alf = nalf
@@ -1427,10 +1427,82 @@ if (lprony) then
   num_cb = 0
   num_cd = 0
   num_cgama = 0
+  ! check the longest array
+  do ni=1, nsgn
+    do nj=1, nalf
+      !do np=1, nspin
+        do nm=1, nvar2
+          write(6,'(" evaluatepara: isgn",I2," ialf",I2," iorbs",I2)') ni,nj,nm
+          write(ch_isgn,'(I2)') ni
+          write(ch_ialf,'(I2)') nj
+          write(ch_iorbs,'(I2)') nm
+          buffer = ('ISGN-'//trim(adjustl(ch_isgn))//&
+                 '-IALF-'//trim(adjustl(ch_ialf))//&
+               '-IORBS-'//trim(adjustl(ch_iorbs))//'.data')
+          title = ('PRONY_CB-'//trim(adjustl(buffer)))
+          inquire(file=title,exist=lfile_exist)
+          if (lfile_exist) then
+            open(unit=10,file=title)
+            ! check the number of cb
+            rewind(10)
+            ntmp1 = -2
+            istat = 0
+            do while(.not. is_iostat_end(istat))
+              read(10,'(a)', iostat=istat) ch_tmp
+              ntmp1 = ntmp1 + 1
+            end do
+            num_cb(nm,nj,ni) = ntmp1
+            !
+            write(6,*) 'evaluatepara: legenth of input exponential functions:', ntmp1
+            close(10)
+          else
+            write(6,*) 'evaluatepara: does not find input file ', title
+            write(6,*) 'evaluatepara: please check input files'
+            stop
+          end if
+          write(6,*)
+        end do
+      !end do
+    end do
+  end do
+  ! check the number of nprony_real + nprony_imag
+  lall_same = .True.
+  do ni=1, nsgn
+    do nj=1, nalf
+      !do np=1, nspin
+        do nm=1, nvar2 
+          if (num_cb(nm,nj,ni) .le. &
+             (nprony_real + nprony_imag)) then
+            write(6,'(" evaluatepara: find different nmats ", I3,2x,I3)') &
+            num_cb(nm,nj,ni), nprony_real + nprony_imag
+            write(6,'(" isgn",I2," ialf",I2," iorbs",I2)') ni,nj,nm
+          end if
+          !
+          if (num_cb(nm,nj,ni) .ne. num_cb(1,1,1)) then
+            lall_same = .False.
+          end if
+        end do
+      !end do
+    end do
+  end do
+  !
+  ndrude = 0
   ntmp2 = nprony_real + nprony_imag
+  if (lall_same) then
+    nmats = num_cb(1,1,1)
+  else
+    write(6,*) 'evaluatapara: WARNING! nsgn, nalf or nvar2 has different numbers of cb'
+    write(6,*) '              only accept the maximal numbers of cb', maxval(num_cb)
+    write(6,*)
+    nmats = maxval(num_cb)
+  end if
+  ntmp2 = nmats
   allocate(cb_tmp(nvar2,nspin,ntmp2,nalf,nsgn),&
            cd_tmp(nvar2,nspin,ntmp2,nalf,nsgn),&
            cgama_tmp(nvar2,nspin,ntmp2,nalf,nsgn))
+  num_cb = 0
+  num_cd = 0
+  num_cgama = 0
   cb_tmp = czero
   cd_tmp = czero
   cgama_tmp = czero
@@ -1459,6 +1531,11 @@ if (lprony) then
             end do
             num_cb(nm,nj,ni) = ntmp1
             !
+            if (ntmp1 .gt. ntmp2) then
+               write(6,*)'evaluatepara_diff: error! external Prony cb count exceeds allocated poles.'
+               write(6,*)'evaluatepara_diff: ialf, count, allocated = ', nj, ntmp1, ntmp2
+               stop
+            end if
             write(6,*) 'evaluatepara: number of rational cb:', ntmp1
             !reading cb
             rewind(10)
@@ -1479,7 +1556,7 @@ if (lprony) then
           inquire(file=title,exist=lfile_exist)
           if (lfile_exist) then
             open(unit=11,file=title)
-            ! check the number of cb
+            ! check the number of cd
             rewind(11)
             ntmp1 = -2
             istat = 0
@@ -1488,8 +1565,13 @@ if (lprony) then
               ntmp1 = ntmp1 + 1
             end do
             num_cd(nm,nj,ni) = ntmp1
+            if (ntmp1 .gt. ntmp2) then
+               write(6,*)'evaluatepara_diff: error! external Prony cd count exceeds allocated poles.'
+               write(6,*)'evaluatepara_diff: ialf, count, allocated = ', nj, ntmp1, ntmp2
+               stop
+            end if
             write(6,*) 'evaluatepara: number of rational cd:', ntmp1
-            !reading cb
+            !reading cd
             rewind(11)
             read(11,'(a)') ch_tmp
             do nk=1, ntmp1
@@ -1507,7 +1589,7 @@ if (lprony) then
           inquire(file=title,exist=lfile_exist)
           if (lfile_exist) then
             open(unit=12,file=title)
-            ! check the number of cb
+            ! check the number of cgama
             rewind(12)
             ntmp1 = -2
             istat = 0
@@ -1516,8 +1598,13 @@ if (lprony) then
               ntmp1 = ntmp1 + 1
             end do
             num_cgama(nm,nj,ni) = ntmp1
+            if (ntmp1 .gt. ntmp2) then
+               write(6,*)'evaluatepara_diff: error! external Prony cgama count exceeds allocated poles.'
+               write(6,*)'evaluatepara_diff: ialf, count, allocated = ', nj, ntmp1, ntmp2
+               stop
+            end if
             write(6,*) 'evaluatepara: number of rational cgama:', ntmp1
-            !reading cb
+            !reading cgama
             rewind(12)
             read(12,'(a)') ch_tmp
             do nk=1, ntmp1
@@ -1538,42 +1625,9 @@ if (lprony) then
   end do
   !
   write(6,*)
-  !
-  ! check the number of nprony_real + nprony_imag
-  lall_same = .True.
-  do ni=1, nsgn
-    do nj=1, nalf
-      !do np=1, nspin
-        do nm=1, nvar2 
-          if (num_cb(nm,nj,ni) .ne. &
-             (nprony_real + nprony_imag)) then
-            write(6,'(" evaluatepara: find different nmats ", I3,2x,I3)') &
-            num_cb(nm,nj,ni), nprony_real + nprony_imag
-            write(6,'(" isgn",I2," ialf",I2," iorbs",I2)') ni,nj,nm
-          end if
-          !
-          if (num_cb(nm,nj,ni) .ne. num_cb(1,1,1)) then
-            lall_same = .False.
-          end if
-        end do
-      !end do
-    end do
-  end do
 end if
 !
 252 format(1(I3,1x),2(1x, f37.32))
-!
-if (lprony) then
-   ndrude = 0
-   if (lall_same) then
-     nmats = num_cb(1,1,1)
-   else
-     write(6,*) 'evaluatapara: WARNING! nsgn, nalf or nvar2 has different numbers of cb'
-     write(6,*) '              only accept the minumin numbers of cb', minval(num_cb)
-     write(6,*)
-     nmats = maxval(num_cb)
-   end if
-end if
 !
 if (lband) then
    ndrude = nband
