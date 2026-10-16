@@ -241,11 +241,11 @@ end do
 nstep = nstep + 1
 tt    = tt + dt
 !
-!if (lresume) then
-!  if (nstep .gt. 0 .and. mod(nstep, nresume) .eq. 0) then
-!    call resumejob(tt, 2)
-!  end if
-!end if
+if (lresume) then
+  if (nstep .gt. 0 .and. mod(nstep, nresume) .eq. 0) then
+    call resumejob(tt, 2)
+  end if
+end if
 !
 inquire(file="stoptd", exist=fexist)
 if (fexist) then

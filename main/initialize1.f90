@@ -41,6 +41,19 @@ call flush(6)
 !
 rho(1:nrho,1:nrho,1:nunk) = czero
 rho(nrho,nrho,1) = cunity
+if (iguess .eq. -1) then
+   rho(nrho,nrho,1) = czero
+   rho(1,1,1) = cunity
+else if (iguess .eq. -2) then
+   rho(nrho,nrho,1) = czero
+   rho(2,2,1) = cunity
+else if (iguess .eq. -3) then
+   rho(nrho,nrho,1) = czero
+   rho(3,3,1) = cunity
+else if (iguess .eq. -4) then
+   rho(nrho,nrho,1) = czero
+   rho(4,4,1) = cunity
+end if
 !
 !do ni=1,nrho
 !   rho(ni,ni,1) = cunity / dble(nrho)
@@ -126,9 +139,9 @@ if (grandom) then
       write(6,*)'initialize1: error! rho is not hermitian ', dtmp1
       stop
    end if
-   open(unit=68, file='rhoini.data', form='unformatted')
-   write(68)nrho**2
-   write(68)((rho(ni,nj,1), ni=1,nrho), nj=1,nrho)
+   open(unit=68, file='rhoini.data', form='formatted')
+   write(68,*)nrho**2
+   write(68,*)((rho(ni,nj,1), ni=1,nrho), nj=1,nrho)
    close(68)
    write(6,*)'initialize1: initial rho written to <rhoini.data> '
    call flush(6)
@@ -142,14 +155,14 @@ read(5, readini, end=101)
 101 continue
 if (lreadini) then
    if (lreadfile) then
-      open(unit=68, file='rhoini.data', form='unformatted')
-      read(68)ni
+      open(unit=68, file='rhoini.data', form='formatted')
+      read(68,*)ni
       if (ni .ne. nrho**2) then
          write(6,*)'initialize1: error read from <rhoini.data> '
          write(6,*)ni, nrho**2
          stop
       end if
-      read(68)((rho(ni,nj,1), ni=1,nrho), nj=1,nrho)
+      read(68,*)((rho(ni,nj,1), ni=1,nrho), nj=1,nrho)
       close(68)
       write(6,*)'initialize1: initial rho read from <rhoini.data> '
       call cmatout(nrho, nrho, rho(1,1,1), dmtmp1)

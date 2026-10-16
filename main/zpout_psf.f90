@@ -10,9 +10,11 @@ integer, intent (in)     :: mpole, msgn
 complex*16, intent (out) :: zcoef(*), zpole(mpole,*)
 integer                  :: isgn
 !
-if (.not. psfjob) then
-    write(6,*)'zpout_psf: error! psfjob= ', psfjob
-    stop
+if (.not. (ldiff_spe_dec .or. ldiff_spe_dec_sp)) then
+  if (.not. psfjob) then
+      write(6,*)'zpout_psf: error! psfjob= ', psfjob
+      stop
+  end if
 end if
 !
 if (itype_psf .eq. 1) then

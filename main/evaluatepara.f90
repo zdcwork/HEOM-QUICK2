@@ -24,7 +24,15 @@ real*8,     allocatable :: dmatmp(:), w0tmp(:), w1tmp(:), wkltmp(:), dkltmp(:)
 complex*16, allocatable :: zbmtmp(:), zw0tmp(:)
 logical                 :: lread_bcenter
 !
-namelist / field    / fieldtype, lreadomega, t_off, leshift_dc
+integer   , allocatable :: num_cb(:,:,:), num_cd(:,:,:), num_cgama(:,:,:)
+complex*16, allocatable :: cb_tmp(:,:,:,:,:), cd_tmp(:,:,:,:,:), cgama_tmp(:,:,:,:,:)
+logical                 :: lfile_exist, lall_same
+logical, allocatable    :: lband_equal(:)
+character(len=128)      :: buffer,ch_tmp
+character(len=2)        :: ch_ialf, ch_isgn, ch_iorbs
+character(len=128)      :: title
+!
+namelist / field    / fieldtype, lreadomega, t_off, leshift_dc, ltcetr, ltwidth, lphase
 namelist / ddots    / doubledot
 namelist / dfield2  / dfieldtype, aD, wD, dedot
 namelist / dfield1  / dfieldtype, tflip, wflip
@@ -37,7 +45,7 @@ namelist / bfield   / lbfield, dbfield, tbfield    ! B-field only applies to tra
 namelist / leadpara / lread_bcenter
 namelist / coupling / readcp, readmat, lrcmplx
 namelist / flux0    / megaflux, aoffL, aoffR, phioffL, phioffR, lafreq, lphifreq,        &
-                      natype, nphitype,                                                  &
+                      natype, nphitype, aoffT, phioffT,                                  &
                       anu, aomega, atheta, phinu, phiomega
 namelist / wgrids   / nwfermi, nwocc, nwvir, ifmval, irange,                             &
                       wmin, wmax, wfermid, wfermiu, dfmval, wrange, ebreak
@@ -48,6 +56,10 @@ namelist / band     / lband, nband, lband_same
 namelist / spin3d   / lspin3d, lbfield3d, lbsite
 namelist / zfs      / lzfs, d_xx, d_yy, d_zz, d_xx_1, d_yy_1, d_zz_1, d_xx_2, d_yy_2, d_zz_2  ! zero-field splitting
 namelist / bathcorr / offcor, lspcor
+namelist / prony    / lprony, lprony_only_read, lprony_spectra, lfft,&
+                      nprony_real, nprony_imag, nhankel, tt_max_prony, prony_alf,&
+                      lvasp2heom, chosen_alf, prony_psd_imag, scaling
+
 !
 ! experimental feature: renormalize all equivalent leads for equilibrium properties
 !              (such as occupation, reduced density matrix, and system spectral function)
@@ -237,7 +249,11 @@ if (lread_bcenter) then
    read(5,*) ((bcenter(ni,nj), nj=1,nspin), ni=1,malf)
 end if
 write(6,*)'evaluatepara: bcenter(nalf,nspin) '
-write(6,*) ((bcenter(ni,nj), nj=1,nspin), ni=1,malf)
+do ni=1, malf
+ do nj=1, nspin
+  write(6,*) ni, nj, bcenter(ni,nj)
+ end do
+end do
 call flush(6)
 !
 ! bcenter must be zero for psdfff=T; see J. Chem. Phys. 152, 064107 (2020), page 3
@@ -253,8 +269,46 @@ if (psdfff) then
     end do
 end if
 !
+lprony = .False.
+lprony_only_read = .False.
+lprony_spectra = .TRUE.
+lfft = .False.
+nprony_real = 1
+nprony_imag = 10
+nhankel = 3001
+tt_max_prony = 300.d0
+prony_alf = nalf
+lvasp2heom = .false.
+chosen_alf = 0
+scaling = 1.d0
+rewind(5)
+read(UNIT=5,NML=prony,END=51)
+51 continue
+if (lprony) then
+  write(6,*)
+  write(6,*) 'evaluatepara: Warning! invoke prony fitting!'
+  if (.not. lprony_spectra .and. ispectral .eq. 1) then
+    nprony_real = 1
+  end if
+  write(6,*) 'evaluatepara: # of exp. func. for real part prony fitting', nprony_real 
+  write(6,*) 'evaluatepara: # of exp. func. for imag part prony fitting', nprony_imag
+  if (lprony_only_read) then
+    write(6,*) 'evaluatepara: only read prony results'
+  end if
+  if (lprony_spectra) then
+    write(6,*) 'evaluatepara: input spectrum is general case'
+    write(6,*) 'evaluatepara: perform inverse Fourier transform to obtain C(t)'
+  else
+    nprony_real = 1
+    write(6,*) 'evaluatepara: the input spectrum is Drude type'
+    write(6,*) 'evaluatepara: the dimension of Hankel matrix is ', nhankel
+    write(6,*) 'evaluatepara: the final time of C(t) is', tt_max_prony 
+  end if
+  write(6,*)
+  !goto 249
+end if
 ! set bcenter=0 for psfjob=T (for certain itype_psf)
-if (psfjob) then
+if (psfjob .and. .not. lprony) then
     if (itype_psf .eq. 1) then
         bcenter(1:malf,1:nspin) = 0.d0
         write(6,*)'evaluatepara: set bcenter=0 for psfjob=T and '
@@ -728,7 +782,7 @@ if (psfjob) then
          write(6,*)'evaluatepara:     rpsf43 = ', rpsf43
          tpsf = tpsf43
          write(6,*)'evaluatepara:     tpsf43 = ', tpsf43
-   else
+     else
         write(6,*)'evaluatepara: error! unknown itype_psf= ', itype_psf
         stop
     end if
@@ -1197,6 +1251,330 @@ else
   stop
 end if
 !
+if (offcor) then
+  nvar2 = norbs2
+else
+  nvar2 = norbs
+end if
+!
+write(6,*)
+if (lvasp2heom) then
+  write(6,*) 'evaluatepara: enter vasp to HEOM interface'
+  if (chosen_alf .gt. nalf) then
+    chosen_alf = nalf
+  end if
+  if (chosen_alf .gt. prony_alf) then
+    stop
+  end if
+  do nj=1, chosen_alf
+    do nm=1, nvar2
+      call vasp2heom(nj, nm, dinvbeta(nj))
+    end do
+  end do
+end if
+!
+if (lprony) then
+  write(6,*)
+  if (lspcor) then
+    write(6,*) 'evaluatepara: Prony is not compatible with lspcor = .True.'
+    write(6,*) 'evaluatepara: exiting Prony method'
+    stop
+  end if
+  !
+  if (lprony_only_read) then
+    continue
+  else
+    if (lprony_spectra) then
+      write(6,*) 'evaluatepara: invoke prony fitting scheme for general spectral structures'
+      do ni=1, nsgn
+        do nj=1, nalf
+          !do np=1, nspin
+            do nm=1, nvar2
+              ! IFT
+              write(6,'(" evaluatepara: isgn",I2," ialf",I2," iorbs",I2)') ni,nj,nm
+              write(ch_isgn,'(I2)') ni
+              write(ch_ialf,'(I2)') nj
+              write(ch_iorbs,'(I2)') nm
+              buffer = ('ISGN-'//trim(adjustl(ch_isgn))//&
+                     '-IALF-'//trim(adjustl(ch_ialf))//&
+                   '-IORBS-'//trim(adjustl(ch_iorbs))//'.data')
+              if (nj .le. prony_alf) then
+                if (lfft) then
+                  title = ('FT_INPUT-'//trim(adjustl(buffer)))
+                  call system('cp ./'//trim(adjustl(title))//' ./FT_INPUT.data')
+                  if (ni .eq. 1) then 
+                    call fourier_transform(1.d0,dinvbeta(nj),nj,nm)
+                  else if (ni .eq. 2) then
+                    call fourier_transform(-1.d0,dinvbeta(nj),nj,nm)
+                  else 
+                    write(6,*) 'evaluatepara: wrong ni', ni
+                  end if
+                  title = ('IFT-'//trim(adjustl(buffer)))
+                  call system('cp ./IFT.data ./'//trim(adjustl(title)))
+                  !call system('rm ./IFT.data ')
+                end if
+                ! Prony
+                if (nj .le. chosen_alf) then
+                  title = ('IFT-'//trim(adjustl(buffer)))
+                  call system('cp ./'//trim(adjustl(title))//' ./IFT.data')
+                  cycle
+                end if
+                write(6,*) 'evaluatepara: perform Prony fitting'
+                if (ni .eq. 1) then
+                  call prony_job_real(1.d0,nprony_real,scaling)
+                  write(6,*)
+                  call prony_job_imag(1.d0,nprony_imag,scaling)
+                else if (ni .eq. 2) then
+                  call prony_job_real(-1.d0,nprony_real,scaling)
+                  write(6,*)
+                  call prony_job_imag(-1.d0,nprony_imag,scaling)
+                else
+                  write(6,*) 'evaluatepara: wrong ni', ni
+                end if
+                write(6,*)
+              else
+                !write(6,'(" evaluatepara: isgn",I2," ialf",I2," iorbs",I2)') ni,nj,nm
+                write(6,*) 'use the Drude spectrum'
+                call prony_psd(ni,nj,nm)
+              end if
+              !
+              title = ('PRONY_CB-'//trim(adjustl(buffer)))
+              call system('mv ./PRONY_CB.data ./'//trim(adjustl(title)))
+              !             
+              title = ('PRONY_CD-'//trim(adjustl(buffer)))
+              call system('mv ./PRONY_CD.data ./'//trim(adjustl(title)))
+              !             
+              title = ('PRONY_GAMA-'//trim(adjustl(buffer)))
+              call system('mv ./PRONY_GAMA.data ./'//trim(adjustl(title)))
+            end do
+          !end do  
+        end do  
+      end do
+    else
+      if (ispectral .ne. 0) then
+        write(6,*) 'evaluatepara: lprony_spectra = F only compatible', &
+                  ' with Lorentzian spectrum with ispectral = 0'
+        write(6,*) 'evaluatepara: exiting Prony method'
+        stop
+      end if 
+      if (nalf .gt. 1) then
+        allocate(lband_equal(nalf-1))
+      end if
+      lband_equal = .False.
+      write(6,*) 'evaluatepara: apply Pade method to generate C(t)'
+      !do ni=1, nsgn
+        do nj=1, nalf
+          !do np=1, nspin
+            do nm=1, nvar2
+              if (nj .gt. 1) then
+                if (dinvbeta(nj) .eq. dinvbeta(1) .and. &
+                    bandwidth(nj) .eq. bandwidth(1)) then
+                    lband_equal(nj-1) = .True.
+                end if
+              end if
+              !if (ni .eq. 1) then
+                ni = 1
+                write(6,'(" evaluatepara: perform prony for isgn",I2," ialf",I2," iorbs",I2)') ni,nj,nm
+                write(ch_isgn,'(I2)') ni
+                write(ch_ialf,'(I2)') nj
+                write(ch_iorbs,'(I2)') nm
+                buffer = ('ISGN-'//trim(adjustl(ch_isgn))//&
+                       '-IALF-'//trim(adjustl(ch_ialf))//&
+                     '-IORBS-'//trim(adjustl(ch_iorbs))//'.data')
+                call prony_psd(ni,nj,nm)
+                title = ('PRONY_CB-'//trim(adjustl(buffer)))
+                call system('cp ./PRONY_CB.data ./'//trim(adjustl(title)))
+                !             
+                title = ('PRONY_CD-'//trim(adjustl(buffer)))
+                call system('cp ./PRONY_CD.data ./'//trim(adjustl(title)))
+                !             
+                title = ('PRONY_GAMA-'//trim(adjustl(buffer)))
+                call system('cp ./PRONY_GAMA.data ./'//trim(adjustl(title)))
+                !
+                ni = 2
+                write(6,'(" evaluatepara: perform prony for isgn",I2," ialf",I2," iorbs",I2)') ni,nj,nm
+                write(ch_isgn,'(I2)') ni
+                write(ch_ialf,'(I2)') nj
+                write(ch_iorbs,'(I2)') nm
+                buffer = ('ISGN-'//trim(adjustl(ch_isgn))//&
+                       '-IALF-'//trim(adjustl(ch_ialf))//&
+                     '-IORBS-'//trim(adjustl(ch_iorbs))//'.data')
+                call prony_psd(ni,nj,nm)
+                title = ('PRONY_CB-'//trim(adjustl(buffer)))
+                call system('mv ./PRONY_CB.data ./'//trim(adjustl(title)))
+                !             
+                title = ('PRONY_CD-'//trim(adjustl(buffer)))
+                call system('mv ./PRONY_CD.data ./'//trim(adjustl(title)))
+                !             
+                title = ('PRONY_GAMA-'//trim(adjustl(buffer)))
+                call system('mv ./PRONY_GAMA.data ./'//trim(adjustl(title)))
+            end do
+          !end do  
+        end do  
+      !end do
+    end if
+    stop 
+  end if
+  !
+  write(6,*)
+end if
+!
+if (lprony) then
+  write(6,*) 'evaluatepara: read prony fitting result from given files'
+  allocate(num_cb(nvar2,nalf,nsgn),&
+           num_cd(nvar2,nalf,nsgn),&
+           num_cgama(nvar2,nalf,nsgn))
+  num_cb = 0
+  num_cd = 0
+  num_cgama = 0
+  ntmp2 = nprony_real + nprony_imag
+  allocate(cb_tmp(nvar2,nspin,ntmp2,nalf,nsgn),&
+           cd_tmp(nvar2,nspin,ntmp2,nalf,nsgn),&
+           cgama_tmp(nvar2,nspin,ntmp2,nalf,nsgn))
+  cb_tmp = czero
+  cd_tmp = czero
+  cgama_tmp = czero
+  do ni=1, nsgn
+    do nj=1, nalf
+      !do np=1, nspin
+        do nm=1, nvar2
+          write(6,'(" evaluatepara: isgn",I2," ialf",I2," iorbs",I2)') ni,nj,nm
+          write(ch_isgn,'(I2)') ni
+          write(ch_ialf,'(I2)') nj
+          write(ch_iorbs,'(I2)') nm
+          buffer = ('ISGN-'//trim(adjustl(ch_isgn))//&
+                 '-IALF-'//trim(adjustl(ch_ialf))//&
+               '-IORBS-'//trim(adjustl(ch_iorbs))//'.data')
+          title = ('PRONY_CB-'//trim(adjustl(buffer)))
+          inquire(file=title,exist=lfile_exist)
+          if (lfile_exist) then
+            open(unit=10,file=title)
+            ! check the number of cb
+            rewind(10)
+            ntmp1 = -2
+            istat = 0
+            do while(.not. is_iostat_end(istat))
+              read(10,'(a)', iostat=istat) ch_tmp
+              ntmp1 = ntmp1 + 1
+            end do
+            num_cb(nm,nj,ni) = ntmp1
+            !
+            write(6,*) 'evaluatepara: number of rational cb:', ntmp1
+            !reading cb
+            rewind(10)
+            read(10,'(a)') ch_tmp
+            do nk=1, ntmp1
+              write(6,*) nk
+              read(10,*) dtmp1, dtmp2
+              cb_tmp(nm,1:nspin,nk,nj,ni) = dcmplx(dtmp1,dtmp2)
+            end do
+            close(10)
+          else
+            write(6,*) 'evaluatepara: does not find input file ', title
+            write(6,*) 'evaluatepara: please check input files'
+            stop
+          end if
+          !
+          title = ('PRONY_CD-'//trim(adjustl(buffer)))
+          inquire(file=title,exist=lfile_exist)
+          if (lfile_exist) then
+            open(unit=11,file=title)
+            ! check the number of cb
+            rewind(11)
+            ntmp1 = -2
+            istat = 0
+            do while(.not. is_iostat_end(istat))
+              read(11,'(a)', iostat=istat) ch_tmp
+              ntmp1 = ntmp1 + 1
+            end do
+            num_cd(nm,nj,ni) = ntmp1
+            write(6,*) 'evaluatepara: number of rational cd:', ntmp1
+            !reading cb
+            rewind(11)
+            read(11,'(a)') ch_tmp
+            do nk=1, ntmp1
+              read(11,*) dtmp1, dtmp2
+              cd_tmp(nm,1:nspin,nk,nj,ni) = dcmplx(dtmp1,dtmp2)
+            end do
+            close(11)
+          else
+            write(6,*) 'evaluatepara: does not find input file ', title
+            write(6,*) 'evaluatepara: please check input files'
+            stop
+          end if
+          !
+          title = ('PRONY_GAMA-'//trim(adjustl(buffer)))
+          inquire(file=title,exist=lfile_exist)
+          if (lfile_exist) then
+            open(unit=12,file=title)
+            ! check the number of cb
+            rewind(12)
+            ntmp1 = -2
+            istat = 0
+            do while(.not. is_iostat_end(istat))
+              read(12,'(a)', iostat=istat) ch_tmp
+              ntmp1 = ntmp1 + 1
+            end do
+            num_cgama(nm,nj,ni) = ntmp1
+            write(6,*) 'evaluatepara: number of rational cgama:', ntmp1
+            !reading cb
+            rewind(12)
+            read(12,'(a)') ch_tmp
+            do nk=1, ntmp1
+              read(12,*) dtmp1, dtmp2
+              cgama_tmp(nm,1:nspin,nk,nj,ni) = dcmplx(dtmp1,dtmp2)
+            end do
+            close(12)
+          else
+            write(6,*) 'evaluatepara: does not find input file ', title
+            write(6,*) 'evaluatepara: please check input files'
+            stop
+          end if
+          !
+          write(6,*)
+        end do
+      !end do
+    end do
+  end do
+  !
+  write(6,*)
+  !
+  ! check the number of nprony_real + nprony_imag
+  lall_same = .True.
+  do ni=1, nsgn
+    do nj=1, nalf
+      !do np=1, nspin
+        do nm=1, nvar2 
+          if (num_cb(nm,nj,ni) .ne. &
+             (nprony_real + nprony_imag)) then
+            write(6,'(" evaluatepara: find different nmats ", I3,2x,I3)') &
+            num_cb(nm,nj,ni), nprony_real + nprony_imag
+            write(6,'(" isgn",I2," ialf",I2," iorbs",I2)') ni,nj,nm
+          end if
+          !
+          if (num_cb(nm,nj,ni) .ne. num_cb(1,1,1)) then
+            lall_same = .False.
+          end if
+        end do
+      !end do
+    end do
+  end do
+end if
+!
+252 format(1(I3,1x),2(1x, f37.32))
+!
+if (lprony) then
+   ndrude = 0
+   if (lall_same) then
+     nmats = num_cb(1,1,1)
+   else
+     write(6,*) 'evaluatapara: WARNING! nsgn, nalf or nvar2 has different numbers of cb'
+     write(6,*) '              only accept the minumin numbers of cb', minval(num_cb)
+     write(6,*)
+     nmats = maxval(num_cb)
+   end if
+end if
+!
 if (lband) then
    ndrude = nband
 end if
@@ -1204,8 +1582,14 @@ end if
 ncor  = ndrude + nmats + nfreq + nlor + numfff
 nopr  = nsgn * norbs * nspin * nalf
 nsopr = nsgn * norbs * nspin
-write(6,*)
 write(6,*)' total basis funcs to unravel bath correlation func ', ncor
+!
+if (lprony .and. ncor .ne. (nprony_real + nprony_imag)) then
+  write(6,*) 'ncor is not equal to nprony_real + nprony_imag'
+  write(6,*) ncor, nprony_real + nprony_imag
+  !stop
+end if
+!
 write(6,*)' # of Drude poles      ', ndrude
 if (psdjob .or. psdlor .or. psdfff) then
     write(6,*)' # of Pade       terms ', nmats
@@ -1279,8 +1663,10 @@ call flush(6)
 megaflux = .false.
 aoffL    = 1.d0
 aoffR    = 1.d0
+aoffT    = 1.d0
 phioffL  = 0.d0
 phioffR  = 0.d0
+phioffT  = 0.d0
 lafreq   = .false.
 lphifreq = .false.
 natype   = 1
@@ -1302,7 +1688,7 @@ if (megaflux) then
   write(6,*)' Inter-level correlation due to magnetic flux is considered '
 !  if (.not. (ispectral .eq. 0 .and. offcor) .or. .not. (norbs .eq. 2 .and. nspin .eq. 1) .or. &
   if (.not. (ispectral .eq. 0 .and. offcor) .or. .not. (norbs .eq. 2) .or. &
-      .not. (nalf .le. 2) ) then
+      .not. (nalf .le. 3) ) then
     megaflux = .false.
     write(6,*)
     write(6,*)' error in <evaluatepara.f90>! megaflux invoked unexpectedly '
@@ -1352,6 +1738,9 @@ allocate(cgamma(nvar), dipm(nvar), ilead(nvar), iredex(nvar), STAT=istat)
 allocate(eleadinfty(nalf,nspin), eleadtime(nalf,nspin), STAT=istat)
 allocate(amps(malf,nspin), tchar(malf,nspin), omegas(malf,nspin), STAT=istat)
 allocate(amps_dc(malf,nspin), STAT=istat)
+!allocate pulse central time and pulse width
+allocate(tcetr(malf,nspin), twidth(malf,nspin), STAT=istat)
+allocate(phase(malf,nspin), STAT=istat)
 !
 !  IMPORTANT : nvar = # of drawers,
 !  For Spectral  terms, cgamma(idraw) depends explicitly on system-levels
@@ -1423,7 +1812,7 @@ if (ispectral .eq. 0) then  ! Detailed options for Lorentzian (Drude) type
       end do
       zxip(1:norbs2,1:nspin,1) = zxip(1:norbs2,1:nspin,1) * linewidth(1,1) * bandwidth(1)**2 * 5.d-1
 !
-      if (nalf .ne. 1) then
+      if (nalf .eq. 2) then
          zxip(1,1:nspin,2) = cunity
          zxip(4,1:nspin,2) = cunity
          zxip(3,1:nspin,2) = aoffR * cdexp(eye * phioffR)
@@ -1435,6 +1824,39 @@ if (ispectral .eq. 0) then  ! Detailed options for Lorentzian (Drude) type
          end do
          zxip(1:norbs2,1:nspin,2) = zxip(1:norbs2,1:nspin,2) * linewidth(2,1) * &
                                     bandwidth(2)**2 * 5.d-1
+      end if
+      if (nalf .eq. 3) then
+         zxip(1,1:nspin,2) = cunity
+         zxip(4,1:nspin,2) = cunity
+         zxip(3,1:nspin,2) = aoffR * cdexp(eye * phioffR)
+         zxip(2,1:nspin,2) = dconjg(zxip(3,1:nspin,2))
+         zxip(1,1:nspin,3) = cunity
+         zxip(4,1:nspin,3) = cunity
+         zxip(3,1:nspin,3) = aoffT * cdexp(eye * phioffT)
+         zxip(2,1:nspin,3) = dconjg(zxip(3,1:nspin,3))
+         do iorbs=1,norbs
+           do iorbs2=1,norbs
+              zlwmat(iorbs,iorbs2,1:nspin,2) = zxip((iorbs2-1)*norbs+iorbs,1:nspin,2) * linewidth(2,1)
+              zlwmat(iorbs,iorbs2,1:nspin,3) = zxip((iorbs2-1)*norbs+iorbs,1:nspin,3) * linewidth(3,1)
+           end do
+         end do
+         zxip(1:norbs2,1:nspin,2) = zxip(1:norbs2,1:nspin,2) * linewidth(2,1) *&
+                                    bandwidth(2)**2 * 5.d-1         
+         !zxip(1,1:nspin,3) = cunity
+         !zxip(4,1:nspin,3) = cunity
+         !zxip(3,1:nspin,3) = aoffT * cdexp(eye * phioffT)
+         !zxip(2,1:nspin,3) = dconjg(zxip(3,1:nspin,3))
+         !do iorbs=1,norbs
+         !  do iorbs2=1,norbs
+         !     zlwmat(iorbs,iorbs2,1:nspin,3) = zxip((iorbs2-1)*norbs+iorbs,1:nspin,3) * linewidth(3,1)
+         !  end do
+         !end do
+         zxip(1:norbs2,1:nspin,3) = zxip(1:norbs2,1:nspin,3) * linewidth(3,1) * &
+                                        bandwidth(3)**2 * 5.d-1
+      end if
+      if (nalf .gt. 3) then
+         write(6,*) 'error: too many leads', nalf
+         stop
       end if
     else
       zxip(1:norbs2,1:nspin,1:malf) = czero
@@ -1529,14 +1951,17 @@ if (ispectral .eq. 0) then  ! Detailed options for Lorentzian (Drude) type
       write(6,*)' error! abs(aoffL) > 1 ', aoffL
       stop
     end if
+    deallocate(cmtmp1)
+    allocate(cmtmp1(norbs,norbs), STAT=istat)
     do ni=1,norbs
       do nj=1,norbs
         cmtmp1(ni,nj) = zxip((nj-1)*norbs+ni,1,1) / (bandwidth(1)**2 * 5.d-1)
       end do
     end do
     write(6,*)' coupling matrix for system-lead_L '
-    call cmatout(norbs, nrho, cmtmp1, dmtmp1)
-    if (nalf .ne. 1) then
+    call cmatout(norbs, norbs, cmtmp1, dmtmp1)
+    write(6,*)
+    if (nalf .eq. 2) then
       if (dabs(aoffR) .gt. 1.d0) then
         write(6,*)' error! abs(aoffR) > 1 ', aoffR
         stop
@@ -1547,9 +1972,37 @@ if (ispectral .eq. 0) then  ! Detailed options for Lorentzian (Drude) type
         end do
       end do
       write(6,*)' coupling matrix for system-lead_R '
-      call cmatout(norbs, nrho, cmtmp1, dmtmp1)
+      call cmatout(norbs, norbs, cmtmp1, dmtmp1)
+    end if
+    if (nalf .eq. 3) then
+      if (dabs(aoffR) .gt. 1.d0) then
+        write(6,*)' error! abs(aoffR) > 1 ', aoffR
+        stop
+      end if
+      if (dabs(aoffT) .gt. 1.d0) then
+        write(6,*)' error! abs(aoffT) > 1 ', aoffT
+        stop
+      end if
+      do ni=1,norbs
+        do nj=1,norbs
+          cmtmp1(ni,nj) = zxip((nj-1)*norbs+ni,1,2) / (bandwidth(2)**2 * 5.d-1)
+        end do
+      end do
+      write(6,*)' coupling matrix for system-lead_R '
+      call cmatout(norbs, norbs, cmtmp1, dmtmp1)
+      write(6,*)
+      !
+      do ni=1,norbs
+        do nj=1,norbs
+          cmtmp1(ni,nj) = zxip((nj-1)*norbs+ni,1,3) / (bandwidth(3)**2 * 5.d-1)
+        end do
+      end do
+      write(6,*)' coupling matrix for system-lead_tip '
+      call cmatout(norbs, norbs, cmtmp1, dmtmp1)
     end if
     call flush(6)
+    deallocate(cmtmp1)
+    allocate(cmtmp1(nrho,nrho), STAT=istat)
   end if
 !
   if (doubledot) then  ! iorbs=1 only coupled to ialf=1, norbs only to ialf=2
@@ -1814,6 +2267,8 @@ call cpu_time(cpu1)
 !
 ! NOTE: special treatment for lband=.true.
 !
+!
+!
 if (lband) then
    call zxip_band(malf)
    if (lequileads) then
@@ -1843,6 +2298,13 @@ if (lband) then
             end if
             do nj=1,nalf
                do np=1,ncor
+                  if (lprony) then
+                    cb(nk,nm,np,nj,ni) = cb_tmp(nk,nm,np,nj,ni)
+                    cd(nk,nm,np,nj,ni) = cd_tmp(nk,nm,np,nj,ni)
+                    cgama(nk,nm,np,nj,ni) = cgama_tmp(nk,nm,np,nj,ni)
+                    cycle
+                  end if
+                  !
                   if (np .le. ndrude) then
                      cgama(nk,nm,np,nj,ni) = dcmplx( -band_width(np,nm,nj), dpm(ni) * band_cent(np,nm,nj) )
                      if (lfermi_exact) then
@@ -1917,6 +2379,12 @@ if (ispectral .eq. 0) then
         end if
         do nj=1,nalf
           do np=1,ncor
+            if (lprony) then
+              cb(nk,nm,np,nj,ni) = cb_tmp(nk,nm,np,nj,ni)
+              cd(nk,nm,np,nj,ni) = cd_tmp(nk,nm,np,nj,ni)
+              cgama(nk,nm,np,nj,ni) = cgama_tmp(nk,nm,np,nj,ni)
+              cycle
+            end if
             if (np .le. ndrude) then
               cgama(nk,nm,np,nj,ni) = dcmplx( -gammap(nk,nm,nj), dpm(ni) * dwp(nk,nm,nj) ) / hbar
               if (megaflux .and. (lafreq .or. lphifreq)) then   ! to modify, note taken on 2013-10-22
@@ -2148,6 +2616,12 @@ else
         end if
         do nj=1,nalf
           do np=1,ncor
+            if (lprony) then
+              cb(nk,nm,np,nj,ni) = cb_tmp(nk,nm,np,nj,ni)
+              cd(nk,nm,np,nj,ni) = cd_tmp(nk,nm,np,nj,ni)
+              cgama(nk,nm,np,nj,ni) = cgama_tmp(nk,nm,np,nj,ni)
+              cycle
+            end if
             if (np .le. ndrude) then
               write(6,*)
               write(6,*)' error! unexpected pole for spec. func. ', np, ndrude, ispectral
@@ -2207,6 +2681,7 @@ end if
 !
 call cpu_time(cpu2)
 !
+250 continue
 nq = 0
 do isgn=1,nsgn
   do ispin=1,nspin
@@ -2249,7 +2724,14 @@ end if
 ! print parameters
 !
 write(6,*)
-write(6,*)' Matsubara/Pade/Prony parameters '
+if (lprony) then
+  write(6,*)' Prony parameters '
+  if (lprony_spectra) then
+    call system('rm ./IFT.data ')
+  end if
+else
+  write(6,*)' Matsubara/Pade/Prony parameters '
+end if
 call flush(6)
 isgn   = chksgn
 ialf   = chkalf
@@ -2302,12 +2784,18 @@ lreadomega = .true.
 leshift_dc = .false.
 t_off      = 1.d99   ! careful! to calculate steady current under fixed voltage
                      ! t_off should be larger than the below value used to calculate eleadinfty
+!ltcetr and ltwidth
+ltcetr = .false.
+ltwidth = .false.
+lphase = .true.
+!
 rewind(5)
 read(5, field, end=103)
 103 continue
 !
 if (malf .gt. 2) then
-   if (fieldtype .ne. 0 .and. fieldtype .ne. 1 .and. fieldtype .ne. 2 .and. fieldtype .ne. -1) then
+   if (fieldtype .ne. 0 .and. fieldtype .ne. 1 .and. fieldtype .ne. 2 &
+       .and. fieldtype .ne. 3 .and. fieldtype .ne. -1) then
       write(6,*)'evaluatepara: multi-lead unavailable for the following fieldtype'
       write(6,*)'evaluatepara: fieldtype = ', fieldtype, ' nalf = ', malf
       stop
@@ -2321,6 +2809,8 @@ end if
 ! for fieldtype = 0, tchar is the characteristic decaying time
 ! for fieldtype = 1, tchar is the period of sinusoidal voltage
 ! for fieldtype = 2, tchar is the characteristic decaying time
+! for fieldtype = 3, tchar is the pulsed cosine voltage
+! for fieldtype = -1, tchar is the pulsed cosine voltage
 !
 if (fieldtype .eq. 0) then
    read(5,*,iostat=istat) ((tchar(ni,nj), nj=1,nspin), ni=1,malf)
@@ -2328,6 +2818,7 @@ if (fieldtype .eq. 0) then
       write(6,*)'evaluatepara: error reading tchar from input '
       stop
    end if
+   call flush(6)
 else if (fieldtype .eq. 1) then
    if (lreadomega) then ! read in as eV or meV (energy), and converted to frequency (divided by hbar)
       read(5,*,iostat=istat) ((omegas(ni,nj), nj=1,nspin), ni=1,malf)
@@ -2380,6 +2871,90 @@ else if (fieldtype .eq. 2) then
       write(6,*)'evaluatepara: error reading tchar from input '
       stop
    end if
+! fieldtype = 3
+else if (fieldtype .eq. 3) then
+   if (lreadomega) then ! read in as eV or meV (energy), and converted to frequency (divided by hbar)
+      read(5,*,iostat=istat) ((omegas(ni,nj), nj=1,nspin), ni=1,malf)
+      if (istat .ne. 0) then
+          write(6,*)'evaluatepara: error when reading omegas '
+          stop
+      end if
+      omegas(1:malf,1:nspin) = omegas(1:malf,1:nspin) / hbar
+      do ni=1,malf
+         do nj=1,nspin
+            if (dabs(omegas(ni,nj)) .le. dpico) then
+               tchar(ni,nj) = 1.d12
+            else
+               tchar(ni,nj) = 2.d0 * pi / omegas(ni,nj)
+            end if
+         end do
+      end do
+   else
+      read(5,*,iostat=istat) ((tchar(ni,nj), nj=1,nspin), ni=1,malf)
+      if (istat .ne. 0) then
+          write(6,*)'evaluatepara: error when reading tchar '
+          stop
+      end if
+      do ni=1,malf
+         do nj=1,nspin
+            if (dabs(tchar(ni,nj)) .le. dpico) then
+               omegas(ni,nj) = 1.d12
+            else
+               omegas(ni,nj) = 2.d0 * pi / tchar(ni,nj)
+            end if
+         end do
+      end do
+   end if
+   write(6,*)'evaluatepara: period of cosine function is T_period = '
+   write(6,*) ((2.d0 * pi / omegas(ni,nj), nj=1,nspin), ni=1,malf)
+   if (leshift_dc) then
+       read(5,*,iostat=istat) ((amps_dc(ni,nj), nj=1,nspin), ni=1,malf)
+       if (istat .ne. 0) then
+           write(6,*)'evaluatepara: error when reading amps_dc '
+           stop
+       end if
+       amps_dc(1:malf,1:nspin) = amps_dc(1:malf,1:nspin) / hbar
+       write(6,*)'evaluatepara: dc amplitudes '
+       write(6,*) ((amps_dc(ni,nj)*hbar, nj=1,nspin), ni=1,malf)
+   end if
+! read tcetr
+   if (ltcetr) then
+       read(5,*,iostat=istat) ((tcetr(ni,nj), nj=1,nspin), ni=1,malf)
+       if (istat .ne. 0) then
+           write(6,*)'evaluatepara: error when reading tcetr '
+           stop
+       end if
+       write(6,*)'evaluatepara: central time of pulse '
+       write(6,*) ((tcetr(ni,nj), nj=1,nspin), ni=1,malf)
+   end if
+! read twidth
+   if (ltwidth) then
+       read(5,*,iostat=istat) ((twidth(ni,nj), nj=1,nspin), ni=1,malf)
+       if (istat .ne. 0) then
+           write(6,*)'evaluatepara: error when reading twidth '
+           stop
+       end if
+       write(6,*)'evaluatepara: width of pulse '
+       write(6,*) ((twidth(ni,nj), nj=1,nspin), ni=1,malf)
+   end if
+! read phase
+   if (lphase) then
+       read(5,*,iostat=istat) ((phase(ni,nj), nj=1,nspin), ni=1,malf)
+       if (istat .ne. 0) then
+           write(6,*)'evaluatepara: error when reading phase '
+           stop
+       end if
+       write(6,*)'evaluatepara: phase of pulse '
+       write(6,*) ((phase(ni,nj), nj=1,nspin), ni=1,malf)
+   end if
+   call flush(6)
+else if (fieldtype .eq. -1) then
+   read(5,*,iostat=istat) ((tchar(ni,nj), nj=1,nspin), ni=1,malf)
+   if (istat .ne. 0) then
+      write(6,*)'evaluatepara: error reading tchar from input '
+      stop
+   end if
+   call flush(6)
 end if
 !
 write(6,*)
@@ -2411,6 +2986,23 @@ else if (fieldtype .eq. 2) then
    write(6,*) ((amps(ni,nj) * hbar, nj=1,nspin), ni=1,malf)
    write(6,*)'evaluatepara: characteristic decay time, tchar(nspin, malf) '
    write(6,*) ((tchar(ni,nj), nj=1,nspin), ni=1,malf)
+   call flush(6)
+else if (fieldtype .eq. 3) then
+   amps(1:malf,1:nspin) = engyshift(1:malf,1:nspin)
+   write(6,*)'evaluatepara: cosine voltages are applied, parameters are '
+   write(6,*)'evaluatepara: amplitude, amps(nspin, malf) '
+   write(6,*) ((amps(ni,nj) * hbar, nj=1,nspin), ni=1,malf)
+   write(6,*)'evaluatepara: period time of cosine voltage, tchar(nspin, malf) '
+   write(6,*) ((tchar(ni,nj), nj=1,nspin), ni=1,malf)
+   write(6,*)'evaluatapara: frequency of consine voltage, omegas(nspin, malf) '
+   write(6,*) ((omegas(ni,nj) * hbar, nj=1,nspin), ni=1,malf)
+!  write tcetr and twidth
+!  write(6,*)'evaluatepara: central time of pulse, tcetr(nspin, malf) '
+!  write(6,*) ((tcetr(ni,nj), nj=1,nspin), ni=1,malf)
+!  write(6,*)'evaluatepara: width of pulse, twidth(nspin, malf) '
+!  write(6,*) ((twidth(ni,nj), nj=1,nspin), ni=1,malf)
+   write(6,*)'evaluatepara: phase of pulse, phase(nspin, malf) '
+   write(6,*) ((phase(ni,nj), nj=1,nspin), ni=1,malf)
    call flush(6)
 !
 else if (fieldtype .eq. -1) then

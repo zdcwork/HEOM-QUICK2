@@ -19,7 +19,7 @@ namelist / para2 / edot, fixdot
 namelist / para3 / engy01, engy02, u12, t12, phi12, fixdot
 namelist / para4 / e1up, e1down, e2up, e2down, u12, t12, uu1, uu2, j12, gz1, gz2, gx1, gx2, gy1, gy2, fixdot
 namelist / para5 / e1up, e2up, e3up, e1down, e2down, e3down, &
-                   u12, uu1, uu2, uu3, t13, t23, j13, j23, gz1, gz2, fixdot
+                   u12, uu1, uu2, uu3, t12, t13, t23, j12, j13, j23, gz1, gz2, fixdot
 namelist / para6 / e1up, e1down, e2up, e2down, e3up, e3down, e4up, e4down, &
                    u12, u34, t13, t14, t23, t24, uu1, uu2, uu3, uu4, j13, j14, j23, j24, gz1, gz2, fixdot
 namelist / sys3level / engy01, engy02, engy03, t12, t23, t13, fixdot
@@ -76,11 +76,19 @@ if (itimes .eq. 1) then
       fixdot = .true.
    end if
    if (lreadhs) then
-      open(unit=40, file='hamil_sys.data', form='unformatted', status='unknown')
+      hs = 0
+      open(unit=40, file='hamil_sys.data', form='formatted', status='unknown')
       rewind(40)
-      read(40) ((hs(ni,nj), ni=1,nrho), nj=1,nrho)
+      do ni=1, nrho
+        do nj=1, nrho
+          read(40,*) hs(ni,nj)
+          hs(ni,nj) = hs(ni,nj) / hbar
+          !write(6,*) hs(ni,nj)
+        end do
+      end do
       close(40)
       write(6,*)'calchs: <hamil_sys.data> read successfully'
+      !call cmatout(nrho, nrho, hs, dmtmp1)
       goto 999
    end if
 end if
@@ -254,6 +262,8 @@ if (nspin .eq. 1 .and. norbs .eq. 1) then
 end if
 !---------------------end of area for (norbs=1, nspin=1) ----------------
 !
+!--------------------- for (norbs=1, nspin=2) ----------------
+!
 if (nspin .eq. 2 .and. norbs .eq. 1) then
   eup   = 0.d0
   edown = 0.d0
@@ -411,10 +421,25 @@ if (nspin .eq. 2 .and. norbs .eq. 1) then
           end if
           630 format(' gx = ', f14.8, 2x, ' gy = ', f14.8, 2x, ' gz = ', f14.8, 2x)
       end if
+! interaction with magnetic field
+     if (lbfield3d) then
+        cmtmp1(1:nrho,1:nrho) = -dbf3d(1,1) * sopr(1:nrho,1:nrho,1,1)  &
+                                -dbf3d(2,1) * sopr(1:nrho,1:nrho,2,1)  &
+                                -dbf3d(3,1) * sopr(1:nrho,1:nrho,3,1)
+        call checkhermicity(cmtmp1, nrho, cmtmp2, nrho, lherm, dtmp1)
+        if (.not. lherm) then
+           write(6,*)'calchs: error! check Hermicity fails 2 ', dtmp1
+           stop
+        end if
+        hs(1:nrho,1:nrho) = hs(1:nrho,1:nrho) + cmtmp1(1:nrho,1:nrho)
+     end if
   end if
 end if
 !
+!-------------- end of area for (norbs=1, nspin=2) -----------
+!
 !--------------------- for (norbs=2, nspin=1) ----------------
+!
 if (nspin .eq. 1 .and. norbs .eq. 2) then
   engy01 = 0.d0   ! if doubledot, coupled to left  lead
   engy02 = 0.d0   ! if doubledot, coupled to right lead (if nalf .ne. 1)
@@ -729,8 +754,10 @@ if (nspin .eq. 2 .and. norbs .eq. 3) then
   uu1    = 0.d0
   uu2    = 0.d0
   uu3    = 0.d0    
+  t12    = 0.d0
   t13    = 0.d0
   t23    = 0.d0
+  j12    = 0.d0
   j13    = 0.d0
   j23    = 0.d0
   gz1    = 0.d0
@@ -744,12 +771,12 @@ if (nspin .eq. 2 .and. norbs .eq. 3) then
      write(6,*)' parameters for Hamiltonian '
      write(6,10087)e1up, e1down, e2up, e2down
      write(6,10088)e3up, e3down
-     write(6,10089)u12, t13, t23
+     write(6,10089)u12, t12, t13, t23
      write(6,10090)uu1, uu2, uu3
   end if
   10087   format('  e1up = ', f14.8, 2x, ' e1down = ', f14.8, 2x, ' e2up = ', f14.8, 2x, ' e2down = ', f14.8, 2x)
   10088   format('  e3up = ', f14.8, 2x, ' e3down = ', f14.8, 2x)
-  10089   format('  u12 = ', f14.8, 2x, '  t13 = ', f14.8, 2x, '  t23 = ', f14.8, 2x)
+  10089   format('  u12 = ', f14.8, 2x, '  t12 = ', f14.8, 2x, '  t13 = ', f14.8, 2x, '  t23 = ', f14.8, 2x)
   10090   format('  uu1 = ', f14.8, 2x, '  uu2 = ', f14.8, 2x, '  uu3 = ', f14.8, 2x)
   call flush(6)
 !
@@ -791,8 +818,10 @@ if (nspin .eq. 2 .and. norbs .eq. 3) then
   uu1    = uu1    / hbar
   uu2    = uu2    / hbar
   uu3    = uu3    / hbar
+  t12    = t12    / hbar
   t13    = t13    / hbar
   t23    = t23    / hbar
+  j12    = j12    / hbar
   j13    = j13    / hbar
   j23    = j23    / hbar
   gz1    = gz1    / hbar
@@ -840,7 +869,16 @@ if (nspin .eq. 2 .and. norbs .eq. 3) then
              czero, cmtmp11, nrho)                                     ! n3up*n3down
   hs = hs + uu3 * cmtmp11
   cmtmp13 = cmtmp9 + cmtmp10                                            ! n3                                                                                          
-!
+! t12
+  call zgemm('c', 'n', nrho, nrho, nrho, cunity, cmtmp1, nrho, cmtmp3, nrho, &
+             czero, cmtmp8, nrho)
+  call zgemm('c', 'n', nrho, nrho, nrho, cunity, cmtmp3, nrho, cmtmp1, nrho, &
+             cunity, cmtmp8, nrho)
+  call zgemm('c', 'n', nrho, nrho, nrho, cunity, cmtmp2, nrho, cmtmp4, nrho, &
+             cunity, cmtmp8, nrho)
+  call zgemm('c', 'n', nrho, nrho, nrho, cunity, cmtmp4, nrho, cmtmp2, nrho, &
+             cunity, cmtmp8, nrho)
+! t13
   call zgemm('c', 'n', nrho, nrho, nrho, cunity, cmtmp1, nrho, cmtmp5, nrho, &
              czero, cmtmp9, nrho)
   call zgemm('c', 'n', nrho, nrho, nrho, cunity, cmtmp5, nrho, cmtmp1, nrho, &
@@ -849,7 +887,7 @@ if (nspin .eq. 2 .and. norbs .eq. 3) then
              cunity, cmtmp9, nrho)
   call zgemm('c', 'n', nrho, nrho, nrho, cunity, cmtmp6, nrho, cmtmp2, nrho, &
              cunity, cmtmp9, nrho)
-!
+! t23
   call zgemm('c', 'n', nrho, nrho, nrho, cunity, cmtmp3, nrho, cmtmp5, nrho, &
              czero, cmtmp10, nrho)
   call zgemm('c', 'n', nrho, nrho, nrho, cunity, cmtmp5, nrho, cmtmp3, nrho, &
@@ -859,10 +897,20 @@ if (nspin .eq. 2 .and. norbs .eq. 3) then
   call zgemm('c', 'n', nrho, nrho, nrho, cunity, cmtmp6, nrho, cmtmp4, nrho, &
              cunity, cmtmp10, nrho)
 !
-  hs = hs + t13 * cmtmp9  +  t23 * cmtmp10 
+  hs = hs + t12 * cmtmp8 + t13 * cmtmp9  +  t23 * cmtmp10 
 !
   if (lspin3d) then
 !Heisenberg term
+! j12
+     if (dabs(j13) .gt. dpico) then
+        call zgemm('n', 'n', nrho, nrho, nrho, cunity, sopr(1:nrho,1:nrho,1,1), nrho,  &
+                   sopr(1:nrho,1:nrho,1,2), nrho, czero,  cmtmp8, nrho)
+        call zgemm('n', 'n', nrho, nrho, nrho, cunity, sopr(1:nrho,1:nrho,2,1), nrho,  &
+                   sopr(1:nrho,1:nrho,2,2), nrho, cunity, cmtmp8, nrho)
+        call zgemm('n', 'n', nrho, nrho, nrho, cunity, sopr(1:nrho,1:nrho,3,1), nrho,  &
+                   sopr(1:nrho,1:nrho,3,2), nrho, cunity, cmtmp8, nrho)
+     end if
+! j13
      if (dabs(j13) .gt. dpico) then
         call zgemm('n', 'n', nrho, nrho, nrho, cunity, sopr(1:nrho,1:nrho,1,1), nrho,  &
                    sopr(1:nrho,1:nrho,1,3), nrho, czero,  cmtmp3, nrho)
@@ -871,7 +919,7 @@ if (nspin .eq. 2 .and. norbs .eq. 3) then
         call zgemm('n', 'n', nrho, nrho, nrho, cunity, sopr(1:nrho,1:nrho,3,1), nrho,  &
                    sopr(1:nrho,1:nrho,3,3), nrho, cunity, cmtmp3, nrho)
      end if
-!
+! j23
      if (dabs(j23) .gt. dpico) then
         call zgemm('n', 'n', nrho, nrho, nrho, cunity, sopr(1:nrho,1:nrho,1,2), nrho,  &
                    sopr(1:nrho,1:nrho,1,3), nrho, czero,  cmtmp4, nrho)
@@ -886,7 +934,8 @@ if (nspin .eq. 2 .and. norbs .eq. 3) then
           ! write(6,*)'calchs: error! check Hermicity fails 1 ', dtmp1
          ! stop
       ! end if
-        hs(1:nrho,1:nrho) = hs(1:nrho,1:nrho) + j13 * cmtmp3(1:nrho,1:nrho) + j23 * cmtmp4(1:nrho,1:nrho) 
+        hs(1:nrho,1:nrho) = hs(1:nrho,1:nrho) + j12 * cmtmp8(1:nrho,1:nrho) + &
+        j13 * cmtmp3(1:nrho,1:nrho) + j23 * cmtmp4(1:nrho,1:nrho) 
 !
   end if
 ! check Hermicity     

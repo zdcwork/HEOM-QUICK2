@@ -104,7 +104,7 @@ end if
  rewind(80)
  lunk_last = lunk_spa
  
- do itier=1,2
+ do itier=1,ntier
 !
    do lni=nfirst(itier),nlast(itier)
       call flush(80)

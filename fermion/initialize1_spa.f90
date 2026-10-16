@@ -216,14 +216,14 @@ read(5, readini, end=101)
 101 continue
 if (lreadini) then
    if (lreadfile) then
-      open(unit=68, file='rhoini.data', form='unformatted')
-      read(68)ni
+      open(unit=68, file='rhoini.data', form='formatted')
+      read(68,*)ni
       if (ni .ne. nrho**2) then
          write(6,*)'initialize1_spa: error read from <rhoini.data> '
          write(6,*)ni, nrho**2
          stop
       end if
-      read(68)((cmat1(ni,nj), ni=1,nrho), nj=1,nrho)
+      read(68,*)((cmat1(ni,nj), ni=1,nrho), nj=1,nrho)
       close(68)
       write(6,*)'initialize1_spa: initial rho read from <rhoini.data> '
       call cmatout(nrho, nrho, cmat1, dmtmp1)

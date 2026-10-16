@@ -139,13 +139,13 @@ integer   :: icont, nresume                                   ! icont=1, resume 
 common / tdresume / lresume, icont, nresume
 !
 logical   :: megaflux, lafreq, lphifreq                       ! magaflux=.true. only when      
-real*8    :: aoffL, aoffR, phioffL, phioffR                   ! offcor=.true. & norbs=2 & nspin=1
+real*8    :: aoffL, aoffR, aoffT, phioffL, phioffR, phioffT   ! offcor=.true. & norbs=2 & nspin=1
                                                               ! lafreq=.true. when cross-correlation is freq-dependent
 integer   :: natype, nphitype                                 ! if (lafreq), natype specifies type of a(w), take values from 1
 real*8    :: anu, aomega, atheta                              ! parameters related to a(w)
 real*8    :: phinu, phiomega
 common / bathcorr1 / megaflux, lafreq, lphifreq
-common / bathcorr2 / aoffL, aoffR, phioffL, phioffR            
+common / bathcorr2 / aoffL, aoffR, aoffT, phioffL, phioffR, phioffT            
 common / bathcorr3 / natype, nphitype
 common / bathcorr4 / anu, aomega, atheta
 common / bathcorr5 / phinu, phiomega
@@ -178,6 +178,22 @@ common / jobtype / mfdjob, pfdjob, psdjob, psdfff, psdlor, psfjob,    &
                    lscale, lfermi_exact, lsdraw, lsparse, ltrun_der,  &
                    lsimple, lwalf, itype_fff, itype_psf
 common / jobiop0 / lscreen, lanahs, lspdhs
+!
+! Different spectral decomposition schemes for different leads.
+! ldiff_spe_dec/ldiff_spe_dec_sp are read from namelist $diffdecomp.
+! ncount_scheme uses the dictionary documented in read_diffdecomp_config:
+! 1/2=Pade, 3/4=PSF, 5/6=PSD-FFF/Fano, 7/9=read external Prony, 8=Matsubara.
+! Fixed maxalf-sized arrays are used here to keep the old common-block style
+! and avoid introducing module compilation-order dependencies.
+!
+logical :: ldiff_spe_dec, ldiff_spe_dec_sp
+integer :: ncount_alf(maxalf), ncount_scheme(maxalf)
+integer :: ncount_poles(maxalf), ncount_type(maxalf)
+integer :: nmats_alf(maxalf), ncor_alf(maxalf)
+logical :: lpsdfff_alf(maxalf)
+common / diffdecomp0 / ldiff_spe_dec, ldiff_spe_dec_sp, lpsdfff_alf
+common / diffdecomp1 / ncount_alf, ncount_scheme, ncount_poles, ncount_type, &
+                       nmats_alf, ncor_alf
 !
 integer   :: nwl, nwfermi, nwocc, nwvir, ifmval, irange
 real*8    :: wmin, wmax, wfermid, wfermiu, dfmval, wrange, ebreak
@@ -239,3 +255,21 @@ real*8    :: dcbmax
 common / omitado0 / lomit
 common / omitado1 / dfact_omit, dcbmax
 !
+logical :: lprony                                             ! whether perform prony on time
+logical :: lprony_only_read, lprony_spectra, lfft
+integer :: nprony_real, nprony_imag, nhankel, prony_alf, prony_psd_imag
+real*8  :: tt_max_prony
+common  tt_max_prony
+common  nprony_real, nprony_imag, nhankel, prony_alf, prony_psd_imag
+common  lprony, lprony_only_read, lprony_spectra, lfft
+!
+integer :: num_interp
+real*8  :: scaling, tol, tf_interp
+logical :: lread_data
+logical :: linterp                                            !linterp=.True.  use 3rd interpolation
+logical :: lcal_fermi                                         !lcal_fermi=.True. for multipy input spectrum by ferimi function
+logical :: lvasp2heom
+integer :: chosen_alf 
+common  num_interp, chosen_alf
+!common  scaling, tol, tf_interp
+common  lcal_fermi, linterp, lvasp2heom, lread_data

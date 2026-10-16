@@ -22,9 +22,15 @@ end if
 if (ialf .eq. 1) then
   aa     = aoffL
   phiphi = phioffL
-else
+else if (ialf .eq. 2) then
   aa     = aoffR
   phiphi = phioffR
+else if (ialf .eq. 3) then
+  aa     = aoffT
+  phiphi = phioffT
+else
+  write(6,*) 'wrong ialf', ialf
+  stop
 end if
 if (lafreq) then  ! dcmplx(ar,ai)
   if (natype .eq. 1) then

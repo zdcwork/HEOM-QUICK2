@@ -57,6 +57,10 @@ real*8,     save, allocatable :: dlw_sp(:,:,:)
 complex*16, save, allocatable :: zxip(:,:,:)
 !
 complex*16, save, allocatable :: cpeigv(:), cpcoef(:), cppole(:,:)
+! Per-lead Pade coefficients used only by the different-decomposition mode.
+! Pade expansions of different orders are not nested, so a lower-order lead
+! must not reuse a prefix of the global, maximum-order expansion.
+complex*16, save, allocatable :: cpcoef_alf(:,:), cppole_alf(:,:,:)
 !
 real*8,     save, allocatable :: dpm(:)                  ! dpm(1)=1.d0, dpm(2)=-1.d0
 real*8,     save, allocatable :: dipm(:)                 ! +1 for diamond=+, -1 for diamond=-
@@ -87,6 +91,9 @@ logical                       :: lreadomega              ! .true.  frequency is 
                                                          ! .false. charactersitic time is read
 logical                       :: leshift_dc              ! .true.  add dc component of energy shift  
 real*8                        :: t_off                   ! turn off all applied voltage at t_off
+logical                       :: ltcetr                  ! .true.  read central time of pulse 
+logical                       :: ltwidth                 ! .true.  read width of pulse
+logical                       :: lphase                  ! .true.  read phase
 !
 ! time-dependent energy shift for QD (system) 
 !
@@ -132,6 +139,9 @@ real*8                        :: esincl, esincr          ! for Square-sinc-type 
 real*8,     save, allocatable :: amps(:,:), tchar(:,:)   ! amplitude and characteristic decay time for each lead
 real*8,     save, allocatable :: omegas(:,:)             ! spherical frequency of driving sinusoidal voltage
 real*8,     save, allocatable :: amps_dc(:,:)            ! dc components
+! pulse central time and pulse width
+real*8,     save, allocatable :: tcetr(:,:), twidth(:,:) !pulse central time and pulse width
+real*8,     save, allocatable :: phase(:,:)              !pulse phase
 !
 ! Time-evolution related variables
 !

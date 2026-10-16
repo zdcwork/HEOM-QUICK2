@@ -1,0 +1,477 @@
+! Fortran example.
+! 1D complex to complex, and real to conjugate-even
+subroutine fourier_transform(isgn_tmp,T_tmp,ialf,iorbs) 
+!
+ use MKL_DFT_TYPE
+ use MKL_DFTI
+ implicit none
+!
+include "../include/sizes"
+include "../include/common"
+!
+ integer, intent(in) :: ialf,iorbs
+ real*8, intent(in) :: T_tmp, isgn_tmp
+ integer :: p_nsample, isgn, isgn_t
+ complex*16, allocatable :: XC_in(:), XC_out(:), XC_backup(:)
+ complex*16 :: ctmp
+ real*8 :: T
+ real*8, allocatable :: ww(:), tt(:), X(:), freq(:),fermi(:)
+ type(DFTI_DESCRIPTOR), pointer :: My_Desc1_Handle, My_Desc2_Handle
+!
+ integer :: i, j, n_middle, istat
+ integer, allocatable :: num_coloum(:), ntmp(:)
+ real*8  :: dtmp, dtmp1, dtmp2, sam_freq
+ !real*8  :: ti, tf
+ !real*8  :: wi, wf
+ !integer :: wstep, tstep
+ !real*8  :: dt, dw
+ !real*8  :: scaling
+ !logical :: lff   !lff=.True.  for Fourier transform
+                  !lff=.False. for invserse Fourier transform
+ !logical :: lfft  !lfft=.True.  use fast Fouier transform
+                  !lfft=.False. use numerical integral
+ !logical :: lcal_fermi
+ !real*8, parameter :: pi=3.141592653589d0
+ !complex*16, parameter :: czero=dcmplx(0.0d0,0.0d0)
+ !complex*16, parameter :: cunit=dcmplx(1.0d0,0.0d0) 
+ complex*16, parameter :: ceye = dcmplx(0.d0,1.0d0)
+ logical :: lfile_exist
+ character(len=128) :: buffer
+ character(len=128) :: ch_tmp
+ character(len=2)   :: ch_ialf, ch_isgn, ch_iorbs
+ character(len=128) :: title
+ namelist / fourier  / lff, lfft, lcal_fermi, scaling, &
+                       wi, wf, wstep,&
+                       ti, tf, tstep
+!
+ i = 1
+ p_nsample = -1
+ !T = 0.001d0
+ !isgn = 1
+!
+ !lff = .FALSE.
+ lff = .FALSE.
+ lfft = .FALSE.
+ lcal_fermi = .TRUE.
+ !lfft = .TRUE.
+ !
+ wi = -5.0d0
+ wf = 5.0d0
+ wstep = 5001
+ !
+ ti = 0.d0
+ tf = 200.0d0 / hbar
+ tstep = 20001
+ !
+ isgn = int(isgn_tmp)
+ T = T_tmp
+ scaling = 1.d0
+ !
+ open(unit=5,status='unknown')
+ rewind(5)
+ read(UNIT=5,NML=fourier,END=100)
+ 100 continue
+ close(5)
+ write(6,'(" fourier_transform: invoke for isgn",I2," ialf",I2," iorbs",I2)') isgn,ialf,iorbs
+ !
+ write(6,*) 'fourier_transform: lff =', lff
+ !
+ if (lff) then
+  write(6,*) 'fourier_transform: perform Fourier transform'
+  write(6,*) 'fourier_transform: cacluate fermi function', lcal_fermi
+  !write(6,*)
+  write(6,*) 'fourier_transform: lfft =', lfft
+  if (lfft) then
+   write(6,*) 'fourier_transform: FFT to calculate Fourier transform'
+   write(6,*) 'warning: this method is only applicable for non-Lorentzian spectrum'
+   !write(6,*)
+  else
+   write(6,*) 'fourier_transform: numerical integral to calculate inverse Fourier transform'
+   write(6,*) 'warning: this method is only applicable for Lorentzian spectrum'
+   !write(6,*)
+   write(6,*) 'fourier_transform: information of frequency domain' 
+   write(6,*) 'fourier_transform: initial frquency is ', wi
+   write(6,*) 'fourier_transform: final frequency is  ', wf
+   write(6,*) 'fourier_transform: frequency step is   ', wstep
+   !write(6,*)
+  end if
+ else 
+  write(6,*) 'fourier_transform: perform inverse Fourier transform'
+  write(6,*) 'fourier_transform: cacluate fermi function', lcal_fermi
+  !write(6,*)
+  write(6,*) 'fourier_transform: lfft =', lfft
+  if (lfft) then
+   write(6,*) 'fourier_transform: invsere FFT to calculate inverse Fourier transform'
+   write(6,*) 'warning: this method is only applicable for non-Lorentzian spectrum'
+   !write(6,*)
+  else
+   write(6,*) 'fourier_transform: numerical integral to calculate inverse Fourier transform'
+   write(6,*) 'warning: this method is only applicable for Lorentzian spectrum'
+   write(6,*)
+   write(6,*) 'fourier_transform: information of time domain'      
+   write(6,*) 'fourier_transform: initial time is ', ti
+   write(6,*) 'fourier_transform: final time is   ', tf
+   if (mod(tstep, 2) .eq. 0) then
+     write(6,*) 'fourier_transform: the input tstep is even but it shoule be odd'
+   end if
+   write(6,*) 'fourier_transform: time step is    ', tstep
+   !write(6,*)
+  end if
+ end if
+ write(6,*) 'fourier_transform: scaling factor is', scaling
+ if (lfft .and. scaling .ne. 1.0) then
+   write(6,*) 'warning: please set scaling = 1.d0 for (inverse) fast Fourier transform'
+   stop
+ end if
+ write(6,*)
+ !
+ T = T * scaling
+ wi = wi / scaling
+ wf = wf / scaling
+ !
+ ti = ti / scaling / hbar
+ tf = tf / scaling / hbar
+ !
+ inquire(file='FT_INPUT.data',exist=lfile_exist)
+ if (lfile_exist) then
+   open(unit=10,file='FT_INPUT.data')
+ else
+   write(6,*) 'fourier_transform: does not find the input file FT_INPUT.data'
+   write(6,*) 'fourier_transform: please check your input files'
+   stop
+ end if
+ !
+ rewind(10)
+ do while(.not. is_iostat_end(istat))
+    read(10,'(a)', iostat=istat) buffer
+    p_nsample = p_nsample + 1
+ end do
+ !
+ write(6,*) 'fourier_transform: the size of input data', p_nsample
+ allocate(X(p_nsample), &
+          num_coloum(p_nsample), ntmp(len(buffer)))
+ rewind(10)
+ ! check the number of coloum
+ num_coloum = 0
+ do i=1, p_nsample
+    read(10,'(a)') buffer
+    ntmp = 0
+    if (buffer(1:1) .ne. char(32)) then
+       num_coloum(i) = 1
+    end if
+    do j=1, len(buffer)
+       if(buffer(j:j) .eq. char(32) .or.&
+          buffer(j:j) .eq. char(9)  .or.&
+          buffer(j:j) .eq. char(44)) then
+         ntmp(j) = 1
+       end if
+    end do
+    do j=1, len(buffer)-1
+       if(ntmp(j) .eq. 1 .and. ntmp(j+1) .eq. 0) then
+          num_coloum(i) = num_coloum(i) + 1
+       end if
+    end do
+    !write(6,'(24(I1))') ntmp(1:24)
+ end do
+ if (maxval(num_coloum) .ne. minval(num_coloum)) then
+    write(6,*) 'fourier_transform: the coloum of input data is not consist'
+    write(6,*) 'fourier_transform: max number of coloum', maxval(num_coloum)
+    write(6,*) 'fourier_transform: min number of coloum', minval(num_coloum)
+    stop
+ end if
+ !
+ write(6,*) 'fourier_transform: the couloum of input data', maxval(num_coloum)
+ !write(6,*)
+ rewind(10)
+ !
+ !
+ allocate(XC_in(p_nsample))
+ if (maxval(num_coloum) .eq. 2) then ! real input
+   write(6,*) 'fourier_transform: the type of input data is real'
+   do i=1, p_nsample
+      dtmp1 = 0.d0
+      read(10,*) X(i), dtmp1
+      XC_in(i) = dcmplx(dtmp1, 0.0d0)
+   end do
+ else if (maxval(num_coloum) .eq. 3) then ! complex input
+   write(6,*) 'fourier_transform: the type of input data is complex'
+   do i=1, p_nsample
+      dtmp1 = 0.d0
+      dtmp2 = 0.d0
+      read(10,*) X(i), dtmp1, dtmp2
+      XC_in(i) = dcmplx(dtmp1, dtmp2)
+   end do
+ else
+   write(6,*) 'fourier_transform: wrong coloum'
+   write(6,*) 'fourier_transform: max value of input coloum', maxval(num_coloum)
+   stop
+ end if
+ rewind(10)
+ close(10)
+ write(6,*)
+!
+ X = X * scaling
+ XC_in = XC_in * scaling 
+! calculate fermi function
+ if (lcal_fermi) then
+   write(6,*) 'fourier_transform: calculating fermi function'
+   write(6,*) 'fourier_transform: k_B * temperature is', T
+   write(6,*) 'fourier_transform: sign of fermi function', isgn
+   allocate(fermi(p_nsample))
+   !dw = (X(p_nsample) - X(1)) / (p_nsample - 1)
+   open(unit=7,file='FT_INPUT_FERMI.data')
+   rewind(7)
+   do i=1, p_nsample
+      !ww(i) = dble(i-1) * dw + X(1)
+      if ((X(i)*isgn) .ge. 0) then
+         fermi(i) = 1.d0-&
+                    1.d0/(1.d0+dexp(-isgn/T*X(i)))
+      else
+         fermi(i) = 1.d0/(1.d0+dexp(isgn/T*X(i)))
+      end if
+      !write(7,*) X(i), fermi(i)
+      XC_in(i) = XC_in(i) * fermi(i) 
+      write(7,'(4E17.8,2x)') X(i), fermi(i), dble(XC_in(i)), dimag(XC_in(i))
+   end do
+   write(6,*) 'fourier_transform: fermi function calculation done'
+   close(7)
+   deallocate(fermi)
+   write(6,*)
+   !
+   if (isgn .eq. -1) then
+     isgn_t = 2
+   else if (isgn .eq. 1) then
+     isgn_t = 1
+   end if 
+   write(ch_isgn,'(I2)') isgn_t
+   write(ch_ialf,'(I2)') ialf
+   write(ch_iorbs,'(I2)') iorbs
+   buffer = ('ISGN-'//trim(adjustl(ch_isgn))//&
+       '-IALF-'//trim(adjustl(ch_ialf))//&
+     '-IORBS-'//trim(adjustl(ch_iorbs))//'.data')
+   title = ('FT_INPUT_FERMI-'//trim(adjustl(buffer)))
+   call system('mv ./FT_INPUT_FERMI.data ./'//trim(adjustl(title)))
+ else
+   goto 250
+ end if 
+ !
+ 250 continue
+ deallocate(ntmp,num_coloum)
+ !
+ ! perform the FFT
+ !
+ if (lff) then
+    write(6,*) 'fourier_transform: enter Fourier transform'
+    if (lfft) then
+       write(6,*) 'fourier_transform: enter FFT'
+       write(6,*) 'warning: this method is only applicable for non-Lorentzian spectrum'
+       write(6,*)
+       allocate(freq(p_nsample),XC_out(p_nsample))
+       n_middle = p_nsample/2 + mod(p_nsample,2)
+       sam_freq = (dble(p_nsample) - 1.0d0) / (X(p_nsample) - X(1))
+       tf = X(p_nsample)
+       !dx = tf / dble(p_nsample - 1)
+       do i=1, p_nsample
+          if (i .le. n_middle) then
+             freq(i) = (i-1) / dble(p_nsample)
+          else
+             freq(i) = (i-1) / dble(p_nsample) - 1.0d0
+          end if
+       end do
+       write(6,*) 'To tranform Fourier freqency in the'
+       write(6,*) '1st coloum of the FFT output file to real values,'
+       write(6,'(" please multiply by the factor of &
+                2 * pi * sampling_frequency =  ", 1x, F16.11)') &
+                2.d0*pi*sam_freq
+       write(6,'(" and divide other coloums by a factor of", F16.11)') &
+                sam_freq
+       write(6,*) 'The real_value_FFT gives the real value of FFT results'
+       write(6,*)
+       ! Perform a complex to complex transform
+       istat = DftiCreateDescriptor(My_Desc1_Handle, DFTI_DOUBLE,&
+               DFTI_COMPLEX, 1, p_nsample)
+       istat = DftiSetValue(My_Desc1_Handle, DFTI_PLACEMENT,&
+               DFTI_NOT_INPLACE)
+       istat = DftiCommitDescriptor(My_Desc1_Handle)
+       istat = DftiComputeForward(My_Desc1_Handle, XC_in, XC_out)
+       istat = DftiFreeDescriptor(My_Desc1_Handle)
+       !
+       open(unit=11,file='FT.data')
+       rewind(11)
+       write(11,*) '     freq      real      imag      abs'
+       do i=1, p_nsample
+          write(11,200) freq(i),&
+                        dreal(XC_out(i)),&
+                        dimag(XC_out(i)),&
+                        cdabs(XC_out(i))
+       end do
+       call flush(11)
+       close(11)
+       ! sort the results
+       !
+       do i=1, p_nsample-1
+          do j=1, p_nsample-i
+             if (freq(j) .gt. freq(j+1)) then
+                dtmp = freq(j+1)
+                freq(j+1) = freq(j)
+                freq(j) = dtmp
+                ctmp = XC_out(j+1)
+                XC_out(j+1) = XC_out(j)
+                XC_out(j) = ctmp
+             end if
+          end do
+       end do
+       open(unit=12,file='real_value_FFT.data')
+       rewind(12)
+       write(12,*) '     freq      real      imag      abs'
+       do i=1, p_nsample
+          write(12,200) freq(i) * 2.d0 * pi * sam_freq,&
+                        dreal(XC_out(i)) / dble(sam_freq), &
+                        dimag(XC_out(i)) / dble(sam_freq), &
+                        cdabs(XC_out(i)) / dble(sam_freq)
+       end do
+       call flush(12)
+       close(12)
+    else
+       write(6,*) 'fourier_transform: enter numerical integeral'
+       write(6,*) 'warning: this method is only applicable for Lorentzian spectrum'
+       !write(6,*)
+       allocate(ww(wstep),XC_out(wstep))
+       dw = (wf - wi) / (wstep - 1)
+       do i=1, wstep
+          ww(i) = dble(i-1) * dw + wi
+       end do
+       !write(6,*) 'initial frequency is', wi
+       !write(6,*) 'frequency step is', dw
+       !write(6,*) 'final frequency is', wf 
+       !write(6,*)
+       ! use numerical integeral to calculate the C(w)
+       XC_out = czero
+       dt = X(2) - X(1)
+       do i=1, size(ww)
+          do j=1, size(XC_in)
+             XC_out(i) = XC_out(i) + dt * &
+                         cdexp(-ceye*isgn_tmp*X(j)*ww(i)) *&
+                         XC_in(j)
+          end do
+       end do
+       !
+       open(unit=13,file='FT.data')
+       rewind(13)
+       write(13,*) '     freq      real      imag      abs'
+       do i=1, size(ww)
+          write(13,200) ww(i),&
+                        dreal(XC_out(i)),&
+                        dimag(XC_out(i)),&
+                        cdabs(XC_out(i))
+       end do
+       call flush(13)
+       close(13)
+    end if
+ ! perform IFFT
+ else
+    write(6,*) 'fourier_transform: enter inverse Fourier transform'
+    if (lfft) then
+       write(6,*) 'fourier_transform: enter invserse FFT' 
+       write(6,*) 'warning: this method is only applicable for non-Lorentzian spectrum'
+       write(6,*)
+       allocate(tt(p_nsample),XC_out(p_nsample),XC_backup(p_nsample))
+       tt = 0.d0
+       sam_freq = (dabs(X(2) - X(1)) / (2.0d0 * pi)) / (1.0d0/p_nsample)
+       dt = 1.0d0 / sam_freq
+       !write(6,*) (X(2) - X(1)) / (2.0d0 * pi)
+       !write(6,*) 'initial time is t = 0'
+       !write(6,*) 'time step is', dt
+       !write(6,*) 'final time is', (p_nsample - 1) / sam_freq
+       !write(6,*)
+       do i=1, p_nsample
+          tt(i) = dble(i-1) * dt
+       end do
+       XC_backup = 0
+       ! resort the input data
+       if (mod(p_nsample,2) .eq. 0) then
+          XC_backup(1:p_nsample/2) = XC_in(p_nsample/2+1:p_nsample)
+          !do i=1, size(XC_In)
+          !   write(6,'(2(2x,F8.5))') dreal(XC_in(i)), dreal(XC_backup(i))
+          !end do
+          XC_backup(p_nsample/2+1:p_nsample) = XC_in(1:p_nsample/2)
+       else
+          !write(6,*) (p_nsample+1)/2
+          XC_backup(1:(p_nsample+1)/2) = XC_in((p_nsample+1)/2:p_nsample)
+          !do i=1, size(XC_In)
+          !   write(6,'(2(2x,F8.5))') dreal(XC_in(i)), dreal(XC_backup(i))
+          !end do
+          XC_backup((p_nsample+1)/2+1:p_nsample) = XC_in(1:(p_nsample+1)/2)
+       end if
+       write(6,*)
+       !do i=1, size(XC_In)
+       !   write(6,'(2(2x,F8.5))') dreal(XC_in(i)), dreal(XC_backup(i))
+       !end do
+       ! Perform a complex to complex transform
+       istat = DftiCreateDescriptor(My_Desc2_Handle, DFTI_DOUBLE,&
+               DFTI_COMPLEX, 1, p_nsample)
+       istat = DftiSetValue(My_Desc2_Handle, DFTI_PLACEMENT,&
+               DFTI_NOT_INPLACE)
+       istat = DftiCommitDescriptor(My_Desc2_Handle)
+       istat = DftiComputeBackward(My_Desc2_Handle, XC_backup, XC_out)
+       istat = DftiFreeDescriptor(My_Desc2_Handle)
+       open(unit=14,file='IFT.data')
+       rewind(14)
+       write(14,*)  '     time      real      imag      abs'
+       do i=1, size(tt)
+          write(14,200) tt(i),&
+                        dreal(XC_out(i))/pi,&
+                        dimag(XC_out(i))/pi,&
+                        cdabs(XC_out(i))/pi
+       end do
+       call flush(14)
+       close(14)
+    else
+       write(6,*) 'fourier_transform: enter numerical integeral'
+       write(6,*) 'warning: this method is only applicable for Lorentzian spectrum'
+       write(6,*)
+       allocate(tt(tstep),XC_out(tstep))
+       dt = (tf - ti) / (tstep - 1)
+       do i=1, tstep
+          tt(i) = dble(i-1) * dt + ti
+       end do
+       !write(6,*) 'initial time is', ti
+       !write(6,*) 'time step is', dt
+       !write(6,*) 'final time is', tf 
+       !write(6,*)
+       ! use numerical integeral to calculate the C(t)
+       XC_out = czero
+       dw = (X(2) - X(1)) 
+       do i=1, size(tt)
+          do j=1, (size(XC_in)-2)
+             XC_out(i) = XC_out(i) + &
+                         (X(j+2)-X(j+1)) * cdexp(isgn_tmp*ceye*X(j+1)*tt(i)) *&
+                         XC_in(j+1) / pi
+          end do
+          XC_out(i) = XC_out(i) + &
+                      (X(2)-X(1)) / 2.d0 * cdexp(isgn_tmp*ceye*X(1)*tt(i)) *&
+                      XC_in(1) / pi + &
+                      (X(size(XC_in)) - X(size(XC_in)-1)) &
+                       / 2.d0 * cdexp(isgn_tmp*ceye*X(size(XC_in))*tt(i)) *&
+                      XC_in(size(XC_in)) / pi
+       end do
+       open(unit=15,file='IFT.data')
+       rewind(15)
+       write(15,*)  '     time      real      imag      abs'
+       do i=1, size(tt)
+          write(15,200) tt(i),&
+                        dreal(XC_out(i)),& 
+                        dimag(XC_out(i)),&
+                        cdabs(XC_out(i))
+       end do
+       call flush(15)
+       close(15)
+    end if
+ end if
+ !
+ call system('rm ./FT_INPUT.data ')
+ !
+ 200 format(4(2x,E20.11))
+!
+end subroutine fourier_transform
+

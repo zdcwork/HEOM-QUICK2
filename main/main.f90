@@ -84,6 +84,7 @@ include '../include/common'
 !  78          ham_sys.data          yes        saved the system Hamiltonlian
 !  79          res_corr.data         yes        saved the results of spectral decomposition schemes for time-domain bath correlation functions.
 !  80          RDO_and_ADO.data      yes        saved the nonzero elements of reduced system density operator and 1st-ADOs for stationary calculation
+!  81          RDO_td.data           yes        saved reduced system density at any time
 !                                               if you need all ADOs, change 'do itier=1,2' to 'do itier=1,ntier0'
 !!!!!  ./tools/read_output_para/ directory has the python programs to read the above output files     !!!!!
 !------------------------------------------------------------------------------------
@@ -134,7 +135,8 @@ namelist / inifield / lfld
 namelist / debug    / lchkado, itierchk, inumchk, lchkmm, idiffchk, lchksame, lchkbig, dchkbig, nchkcount, nchklong, lchksparse, lchkdos, lchkbigado, loutput
 namelist / tdjob    / tdmethod
 namelist / jobinfo  / mfdjob, pfdjob, psdjob, psdlor, psdfff, psfjob, lscale, lsymlor, lsdraw, lsparse, &
-                      ltrun_der, lsimple, lwalf, lscreen, lanahs, lspdhs, itype_fff, itype_psf
+                      ltrun_der, lsimple, lwalf, lscreen, lanahs, lspdhs, itype_fff, itype_psf 
+namelist / diffdecomp / ldiff_spe_dec, ldiff_spe_dec_sp
 namelist / filter   / lfilter, nfilter, nfilter_count, nfilter_long
 namelist / dos      / ldos, iorbs_dos, ispin_dos, dt_dos, tmax_dos, ljw_dos, lfreq_dos, lread_dos, freq_dos, maxit_dos, crit_dos
 namelist / td4ground / ltd4gr, jconvg, tref
@@ -175,9 +177,18 @@ lanahs    = .true.
 lspdhs    = .false.
 itype_fff = 1
 itype_psf = 1
+ldiff_spe_dec    = .false.
+ldiff_spe_dec_sp = .false.
 rewind(5)
 read(5, jobinfo, end=111)
 111 continue
+!
+! 预读 diffdecomp 开关。此处只读取两个逻辑量，用于决定是否放宽全局谱分解互斥检查；
+! 每个电极的 scheme 行必须等 evaluatepara_diff 读完 nalf 后再解析。
+!
+rewind(5)
+read(5, diffdecomp, end=112)
+112 continue
 write(6,*)
 !
 call get_omp_env
@@ -191,8 +202,11 @@ else
    write(6,*)'main: COP truncation is adopted for the hierarchy '
 end if
 !
-! make sure only one of MFD, PFD, PSD, PSD_LOR, PSD_FFF, PSF schemes is invoked
+! make sure only one of MFD, PFD, PSD, PSD_LOR, PSD_FFF, PSF schemes is invoked.
+! diff 模式下每个电极可以有自己的谱分解方案，因此不再用全局布尔量做互斥裁剪；
+! 逐电极合法性由 read_diffdecomp_config/evaluatepara_diff 检查。
 !
+if (.not. (ldiff_spe_dec .or. ldiff_spe_dec_sp)) then
 if (psfjob) then
     psdfff = .false.
     psdlor = .false.
@@ -232,8 +246,15 @@ if (istat .gt. 1) then
     write(6,*)'heom: psfjob = ', psfjob
     stop
 end if
+else
+    write(6,*)
+    write(6,*)'main: diffdecomp mode is enabled; global scheme conflict check is skipped.'
+    write(6,*)'main: each lead scheme will be checked in evaluatepara_diff.'
+end if
 write(6,*)
-if (mfdjob) then
+if (ldiff_spe_dec .or. ldiff_spe_dec_sp) then
+    write(6,*)' Different spectral decomposition schemes are used for different leads. '
+else if (mfdjob) then
     write(6,*)' Multi-Frequency-Dispersed (MFD) Scheme is used '
 else if (pfdjob) then 
     write(6,*)' Polynomial-Function-Decomposition (PFD) Scheme is used '
@@ -253,7 +274,10 @@ if (lscale) then
     write(6,*)' Scale all ADOs to be dimensionless density operators '
 end if
 call flush(6)
-if (pfdjob .or. psdjob .or. psdlor .or. psdfff .or. psfjob) then
+if (ldiff_spe_dec .or. ldiff_spe_dec_sp) then
+    ! diff 模式下可能包含 Pade/Fano/PSF 电极，统一关闭精确 Fermi 函数路径。
+    lfermi_exact = .false.
+else if (pfdjob .or. psdjob .or. psdlor .or. psdfff .or. psfjob) then
     lfermi_exact = .false.
 end if
 !
@@ -273,7 +297,7 @@ if (lsimple) then
    end if
    call flush(6)
 end if
-if (psdfff) then
+if (psdfff .and. .not. (ldiff_spe_dec .or. ldiff_spe_dec_sp)) then
     if (ltrun_der) then
         write(6,*)
         write(6,*)'main: error! psdfff=T and ltrun_der=T found '
@@ -412,7 +436,11 @@ end if
 ! read basic information from input file
 ! and calculate reservoir correlation functions
 !
-call evaluatepara(init)
+if (ldiff_spe_dec .or. ldiff_spe_dec_sp) then
+    call evaluatepara_diff(init)
+else
+    call evaluatepara(init)
+end if
 !
 if (lssp) then
     if (init .ne. 7) then
@@ -560,8 +588,8 @@ nfilter = 10          ! currently no use
 nfilter_count = 2     !  = 0: no filter, turn off filtering, if > (ntier-1), the whole ntier is screened, error
 nfilter_long  = 3
 rewind(5)
-read(5, filter, end=112) 
-112 continue
+read(5, filter, end=113) 
+113 continue
 if (lfilter .and. lad) then
     write(6,*)
     write(6,*)'main: error! lfilter=T and lad=T found ', lfilter, lad
@@ -1194,6 +1222,8 @@ open(unit=28, file='rhodiag.data', status='unknown')
 rewind(28)
 open(unit=29, file='rhotime.data', form='formatted', status='unknown')
 rewind(29)
+open(unit=81, file='RDO_td.data', status='unknown')
+rewind(81)
 open(unit=33, file='poccdetail.data', status='unknown')
 rewind(33)
 if (lbfield .and. nspin .gt. 1) then
@@ -1462,6 +1492,7 @@ if (tdmethod .eq. 0) then
        write(13,518)tt*dunitt, eshift(1,1), jleft*dunitj, occu
        write(16,518)tt, eshift(1,1), occu
        write(28,518)tt, (dble(rhosys(ni,ni)), ni=1,nrho)
+       write(81,514)tt, ((dble (rhosys(ni,nj)), ni=1,nrho), nj=1,nrho)
        if (lchkado) then
          write(30,518)tt, ((dble(rho(ni,nj,nfirst(itierchk)+inumchk)), ni=1,nrho), nj=1,nrho), &
                          ((dimag(rho(ni,nj,nfirst(itierchk)+inumchk)), ni=1,nrho), nj=1,nrho)
@@ -1471,10 +1502,12 @@ if (tdmethod .eq. 0) then
        write(13,518)tt*dunitt, eshift(1,1), eshift(2,1), jleft*dunitj, jright*dunitj, &
                     (jleft+jright)*dunitj, occu
        write(16,518)tt, eshift(1,1), eshift(2,1), occu
+       write(81,514)tt, ((dble (rhosys(ni,nj)), ni=1,nrho), nj=1,nrho)
     else  ! multi-leads 
        write (6,518)tt, (jleads(ialf), ialf=1,nalf), occu, cpu4-cpu3
        write(13,518)tt*dunitt, (eshift(ialf,1), ialf=1,nalf), (jleads(ialf)*dunitj, ialf=1,nalf), occu
        write(16,518)tt, (eshift(ialf,1), ialf=1,nalf), occu
+       write(81,514)tt, ((dble (rhosys(ni,nj)), ni=1,nrho), nj=1,nrho)
     end if
   else
     if (nalf .eq. 1) then
@@ -1483,6 +1516,7 @@ if (tdmethod .eq. 0) then
                     (jleftu+jleftd)*dunitj, (jleftu-jleftd)*dunitj, occ
        write(16,518)tt, eshift(1,1), occu, occd, occ
        write(28,518)tt, (dble(rhosys(ni,ni)), ni=1,nrho)
+       write(81,514)tt, ((dble (rhosys(ni,nj)), ni=1,nrho), nj=1,nrho)
        if (lchkado) then
          write(30,518)tt, ((dble(rho(ni,nj,nfirst(itierchk)+inumchk)), ni=1,nrho), nj=1,nrho), &
                          ((dimag(rho(ni,nj,nfirst(itierchk)+inumchk)), ni=1,nrho), nj=1,nrho)
@@ -1492,11 +1526,13 @@ if (tdmethod .eq. 0) then
        write(13,518)tt*dunitt, eshift(1,1), eshift(2,1), jleft*dunitj, jright*dunitj, &
                     (jleft+jright)*dunitj, occu, occd, occ
        write(16,518)tt, eshift(1,1), eshift(2,1), occu, occd, occ
+       write(81,514)tt, ((dble (rhosys(ni,nj)), ni=1,nrho), nj=1,nrho)
     else  ! multi-leads
        write (6,518)tt, (jt(ialf,1), jt(ialf,2), ialf=1,nalf), occu, occd, cpu4-cpu3
        write(13,518)tt*dunitt, (eshift(ialf,1), eshift(ialf,2), ialf=1,nalf),                  &
                     (jt(ialf,1)*dunitj, jt(ialf,2)*dunitj, ialf=1,nalf), occu, occd, occ
        write(16,518)tt, (eshift(ialf,1), eshift(ialf,2), ialf=1,nalf), occu, occd, occ
+       write(81,514)tt, ((dble (rhosys(ni,nj)), ni=1,nrho), nj=1,nrho)
     end if
   end if
   write(72,518)tt, esys*hbar, esb*hbar, etot*hbar
@@ -1542,6 +1578,7 @@ if (tdmethod .eq. 0) then
   call flush(16)
   call flush(72)
   call flush(28)
+  call flush(81)
   call flush(33)
   if (lchkado) call flush(30)
   if (lspin3d) then
@@ -1604,6 +1641,7 @@ close(13)
 close(16)
 close(72)
 close(28)
+close(81)
 close(29)
 close(33)
 if (lbfield .and. nspin .gt. 1) close(43)
@@ -1764,5 +1802,6 @@ write(6,1002)date(7:8),date(5:6),date(1:4),time(1:2),time(3:4),time(5:6)
 call flush(6)
 close(5)
 518 format(f12.4, 2x, 32(e15.6e3, 1x))
+514 format(f12.4, 2x, 256(e15.6e3, 1x))
 !
 end program heom

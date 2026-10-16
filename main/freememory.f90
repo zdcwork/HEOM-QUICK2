@@ -112,6 +112,8 @@ end if
 if (pfdjob .or. psdjob .or. psdlor .or. psdfff .or. psfjob) then
    deallocate(cpeigv, cpcoef, cppole, STAT=istat)
 end if
+if (allocated(cpcoef_alf)) deallocate(cpcoef_alf, STAT=istat)
+if (allocated(cppole_alf)) deallocate(cppole_alf, STAT=istat)
 !
 ! PSD_LOR
 !
