@@ -469,6 +469,43 @@
 
   Users can run HEOM-QUICK2 with the command 
 >  "./path/to/HEOM-QUICK2.x.x.x/bin/HEOM-QUICK2.x <input_file_name> out_file_name".
+
+## Ex7. 
+       apply different spectral decomposition scheme on two baths
+       We now impose two different schemes on the left and right electron reservoirs, respectively. 
+	   The left reservoir, indexed by 1, adopts the Prony fitting scheme with the preset parameters 
+       “itype_psf=1” given in the text file “./read/itype_psf_list.txt”. 
+       The total exponential term of this preset scheme is 13. 
+       The correlation function of the right reservoir is unraveled by 3 Pade poles and the Fano terms 
+       given by the preset parameters “itype_fff=3”. The hierarchy is truncated by the adiabatic scheme.
+	   
+  The input file is 
+>          1     2 
+>          2     3 
+>          3     0 
+>          4     1
+>          5     2 
+>          6     2 
+>          7     5.0d0 5.0d0 
+>          8     0.4d0 0.4d0 
+>          9     0.001d0 0.001d0 
+>          10    0.001d0 0.001d0 -0.001d0 -0.001d0
+>          11    1.d3 
+>          12    1.d-2
+>          13    $para1 eup=-1.0d0 edown=-1.0d0 uu=2.0d0 $end 
+>          14    $field fieldtype=0 $end
+>          15    1.d-20 1.d-20 1.d-20 1.d-20
+>          16    $jobinfo lsparse=T psfjob=T itype_psf=1 $end
+>          17    $converge maxit0=20000 crit=1.d-7 $end
+>          18    $method methodss=2 $end
+>          19    $adiabatic lad=T $end
+>          20    $diffdecomp ldiff_spe_dec = .true. $end
+>          21    1   prony  13  1
+>          22    2   fano    3  3
+          It is noted that the standard input file does not require the line numbers in the left side.
+
+  Users can run HEOM-QUICK2 with the command 
+>  "./path/to/HEOM-QUICK2.x.x.x/bin/HEOM-QUICK2.x <input_file_name> out_file_name".
   
 ##  Now we introduce the tags in these input files. 
 >        Line 1: task type;
@@ -526,8 +563,34 @@
 >           freq_dos: calculate response properties at a frequency equal to "freq_dos";
 >           maxit_dos: the maximum step in iteration calculations;
 >           crit_dos: the criterion in iteration calculations.
-
-
+>        diffdecomp: use different spectral decomposition schemes for different bath tags:
+>           ldiff_spe_dec=.true. use different spectral decomposition schemes to be used for different baths.
+>           ldiff_spe_dec_sp=.true. is for taking spin polarization into account (under testing).
+>           The parameter consists of four columns:
+>              The first column indicates the electrode index;
+>              The second column is the spectral decomposition scheme to be used;
+>              The third column is the number of Padé terms (only for the Fano scheme) or the number of poles;
+>              The fourth column is optional, for the Fano scheme (the “itype_fff” parameter) and the preset Prony decomposition scheme (the “itype_psf” parameter).
+>              The second column is case-insensitive; for example, both “FANO” and “fano” are correctly recognized.
+>              The second column can recognize nine types of input, which are:
+>                pade, psdjob — use the Padé spectral decomposition;
+>                prony, psfjob — use the preset Prony parameters;
+>                fano, psdfff — use the Fano spectral decomposition scheme;
+>                read, lprony — directly read external decomposition parameters;
+>                mtsjob — use the Matsubara spectral decomposition scheme.
+>              Examples: The following example demonstrates the Padé + read-parameter mode:
+>                $diffdecomp ldiff_spe_dec = .true. ldiff_spe_dec_sp = .false. $end
+>                  1   fano   3  3
+>                  2   read   25
+>                Taking the first line (1 fano 3 3) as an example:
+>                The first column “1” indicates that this line’s parameters apply to electrode 1.
+>                The second column “fano” indicates that the Fano spectral decomposition scheme is used for this electrode.
+>                The third column “3” indicates that a total of 3 Padé points are used.
+>                The fourth column “3” indicates that the preset Fano parameter set itype_fff=3 is adopted.
+>                Similarly, for the second line (2 read 25):
+>                The first column “2” indicates that this line’s parameters apply to electrode 2.
+>                The second column “read” indicates that external decomposition parameters are read directly for this electrode.
+>                The third column “25” indicates that a total of 25 exponential functions are used.
 
 License
 
